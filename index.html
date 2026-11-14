@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Works Log">
+<title>Works Log</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7a1a4d">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+
+<style>
+:root{--bg:#f2f4f8;--card:#fff;--tx:#14181f;--mut:#6b7482;--ac:#7a1a4d;--ac2:#0a84ff;--bd:#e1e5ec;--g:#1fb35a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1016;--card:#181c25;--tx:#eef1f6;--mut:#8a93a3;--ac:#e0568f;--ac2:#4aa3ff;--bd:#272c38}}
+:root[data-theme="dark"]{--bg:#0d1016;--card:#181c25;--tx:#eef1f6;--mut:#8a93a3;--ac:#e0568f;--ac2:#4aa3ff;--bd:#272c38}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+#app{max-width:1000px;margin:0 auto;padding:clamp(12px,3vw,24px) clamp(12px,3vw,24px) 150px}
+h1{font-size:clamp(24px,5vw,32px);margin:4px 0 14px;letter-spacing:-.5px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:20px 4px 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.tap{cursor:pointer;margin-bottom:0;padding:12px}.card.tap:active{transform:scale(.99)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.cg{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));margin-bottom:10px}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));column-gap:14px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
+.stat b{display:block;font-size:clamp(26px,5vw,34px);letter-spacing:-1px}
+.stat span{color:var(--mut);font-size:13px}
+.stat.hero{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0}
+.stat.hero span{color:#ffffffcc}
+label{display:block;font-size:12px;font-weight:600;color:var(--mut);letter-spacing:.06em;margin:14px 2px 6px;text-transform:uppercase}
+input,textarea,select{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--card);border:1.5px solid var(--bd);border-radius:12px;padding:13px;min-height:48px;outline:0}
+input:focus,textarea:focus,select:focus{border-color:var(--ac)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:9px 15px;min-height:42px;font:inherit;font-size:14px;font-weight:600}
+.chip.on{color:#fff;border-color:transparent}
+.seg{display:flex;gap:8px}.seg .chip{flex:1;border-radius:12px;padding:12px}
+.tag{display:inline-block;color:#fff;border-radius:99px;padding:2px 9px;font-size:11px;font-weight:700;margin:0 4px 4px 0}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;min-height:50px;font:inherit;font-weight:700;background:var(--ac);color:#fff;margin-top:14px}
+.btn.sec{background:var(--card);color:var(--tx);border:1px solid var(--bd);margin-top:8px}
+.btn.del{background:none;color:#d33;margin-top:0}
+.btn.red{background:#d33}
+.row{display:flex;align-items:center;gap:10px}.sp{justify-content:space-between}
+.bar{height:10px;border-radius:6px;background:var(--bd);overflow:hidden;flex:1}
+.bar i{display:block;height:100%;border-radius:6px}
+.lbl{width:92px;font-size:12px;font-weight:600}
+.n{width:36px;text-align:right;font-size:13px;color:var(--mut)}
+.cols{display:flex;align-items:flex-end;gap:4px;height:90px}
+.cols div{flex:1;background:linear-gradient(var(--ac2),var(--ac));border-radius:5px 5px 2px 2px;min-height:3px;opacity:.9}
+.cols.l{height:auto;margin-top:4px;color:var(--mut);font-size:10px}.cols.l span{flex:1;text-align:center}
+.meta{color:var(--mut);font-size:13px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);display:flex;padding:6px calc(6px + env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) calc(6px + env(safe-area-inset-left,0px));z-index:5}
+nav button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:11px;font-weight:600;padding:6px;min-height:50px}
+nav button.on{color:var(--ac)}nav button span{display:block;font-size:22px}
+#fab{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:6}
+#fab button{width:60px;height:60px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:32px;box-shadow:0 6px 20px #0004}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:14px;z-index:99;text-align:center;max-width:90vw}
+.ref{margin-top:8px}.ref label{margin:0 0 4px}
+.empty{text-align:center;color:var(--mut);padding:30px 0}
+textarea.big{min-height:110px;font-size:13px}
+.sg{border-radius:12px;overflow:hidden;margin-top:4px}
+.sg button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;padding:12px 13px;min-height:46px}
+.sg button small{color:var(--mut)}.sg .new{color:var(--ac);font-weight:700}
+.info{margin:6px 2px 0;font-size:13px;color:var(--mut)}.info b{color:var(--tx)}
+.panel{border:1.5px dashed var(--ac);border-radius:16px;padding:12px;margin-top:10px;background:var(--card)}
+.panel label:first-child{margin-top:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ban{border-radius:20px;padding:16px;color:#fff;margin-bottom:12px}
+.ban.on{background:linear-gradient(135deg,#14a85a,#0a7a3c)}
+.ban.idle{background:linear-gradient(135deg,#3b4a63,#242c3b)}
+.ban.off{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.big2{font-size:clamp(28px,6vw,38px);font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.bb{flex:1 1 120px;border:0;border-radius:12px;padding:12px;min-height:46px;font:inherit;font-weight:700;background:#ffffff33;color:#fff;margin-top:10px}
+.day{background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-bottom:12px;padding:0 12px 4px}
+.day summary{padding:14px 2px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none}
+.day summary::-webkit-details-marker{display:none}
+.day .card{background:var(--bg)}
+.gh{display:flex;justify-content:space-between;align-items:center;margin:10px 0 8px}
+.gh.act{border-left:4px solid var(--g);padding-left:8px}
+.gh .chip{padding:6px 12px;min-height:38px}
+.live{color:var(--g);font-weight:800;font-size:12px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sbtn{background:var(--card);border:1.5px solid var(--bd);border-radius:16px;padding:14px;text-align:left;color:var(--tx);font:inherit;min-height:80px}
+.sbtn b{display:block;font-size:17px}.sbtn span{color:var(--mut);font-size:13px}
+.sbtn.live{border-color:var(--g)}
+#sheet{display:none;position:fixed;inset:0;z-index:20;background:#0009;overflow:auto;-webkit-overflow-scrolling:touch}
+#sheet.open{display:block}
+.sh{background:var(--bg);min-height:100%;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px));max-width:720px;margin:0 auto}
+.x{border:0;background:var(--card);color:var(--tx);width:44px;height:44px;border-radius:50%;font-size:18px}
+.dflt{font-size:clamp(34px,9vw,52px);font-weight:800;letter-spacing:-1px;line-height:1.05;margin:10px 0 4px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px}
+.tile small{display:block;color:var(--mut);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tile b{font-size:22px}
+.pic{width:100%;border-radius:14px;margin-top:10px;display:block}
+@media(min-width:720px){#sheet{padding:30px 0}.sh{border-radius:24px;min-height:0}}
+@media(min-width:900px){
+ nav{top:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;border-top:0;border-right:1px solid var(--bd);padding-top:24px}
+ #app{padding-left:120px;max-width:1120px}#fab{bottom:24px}
+}
+@media(max-height:480px){#app{padding-bottom:110px}}
+
+.savebar{position:sticky;bottom:calc(64px + env(safe-area-inset-bottom,0px));background:var(--bg);padding:8px 0;z-index:4;display:flex;gap:8px;margin-top:10px}
+.savebar .btn{margin:0}
+.tw{overflow-x:auto}
+.rtab{width:100%;border-collapse:collapse;font-size:12px;background:var(--card)}
+.rtab th,.rtab td{border:1px solid var(--bd);padding:5px 6px;text-align:left;vertical-align:top}
+.rtab th{background:var(--bg)}
+.rt{margin:6px 0}
+.sh.wide{max-width:1000px}
+@media(min-width:900px){.savebar{bottom:0}}
+@media print{
+ html,body{background:#fff!important}
+ body>*:not(#sheet){display:none!important}
+ #sheet{position:static!important;display:block!important;background:#fff!important;padding:0!important;overflow:visible!important}
+ #sheet,#sheet *{color:#000!important;background:#fff!important}
+ .sh{max-width:none!important;padding:0!important;margin:0!important;border-radius:0!important}
+ .noprint{display:none!important}
+ .rtab th,.rtab td{border:1px solid #777!important}
+ .tw{overflow:visible}
+}
+
+html{overscroll-behavior:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+input,textarea,select,.sh,.rtab,#rbody{-webkit-user-select:text;user-select:text}
+.btn:disabled{opacity:.45}
+.sbtn.sel{border-color:var(--ac);box-shadow:inset 0 0 0 2px var(--ac)}
+#splash{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#7a1a4d,#0a84ff);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .5s}
+#splash b{font-size:30px;letter-spacing:-.5px;margin-top:8px}#splash span{opacity:.85}
+.cert{border:3px double #b8903a;border-radius:18px;padding:8px;background:var(--card);margin-bottom:12px}
+.cin{border:1px solid #b8903a;border-radius:12px;padding:22px 14px;text-align:center;font-family:Georgia,"Times New Roman",serif}
+.cs{letter-spacing:.18em;font-size:12px;color:#b8903a;font-weight:700}
+.cl{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0;color:#b8903a}.cl span{height:1px;width:60px;background:#b8903a}
+.ct{color:var(--mut);font-size:14px;font-style:italic;margin:6px 0}
+.cn{font-size:clamp(28px,8vw,38px);font-weight:700;letter-spacing:-.5px;margin:2px 0}
+.cmeta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.cmeta small{display:block;color:var(--mut);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-family:-apple-system,system-ui,sans-serif}.cmeta b{font-size:13px}
+.seal{margin:16px auto 0;width:68px;height:68px;border-radius:50%;border:2px solid #b8903a;display:grid;place-items:center;box-shadow:0 0 0 4px var(--card),0 0 0 5px #b8903a55}
+.sh,.noprint{}
+@media print{#splash{display:none!important}}
+</style></head><body>
+<div id="splash"></div>
+<div id="app"></div>
+<div id="fab"></div>
+<nav id="nav"></nav>
+<div id="sheet"></div>
+<script>if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
+<script>const FL="QR001:LHR,QR002:LHR,QR003:LHR,QR004:LHR,QR005:LHR,QR006:LHR,QR007:LHR,QR008:LHR,QR009:LHR,QR010:LHR,QR011:LGW,QR012:LGW,QR015:LHR,QR016:CDG,QR017:DUB,QR018:DUB,QR019:DUB,QR020:DUB,QR021:MAN,QR022:MAN,QR027:BHX,QR028:BHX,QR029:EDI,QR030:EDI,QR037:CDG,QR038:CDG,QR041:CDG,QR042:CDG,QR057:MUC,QR058:MUC,QR059:MUC,QR060:MUC,QR067:FRA,QR068:FRA,QR069:FRA,QR070:FRA,QR079:BER,QR080:BER,QR081:BER,QR082:BER,QR087:MAD,QR088:MAD,QR095:ZRH,QR096:ZRH,QR099:BCN,QR100:BCN,QR101:FCO,QR102:FCO,QR116:FCO,QR117:MXP,QR118:MXP,QR149:MAD,QR150:MAD,QR151:MAD,QR152:MAD,QR162:CPH,QR169:ARN,QR170:ARN,QR175:OSL,QR176:OSL,QR204:ATH,QR240:IST,QR273:AMS,QR274:AMS,QR500:BOM,QR501:BOM,QR506:TRV,QR507:BOM,QR557:BOM,QR571:DEL,QR579:DEL,QR572:BLR,QR573:BLR,QR528:MAA,QR529:MAA,QR535:HYD,QR540:CCU,QR541:CCU,QR514:COK,QR515:COK,QR516:COK,QR517:COK,QR504:AMD,QR505:AMD,QR532:ATQ,QR533:ATQ,QR520:GOI,QR521:GOI,QR590:MLE,QR591:MLE,QR605:KHI,QR620:LHE,QR621:LHE,QR633:ISB,QR638:DAC,QR639:KTM,QR641:DAC,QR665:CMB,QR701:JFK,QR702:JFK,QR704:JFK,QR705:JFK,QR706:JFK,QR707:IAD,QR708:IAD,QR709:IAD,QR710:IAD,QR714:IAH,QR720:SEA,QR723:ORD,QR724:ORD,QR726:ORD,QR730:DFW,QR732:DFW,QR738:SFO,QR740:LAX,QR741:LAX,QR742:LAX,QR744:BOS,QR756:ATL,QR763:YUL,QR764:YUL,QR767:YYZ,QR768:YYZ,QR771:GRU,QR772:GRU,QR774:GRU,QR778:MIA,QR780:GRU,QR782:MIA,QR804:NRT,QR805:NRT,QR807:NRT,QR808:NRT,QR809:NRT,QR812:HND,QR813:HND,QR814:HKG,QR815:HKG,QR816:HKG,QR817:HKG,QR829:BKK,QR830:BKK,QR831:BKK,QR832:BKK,QR833:BKK,QR837:BKK,QR841:HKT,QR843:HKT,QR844:KUL,QR845:KUL,QR847:SIN,QR848:KUL,QR853:KUL,QR859:ICN,QR862:ICN,QR863:ICN,QR871:PVG,QR875:CAN,QR891:SYD,QR893:PKX,QR899:BNE,QR901:PER,QR905:MEL,QR906:PER,QR907:PER,QR914:ADL,QR915:ADL,QR920:AKL,QR921:AKL,QR928:MNL,QR929:MNL,QR933:MNL,QR942:SIN,QR943:SIN,QR944:SIN,QR945:SIN,QR946:SIN,QR947:SIN,QR954:CGK,QR955:CGK,QR960:DPS,QR961:DPS,QR963:DPS,QR964:DPS,QR965:DPS,QR988:MEL,QR989:MEL,QR1014:DXB,QR1015:DXB,QR1018:DXB,QR1019:DXB,QR1020:DXB,QR1021:DXB,QR1041:AUH,QR1060:SHJ,QR1061:KWI,QR1103:BAH,QR1123:MCT,QR1165:RUH,QR1201:JED,QR1202:JED,QR1301:CAI,QR1302:CAI,QR1306:CAI,QR1341:NBO,QR1342:NBO,QR1351:NBO,QR1352:NBO,QR1364:JNB,QR1377:JNB,QR1378:JNB,QR1379:LOS,QR1380:LOS,QR1427:ADD,QR1428:ADD,QR8101:ORD,QR8102:MST,QR8131:LGG,QR8157:SZX,QR8181:HKG,QR8190:PVG,QR8201:AMS,QR8217:HND,QR8222:ICN,QR8351:FRA,QR8441:BOM,QR8477:DEL,QR8890:ANC,AA120:DOH,AI961:DOH,AI971:DOH,6E1307:DOH,6E1303:DOH,6E1311:DOH,IX375:DOH,IX473:DOH,QP491:DOH,BA123:DOH,TK780:DOH,TK782:DOH,PC660:DOH,CZ8059:DOH,MF823:DOH,MS935:DOH,ET628:DOH,EY661:DOH,FZ001:DOH,G9135:DOH,GF524:DOH,WY237:DOH,SV542:DOH,SV540:DOH,KNE225:DOH,KU617:DOH,JL059:DOH,IB6700:DOH,AY1981:DOH,GA710:DOH,PR684:DOH,BG325:DOH,PK287:DOH,RA239:DOH,KZR653:DOH,WB300:DOH,AI962:BOM,AI972:DEL,6E1308:DEL,6E1304:BOM,6E1312:MAA,IX376:CCJ,IX474:COK,QP492:BOM,PC661:SAW,CZ8060:PKX,MF824:PKX,MS936:CAI,ET629:ADD,EY662:AUH,FZ002:DXB,G9136:SHJ,GF525:BAH,WY238:MCT,SV543:JED,SV541:RUH,KNE226:RUH,KU618:KWI,JL050:HND,IB6701:MAD,AY1982:HEL,GA711:CGK,BG326:DAC,PK288:ISB,KZR654:ALA,WB301:KGL,QR055:NCE,QR045:DUB,QR131:FCO,QR984:HAN,QR8265:MAD,QR8432:SIN,QR8245:LHR,QR1062:SHJ,QR1192:JED,QR1152:DMM,J9116:KWI,QR113:FCO,QR033:BHX,QR227:SOF,QR155:AGP,6E1326:CNN,QR1194:ELQ,MH165:KUL,QR1006:DXB,QR1178:MED,QR1303:CAI,6E1324:COK,QR410:DAM,QR1212:BSR,QR0840:HKT,QR0928:MNL,QR0946:SIN,QR0175:OSL,QR0163:YYZ,QR0149:YUL,QR0085:DUS,QR0125:VCE,QR0193:BRU,QR1100:BAH,QR0906:SYD,QR0707:IAD,QR0956:CGK,QR0069:FRA,QR0053:NCE,QR0123:MXP,QR0159:CPH,QR0416:BEY,QR0381:MLA,QR0402:AMM,QR1399:TUN,QR0183:VIE,QR0217:ZAG,QR0337:GYD,QR0131:STN,QR0057:MUC,QR0079:BER,QR1120:SHJ,QR023:MAN,QR0301:HEL,QR0161:CPH,QR0107:LHR,QR0169:ARN,QR0155:AGP,QR0195:BRU,QR0209:ATH,QR0081:BER,QR0127:MXP,QR0003:LHR,QR0103:LHR,QR0109:LHR,QR0041:CDG,QR0151:MAD,QR1044:AUH,QR0137:PRG,QR0101:LHR,QR0011:LHR,QR1315:CAI,QR0043:CDG,QR0237:IST,QR0327:NQZ,QR1371:JNB,QR1435:ALG,QR1114:MCT,QR141:BCN,QR285:EVN,QR838:BKK,6E1302:BLR,QR377:TAS,VA22:PER,G9139:SHJ,QR404:AMM,QR1034:SHJ,QR982:HAN,QR1365:JNB,QR522:GOX,6E1306:BOM,QR548:ATQ,QR600:PEW,QR908:SYD,QR418:BEY,FZ6:DXB,QR8954:HAN,WY662:MCT,IX476:COK,G928:SHJ,AI2290:BOM,AI2284:DEL,IX774:CNN,GF531:BAH,QR8900:MFM,FZ20:DXB,UL218:CMB,XY294:RUH,EY670:AUH,QR1182:JED,RQ978:KBL,BS334:DAC,MH6127:KUL,QR1174:MED,IB392:MAD,QR436:ISU,QR648:KTM,QR1184:JED,AT217:CMN,QR1499:JRO,QR8249:CMN,BG126:CGP,QR628:LHE,6E1346:DEL,PC615:SAW,QR137:BCN,QR195:BRU,QR614:ISB,QR818:HKG,QR948:SIN,QTR56M:BRU,QR69:FRA,QR1156:DMM,6E1342:BOM,QR91:HAM,GA901:CGK,QR237:IST,QR215:ZAG,QR610:KHI,QR660:CMB,QR956:CGK,QR87:DUS,QR123:MXP,QR219:OTP,QR79:BER,QR93:ZRH,QR8233:STN,QR59:MUC,QR105:LHR,QR263:WAW,QR189:VIE,QR678:SEZ,QR8187:AMS,QTR40W:AMS,QR8205:AMS,QR8267:LGG,WY668:MCT,MS938:CAI,QR1160:RUH,EY664:AUH,QR8203:AMS,G982:SHJ,QR8706:LOS,QR8758:AUH,QTR1HV:AMS,GF521:BAH,3T235:PZU,RJ651:AMM,QR490:IKA,QR8406:HKG,QR8420:MCT,QR8042:MCT,QR8724:SHJ,QR8902:KUL,QR231:BEG,QR241:SAW,QR1220:TUU,QR3:LHR,QR27:MAN,QR1226:RSI,QR17:DUB,QR29:EDI,QR676:MLE,QR8728:KWI,CZ334:CAN,QR147:MAD,QR458:BGW,QR8814:EVN,QR19:DUB,QR31:EDI,QR103:LHR,QR1407:LOS,QR21:MAN,QR41:CDG,QR343:LIS,QR1375:MPM,QR8245:BRU,MH161:KUL,QR1116:BAH,QR1424:ABJ,QR1487:ZNZ,QR8730:RUH,QR329:LGW,QR834:BKK,QR860:TFU,QR1076:KWI,MF846:PKX,QR670:MLE,VA16:BNE,BA126:LHR,QR11:LHR,QR35:BHX,QR970:SGN,QR976:HAN,VA8:MEL,QR777:MIA,QR654:CMB,XY226:RUH,KC552:CIT,QR1383:EBB,QR400:AMM,QR8209:PRG,PC7291:SAW,QR1423:ABJ,QR031:EDI,QR1405:LOS,QR1389:KGL,QR402:AMM,QR781:MIA,QR115:FCO,RB522:DAM,OY-4038:DEL,QR1476:JRO,QR1070:KWI,QR1455:HRE,QR265:LCA,QR259:WAW,QR932:MNL,IX478:COK,QR1204:NUM,QR448:BSR,QR713:IAH,QR89:HAM,ET433:ADD,QR1190:JED,QR1170:RUH,QR640:DAC,QR8148:ATL,QR719:SEA,VA002:SYD,QR703:JFK,QR806:NRT,BA122:LHR,ME435:BEY,QR203:ATH,QR8219:AMS,IX484:COK,QR1216:YNB,QR570:DEL,QR826:BKK,QR646:KTM,QR1040:AUH,QR630:SKT,QR1345:NBO,QR221:OTP,QR8700:NBO,QR1206:TIF,QR353:GYD,QR900:PER,QR8734:BGW,QR773:GRU,QR836:BKK,QR1397:CMN,QR444:BGW,QR8168:LGG-ORD,QR892:PKX,QR962:DPS,QR1363:JNB,QR828:BKK,QR8221:FRA,QR1172:RUH,QR8694:BLR,QR8412:HKG,QR874:CAN,QR8622:MAA,QR1369:CPT,QR1126:MCT,QR211:ATH,QR870:PVG,QR1183:JED- Arrival,QR8290:BUD -qrt,QR852:KUL,QR1335:NBO,J4681:PZU,QR8470:HKG,QR337:SVO,QR842:HKT,QR1228:HAS,QR339:SVO,QR616:MUX,QR664:CMB,QR1108:BAH,QR8014:SYD MEL,QR898:BNE,PK280:ISB,QR1168:RUH,QR604:KHI,QR119:LHR,QR556:BOM,PK286:PEW,QR632:ISB,QR662:CMB,QR1491:FIH-NBJ,QR1148:MCT,QR8211:AMS,QR8680:KHI,QR1054:AUH,QR1154:DMM,6E1314:HYD,QR8942:CAN,QR426:BEY,QR1066:SHJ,QR311:JMK,QR1038:SHJ,QR8064:KUL,QR8400:HKG,QR8564:LOS-GRU,QR8273:MAD,QR145:BCN,QR039:CGD,QR737:SFO,QR8088:LOS-GRU,QR1150:DMM,QR1240:RUH,QR755:ATL,QR8207:AMS,QR8962:PVG,QR8742:SHJ,QR1050:AUH,QR1164:RUH,QR9950:BCG/DOH-DOH,QR085:DUS,QR1102:BAH,RB652:DAM,QR729:DFW,QR1481:DAR,QR291:PRG,QR1248:JED,H9-353HIMALAYA:KTM,QR317:BJV,QR351:GYD,QR8500:HKG,QR245:IST,RJ653:AMM,QR1307:CAI,G9131:SHJ,KU620:KWI,QR450:EBL,QR8976:KTI,QR904:MEL,WB305:KGL,EY668:AUH,G9133:SHJ,QR1052:AUH,QR785:GRU,QR1309:CAI,QR934:MNL,QR658:CMB,PR648:MNL,QR1124:MCT,QR1401:TUN,QR1058:SHJ,IX498:COK,QR642:DAC,Y92565:HKG,QR854:KUL,GF527:BAH,XY224:RUH,QR958:CGK,QR534:AMD,QR8702:LOS EBB,QR416:BEY,QR1022:DXB,PC605:SAW,QR8650:HYD,QR9092:BLR,QR179:OSL,QR1144:SLL,QR926:CRK,J4683:KRT,QR8261:LGG,QR617:ArrivalDOH,QR8430:HGK,QR8080:LGG-JFK,QR8227:FRA,QR8281:STN,QR8970:SGN,QR880:CGK,QR725:ORD,QR99:GVA,QR1866:RUH,QR1319:PZU,QR872:PVG,QR743:BOS,QR8422:HKG,QR8162:ORD,QR255:TBS,QR239:IST,QR201:BUD,QR8482:STN,QR802:KIX,ME437:BEY,FZ020:DXB,QR1305:CAI,BG226:DAC,QR536:CCJ,6E1316:HYD,QR1188:JED,QR731:DFW,QR1391:EBB,QR289:PRG,QR779:GRU,QR8170:LGG ORD,QR389:ALA,QR8092:KHI,QR8402:HKG,QR8612:AMD,QR578:DEL,ME1435:BEY,QR1130:SLL,ES280:BAH,QR303:HEL,FZ10:DXB,QR8602:BOM,IX931:BLR,QR890:HGH,QR3094:DPS,QR8426:HKG,QR8948:SZX,QR1002:DXB,RJ655:AMM,QR8972:SGN,7L6862:GYD,QR8604:BOM,QR8082:HKG,QR8594:DMM,WY670:MCT,IX574:TRV,QR246:IST-DOH,IX932:BLR,QR8726:DWC,QR1236:RUH,QR146:LOS-DOH,FZ18:DXB,WY664:MCT,6E1323:MAA,6E1322:MAA,QR442:BGW,QR8154:MXP ORD,VA07:MEL-DOH,QR8257:LEJ,QR8452:SYD-HKG,QR1186:JED,B47350:MCT,GF7186:BAH,RA254:KTM,QR313:ESB,QR8269:LEJ,QR1176:MED,FZ3024:DWC,QR8279:BUD,QR8836:LGG-JFK,WB303:KGL,QR207:ATH,QR253:TBS,QR8418:HKG,QR644:KTM,QR727:PHL,QR1110:BAH,QR7390:MCT,QR1036:SHJ,IX494:COK,IX382:CCJ,QR8410:HKG,QR8414:HKG,QR83:BER,QR8852:KUL,QR8964:PVG,SV547:JED",IA="LHR:London|UK;LGW:London|UK;CDG:Paris|France;DUB:Dublin|Ireland;MAN:Manchester|UK;BHX:Birmingham|UK;EDI:Edinburgh|UK;MUC:Munich|Germany;FRA:Frankfurt|Germany;BER:Berlin|Germany;MAD:Madrid|Spain;ZRH:Zurich|Switzerland;BCN:Barcelona|Spain;FCO:Rome|Italy;MXP:Milan|Italy;CPH:Copenhagen|Denmark;ARN:Stockholm|Sweden;OSL:Oslo|Norway;ATH:Athens|Greece;IST:Istanbul|Turkey;AMS:Amsterdam|Netherlands;BOM:Mumbai|India;TRV:Tiruvandapuram|India;DEL:Delhi|India;BLR:Bengaluru|India;MAA:Chennai|India;HYD:Hyderabad|India;CCU:Kolkata|India;COK:Kochi|India;AMD:Ahmedabad|India;ATQ:Amritsar|India;GOI:Goa|India;MLE:Male|Maldives;KHI:Karachi|Pakistan;LHE:Lahore|Pakistan;ISB:Islamabad|Pakistan;DAC:Dhaka|Bangladesh;KTM:Kathmandu|Nepal;CMB:Colombo|Sri Lanka;JFK:New York|USA;IAD:Washington|USA;IAH:Houston|USA;SEA:Seattle|USA;ORD:Chicago|USA;DFW:Dallas|USA;SFO:San Francisco|USA;LAX:Los Angeles|USA;BOS:Boston|USA;ATL:Atlanta|USA;YUL:Montreal|Canada;YYZ:Toronto|Canada;GRU:Sao Paulo|Brazil;MIA:Miami|USA;NRT:Tokyo|Japan;HND:Tokyo|Japan;HKG:Hong Kong|China;BKK:Bangkok|Thailand;HKT:Phuket|Thailand;KUL:Kuala Lumpur|Malaysia;SIN:Singapore|Singapore;ICN:Seoul|South Korea;PVG:Shanghai|China;CAN:Guangzhou|China;SYD:Sydney|Australia;PKX:Beijing|China;BNE:Brisbane|Australia;PER:Perth|Australia;MEL:Melbourne|Australia;ADL:Adelaide|Australia;AKL:Auckland|New Zealand;MNL:Manila|Philippines;CGK:Jakarta|Indonesia;DPS:Bali|Indonesia;DXB:Dubai|UAE;AUH:Abu Dhabi|UAE;SHJ:SHARJAH |UAE;KWI:Kuwait City|Kuwait;BAH:Manama|Bahrain;MCT:Muscat|Oman;RUH:Riyadh|Saudi Arabia;JED:Jeddah|Saudi Arabia;CAI:Cairo|Egypt;NBO:Nairobi|Kenya;JNB:Johannesburg|South Africa;LOS:Lagos|Nigeria;ADD:Addis Ababa|Ethiopia;MST:Maastricht|Netherlands (Cargo);LGG:Liege|Belgium (Cargo);SZX:Shenzhen|China (Cargo);ANC:Anchorage|USA (Cargo);DOH:Doha|Qatar;CCJ:Kozhikode|India;SAW:Istanbul|Turkey;HEL:Helsinki|Finland;ALA:Almaty|Kazakhstan;KGL:Kigali|Rwanda;NCE:Côte d'Azur International Airport|France;HAN:Hanoi|Vietnam;DMM:Dammam|Saudi Arabia;SOF:Sofia|Bulgaria;AGP:Malaga|Spain;CNN:Kannur|India;ELQ:Buraidah (Gassim)|Saudi Arabia;MED:Medina|Saudi Arabia;DAM:Damascus|Syria;BSR:Basra|Iraq;DUS:Dusseldorf|Germany;VCE:Venice|Italy;BRU:Brussels|Belgium;BEY:Beirut|Lebanon;MLA:Malta|Malta;AMM:Amman|Jordan;TUN:Tunis|Tunisia;VIE:Vienna|Austria;ZAG:Zagreb|Croatia;GYD:Baku|Azerbaijan;STN:London|United Kingdom;PRG:Prague|Czech Republic;NQZ:Astana|Kazakhstan;ALG:Algiers|Algeria;EVN:Yerevan|Armenia;TAS:Tashkent|Uzbekistan;GOX:Goa|India;PEW:Peshawar|Pakistan;MFM:Macau|China;KBL:Kabul|Afghanistan;ISU:Sulaimaniyah|Iraq;CMN:Casablanca|Morocco;JRO:Kilimanjaro|Tanzania;CGP:Chittagong|Bangladesh;HAM:Hamburg|Germany;OTP:Bucharest|Romania;WAW:Warsaw|Poland;SEZ:Victoria|Seychelles;PZU:Port Sudan|Sudan;IKA:Tehran|Iran;BEG:Belgrade|Serbia;TUU:Tabuk|Saudi Arabia;RSI:Red Sea Project|Saudi Arabia;BGW:Baghdad|Iraq;LIS:Lisbon|Portugal;MPM:Maputo|Mozambique;ABJ:Abidjan|Ivory Coast;ZNZ:Zanzibar|Tanzania;TFU:Chengdu|China;SGN:Ho Chi Minh City|Vietnam;CIT:Shymkent|Kazakhstan;EBB:Entebbe|Uganda;HRE:Harare|Zimbabwe;LCA:Larnaca|Cyprus;NUM:Neom|Saudi Arabia;YNB:Yanbu|Saudi Arabia;SKT:Sialkot|Pakistan;TIF:Taif|Saudi Arabia;LGG-ORD:Liège – Belgium|Chicago – United States;CPT:Cape Town|South Africa;JED- Arrival:Jeddah|Saudi Arabia;BUD -qrt:Budapest – Hungary|Hungary;SVO:Moscow|Russia;HAS:Hail|Saudi Arabia;MUX:Multan|Pakistan;SYD MEL:Sydney,Melbon|Australia;FIH-NBJ:Kinshasa&Nairobi|Congo& Kenya;JMK:Mykonos|Greece;LOS-GRU:Los Angeles & Brazil|USA&Brazil;CGD:Paris|France;BCG/DOH-DOH:Qatar|Qatar;DAR:Darussalam|Tanzania;BJV:Milas–Bodrum Airport|Turkey 🇹🇷;EBL:Erbil|Iraq 🇮🇶;KTI:Kratié,|Cambodia 🇰🇭;LOS EBB:Lagos, Nigeria|Entebbe, Uganda 🇺🇬;SLL:Salalah,|Oman 🇴🇲;CRK:Clark|Philippines 🇵🇭;KRT:Khartoum,|Sudan 🇸🇩;ArrivalDOH:Doha|Qatar;HGK:HongKong|HongKong;LGG-JFK:Liège&     New York City|Belgium 🇧🇪 → New York City, USA;GVA:Geneva,|Switzerland 🇨🇭;TBS:Tbilisi|Georgia 🇬🇪;BUD:Budapest,|Hungary 🇭🇺;KIX:Osaka,|Japan 🇯🇵;LGG ORD:Belgium → Chicago,|Belgium → USA;HGH:Hangzhou,|China 🇨🇳;IST-DOH:Doha|Qatar;DWC:Dubai|UAE;LOS-DOH:Doha|Qatar;MXP ORD:Milan - Italy Chicago - USA|Italy -USA;MEL-DOH:Melbourne- Doha|Qatar;LEJ:Leipzig|Germany;SYD-HKG:Sydney - Hong Kong|Australia  - Hong Kong;ESB:Esbjerg|Denmark;PHL:Philadelphia|USA",RG="A7-APA:A380-800:P,A7-APB:A380-800:P,A7-APC:A380-800:P,A7-APD:A380-800:P,A7-APE:A380-800:P,A7-APF:A380-800:P,A7-APG:A380-800:P,A7-APH:A380-800:P,A7-API:A380-800:P,A7-APJ:A380-800:P,A7-ANA:A350-1000:P,A7-ANB:A350-1000:P,A7-ANC:A350-1000:P,A7-AND:A350-1000:P,A7-ANE:A350-1000:P,A7-ANF:A350-1000:P,A7-ANG:A350-1000:P,A7-ANH:A350-1000:P,A7-ANI:A350-1000:P,A7-ANJ:A350-1000:P,A7-ANK:A350-1000:P,A7-ANL:A350-1000:P,A7-ANM:A350-1000:P,A7-ANN:A350-1000:P,A7-ANO:A350-1000:P,A7-ANP:A350-1000:P,A7-ANQ:A350-1000:P,A7-ANR:A350-1000:P,A7-ANS:A350-1000:P,A7-ANT:A350-1000:P,A7-AOA:A350-1000:P,A7-AOB:A350-1000:P,A7-AOC:A350-1000:P,A7-AOD:A350-1000:P,A7-AOE:A350-1000:P,A7-AOF:A350-1000:P,A7-AOG:A350-1000:P,A7-AOH:A350-1000:P,A7-ALA:A350-900:P,A7-ALB:A350-900:P,A7-ALC:A350-900:P,A7-ALD:A350-900:P,A7-ALE:A350-900:P,A7-ALF:A350-900:P,A7-ALG:A350-900:P,A7-ALH:A350-900:P,A7-ALI:A350-900:P,A7-ALJ:A350-900:P,A7-ALK:A350-900:P,A7-ALL:A350-900:P,A7-ALM:A350-900:P,A7-ALN:A350-900:P,A7-ALO:A350-900:P,A7-ALP:A350-900:P,A7-ALQ:A350-900:P,A7-ALR:A350-900:P,A7-ALS:A350-900:P,A7-ALT:A350-900:P,A7-ALU:A350-900:P,A7-ALV:A350-900:P,A7-ALW:A350-900:P,A7-ALX:A350-900:P,A7-ALY:A350-900:P,A7-ALZ:A350-900:P,A7-AME:A350-900:P,A7-AMF:A350-900:P,A7-AMG:A350-900:P,A7-AMH:A350-900:P,A7-AMI:A350-900:P,A7-AMJ:A350-900:P,A7-AMK:A350-900:P,A7-AML:A350-900:P,A7-BAA:B777-300ER:P,A7-BAB:B777-300ER:P,A7-BAC:B777-300ER:P,A7-BAE:B777-300ER:P,A7-BAF:B777-300ER:P,A7-BAG:B777-300ER:P,A7-BAH:B777-300ER:P,A7-BAI:B777-300ER:P,A7-BAJ:B777-300ER:P,A7-BAK:B777-300ER:P,A7-BAL:B777-300ER:P,A7-BAM:B777-300ER:P,A7-BAN:B777-300ER:P,A7-BAO:B777-300ER:P,A7-BAP:B777-300ER:P,A7-BAQ:B777-300ER:P,A7-BAS:B777-300ER:P,A7-BAT:B777-300ER:P,A7-BAU:B777-300ER:P,A7-BAV:B777-300ER:P,A7-BAW:B777-300ER:P,A7-BAX:B777-300ER:P,A7-BAY:B777-300ER:P,A7-BAZ:B777-300ER:P,A7-BEA:B777-300ER:P,A7-BEB:B777-300ER:P,A7-BEC:B777-300ER:P,A7-BED:B777-300ER:P,A7-BEE:B777-300ER:P,A7-BEF:B777-300ER:P,A7-BEG:B777-300ER:P,A7-BEH:B777-300ER:P,A7-BEI:B777-300ER:P,A7-BEJ:B777-300ER:P,A7-BEK:B777-300ER:P,A7-BEL:B777-300ER:P,A7-BEM:B777-300ER:P,A7-BEN:B777-300ER:P,A7-BEO:B777-300ER:P,A7-BEP:B777-300ER:P,A7-BEQ:B777-300ER:P,A7-BES:B777-300ER:P,A7-BBA:B777-200LR:P,A7-BBB:B777-200LR:P,A7-BBC:B777-200LR:P,A7-BBD:B777-200LR:P,A7-BBE:B777-200LR:P,A7-BBF:B777-200LR:P,A7-BBG:B777-200LR:P,A7-BBI:B777-200LR:P,A7-BHA:B787-9:P,A7-BHB:B787-9:P,A7-BHC:B787-9:P,A7-BHD:B787-9:P,A7-BHE:B787-9:P,A7-BHF:B787-9:P,A7-BHG:B787-9:P,A7-BHH:B787-9:P,A7-BHI:B787-9:P,A7-BHJ:B787-9:P,A7-BHK:B787-9:P,A7-BHL:B787-9:P,A7-BHM:B787-9:P,A7-BHN:B787-9:P,A7-BHO:B787-9:P,A7-BHY:B787-9:P,A7-BHZ:B787-9:P,A7-BCA:B787-8:P,A7-BCB:B787-8:P,A7-BCC:B787-8:P,A7-BCZ:B787-8:P,A7-BSA:B737-MAX8:P,A7-BSB:B737-MAX8:P,A7-BSC:B737-MAX8:P,A7-BSD:B737-MAX8:P,A7-BSE:B737-MAX8:P,A7-AHA:A320-200:P,A7-AHB:A320-200:P,A7-AHL:A320-200:P,A7-AJA:A321neo:P,A7-AJB:A321neo:P,A7-AJC:A321neo:P,A7-AJD:A321neo:P,A7-AJE:A321neo:P,A7-AJF:A321neo:P,A7-AJG:A321neo:P,A7-ACM:A330-200:P,A7-ACT:A330-200:P,A7-AED:A330-300:P,A7-AEE:A330-300:P,A7-BFA:B777-F:C,A7-BFB:B777-F:C,A7-BFC:B777-F:C,A7-BFD:B777-F:C,A7-BFE:B777-F:C,A7-BFF:B777-F:C,A7-BFG:B777-F:C,A7-BFH:B777-F:C,A7-BFI:B777-F:C,A7-BFJ:B777-F:C,A7-BFK:B777-F:C,A7-BFL:B777-F:C,A7-BFM:B777-F:C,A7-BFN:B777-F:C,A7-BFO:B777-F:C,A7-BFP:B777-F:C,A7-BFQ:B777-F:C,A7-BFR:B777-F:C,A7-BFS:B777-F:C,A7-BFT:B777-F:C,A7-BFU:B777-F:C,A7-BFV:B777-F:C,A7-BFW:B777-F:C,A7-BFX:B777-F:C,A7-BFY:B777-F:C,A7-BFZ:B777-F:C,A7-BGA:B777-F:C,A7-BGB:B777-F:C,A7-BGC:B777-F:C,A7-BCU:B787-800:P,A6-BLD:787-8:P,A7-BHV:B787-900:P,A7-BCH:B787-800:P,A7-BCL:B787-800:P,A6-AEP:A320Q:P,A7-ACX:A330-200:P,A7-LAF:A320:P,9K-CAN:A320:P,A7-BCQ:B787-800:P,A7-BDC:B787-800:P,A7-AEF:A330-300:P,A6-AEJ:A321:P,A7-LAC:A320:P,HZ-NS49:A320:P,EIKDF:A321:P,A7-BCO:B787-800:P,A7-BTB:B777-200:C,A9C-AB:A320:P,A7-AHQ:A320:P,A7-AEQ:A330-300:P,TCDCL:320:P,A7-AHE:A320:P,A7-BCF:B787-8:P,A7-BDB:B787-800:P,CNRAM:B787-9:P,JYRAK:A320:P,A7-BUB:B787-800:P,A7-AHW:A320:P,YK-AKG:A320:P,A7-AHG:A320:P,A7-BCS:B787-8:P,SU-GFS:A320Q:P,A7-BCX:B787-800:P,A7-AHC:A320:P,A7-ACW:A330-200:P,A4-OBT:B737M:P,VT-GHE:B737-800:P,A7-LAG:A320:P,A7-AER:A330-300:P,A7-BHU:B787-900:P,B-2769:B78-7800:P,A7-BCR:B787-800:P,A6-AOS:A320:P,A7-BCI:B787-800:P,A7-BCV:B787-800:P,ET-AYD:B787-900-Ethopia Air:P,A7-BHP:B787-900:P,A7-BOD:B777-300:P,A7-LAD:A320:P,A7-AHT:A320:P,A7-BOA:B777-300:P,A7-BEU:B777-300:P,SU-GFT:A321-Egypt Air:P,GZ-BLC:B787-1000:P,A7-BER:B777-300:P,A7-AEO:A330-300:P,OD-MRM:A320- Mea airways:P,A7-AHH:A320:P,VT-TGH:B737-800 Air India express:P,A7-BDD:B787-800:P,9M-MAF:A350-900-Malaysia Airline:P,9M-MUA:A330 Malaysian Airline:C,A7-BOI:B777-300:P,A7-AHX:A320:P,GZ-BLK:B787-1000 British Airways:P,A7-AHP:A320:P,A7-AHJ:A320:P,OD-MRN:A320- MEA Airline:P,A7-LAB:A320:P,A7-BCP:B787-800:P,A7-BCK:B787-800:P,A7-BHT:B787-900:P,A7-BCM:B787-800:P,A7-BET:B777-300:P,A7-BHS:B787-900:P,A7-BCD:B787-800:P,A7-BHR:B787-900:P,A7-BHQ:B787-900:P,A7-BCT:B787-800:P,JYREC:E290- Royal Jordhan:P,STBDG:B737:P,ST BDK:B737-8 - BADR AIR:P,A9-CAD:A320- Gulf Air:P,A7-BHX:B7879:P,A9-CXA:A321- Gulf Air:P,A7-BHW:B787-900:P,A7-AHO:A320:P,S2AJH:B737-800 Us bangla:P,A4OMI:B737M8:P,VT-IPM INDGO:A320:P,A7-BEW:B777-300:P,A9-CTE:A320 Gulf Air:P,VT-TQH:A32N Air India:P,VT-IPG:A320N IndiGo:P,VT-IQH:A320 IndiGo:P,A7-AHS:A320:P,APBLC:A320 pakistan:P,A7-BEV:B777-300:P,APBOM:A320- Pakistan Air:P,A9-CNF:A320:P,A7-AHD:A320:P,VT-TQD:320N:P,VT-ISJ INDIGO:A320:P,VT-IIS INDIGO:A320:P,A7-AHY:A320:P,C5-FBN:B737800:P,SU-GFR:A321:P,A7-BCJ:B787-800:P,VT-ILM INDIGO:A32Q:P,A6-FKB FLYDUBAI:B737M:P,YK-SYR:737-500 (Small pin):P,VT-BWO INDIANEXPRESS:737-800:P,HZ-AS58:A320Soudi Air:P,AP-BLB:A320:P,HZ-AS84:A320:P,A6-FKD FLY DUBAI:B737M:P,A7-BCG:787-800:P,A7-BDA:B787800:P,A6-AEB:A320:P,9N-ALV HIMALAYA AIR:A320:P,VT-AYB EXPRESS:B737:P,A6-EIH:A320:P,JY-RAM ROYAL JORDHAN:A320- (CCL):P,A6-AOO:A320 Air Arabia:P,9K-APL:A330900:P,VT-IMQ INDIGO:A32Q:P,A7-AHI:A320:P,HZ-AS82 SOUDI AIRLINE:A320:P,VY-TQI:A320:P,9X-RWG RWANDA AIR:B737800:P,A6-EII ETHIHAD:A320:P,A7-BOG:B777-300:P,A7-BBH:B777L:P,A7-BOH:B777-300:P,YA-KME:A340-300:P,RP-C8781:A330:P,VT-IBL:A32Q:P,A4-OMK:B737-800:P,VT-ICV:A32Q:P,4R-ANA:A320:P,A9-CNG:A32Q Gilf Air:P,A6-EIJ:A320:P,UK75058-    B757 TYPE:B757 Ukrain:C,A6-FGI:B737800:P,CNRGC:B7878:P,A9CAH:A320:P,A6-ANS:A320:P,JY-RAE:A320N:P,A6-FMT:B737:P,A7-BOE:B7773:P,HZN-S43:A320:P,A7-BOB:B7773:P,A7-BOF:B7773( aft small whole):P,YA-KAC:A3403:P,TCRBT:A320Q:P,9MMAH:A350-900:P,A7-BTA:B7772:C,A7-BEX:B7773:P,S7-VEV:A320:P,A7-AHR:A320:P,VT-ILG:A320 Indigo:P,STBDS:B7378:P,A7-BCW:B7878:P,VT-IXH:A32N:P,TCRFL:A320:P,SUGFW:A320Q:P,BLZ:A320 Pakistan:P,A7-BIA:B7879:P,VT-IPZ:A32N:P,A7-BTC:B777X:C,OD-MRL         CCL:A320:P,A7-AHU:A320:P,A7-BCN:B787-8:P,VT-IME:A320:P,ET-AWI:B737M:P,VT-ILL:A320Q:P,A7-BCE:B787:P,T7-ME3:A321 CCL:P,A7-FKR:B737M:P,S2AJV:B7878:P,9K-AQC:A320Q:P,VT-IBZ:A320:P,VT-EXN:A320:P,VT-ILF:A320:P,A6-AQP:A320:P,A9-CTG:A320:P,S2AJS:B7878:P,OD-MRO:A320:P,HZN-S29:A320:P,A7-BIB:B7879:P,HZN-S22:A320:P,A9C-TXZ:B7378:P,4R-ANC:A32Q:P,VT-IPD:A320:P,VT-IMC:A320:P,A4-OMJ:B7378:P,HZ-NS77:A320:P,VT-EXP:A320:P,A6-FNA:B737M:P,T7-ME5:A320 CCL:P,HZ-NS85:A320:P,A7-AOI:A350-1000:P,VT-CIO:A320:P,A6-FES:B7378M:P,VT-BXS:B7378:P,T7-ME8:A320-CCL:P,VT-TNR:A320:P,A7-BVC:B7878:P,A6-LRH:A320:P,OD-M10:A320-CCL:P,A7-AOJ:A350-1000:P,4R-ANE:A321Neo:P,A9-CTB:A320:P,A6-FGA:B7378M:P,VT-TQP:A320:P,HZ-NS48:A320:P,A7-BCY:B7878:P,4K-BBH:B747-8:P,A7-FMP:B7378M:P,A6-ANY:A320:P,9K-AKM:A320:P,A4-OMG:B7378:P,VT-AXW:B737:P,VT-IXG:A320:P,A6-ARE:A320:P,A4-OME:B7378:P,VT-BXJ:B7378:P,VT-BXL:B7378:P,T7-MEI:A320:P,A6-FPB:B787-8:P,A4-OMR:B7378:P,VT-AXT:B7378:P,VT-RTT:A320:P,A6-AOE:A320:P,VT-IQC:A320:P,A4-OBY:B7378:P,VT-BXN:B7378M:P,HZN-S33:A320:P,9K-AKR:A320:P,A6-FKE FLYDUBAI:B737M:P,A6-FKQ FLYDUBAI:B737M:P,A6-LRA:A321:P,S2AHJ:B7378:P,VT-IQD:A320:P,A6-AOT:A320:P,8Q FBB:A321:P,AP-BLY:A320:P,A6-AOU:A320:P,A6-AQU:A320:P,9N-ALY:A3303:P,VT-IBV:A320:P,A6-ANR:A320:P,A9-CXB:A32Q:P,GV-IIV:B7772:P,A6-SHO:B7378:C,A7-BTD:B7772:C,9XRWF:B7378:P,A6-AQF:A320:P,A4-OMD:B737M:P,A9-CXD:A320:P,9K-AKT:A320:P,A6-FKI:B7378:P,A6-FEB:B7378:P,VT-BWE:B7378:P,A7-BIC:B7879:P,VT-GHB:B737-8:P,VT-IQI:A320:P,VT-BXI:B7378:P,VT-BXU:B7378:P,A7-BUA:B787:P,VT-ICR:A320:P,A4-OMH:B737- Oman Air:P,A4-OMB:B737-8 Oman Air:P,A6-FKC:B737-8M. Fly Dubai:P,A6-AQT:A320-  Air Arabia:P,HZ-AS56:A320- Saudi Air:P,VT-IXJ:A320-  IndiGo:P,A9-CXC:A320. Gulf Air:P,A6-FKN:B737-M FlyDubai:P,A4-OMP:B737-Oman Air:P,A6-FKT:B737-8M FlyDubai:P,A6-EIB:A320 Ethihad:P",SH0=[["0700-1700","Mornings",420,1020],["1600-0200","Eavening",960,120],["1700-0300","Eavening5",1020,180],["2359-1000","Night1",1439,600],["SPL-NIGHT","Night 2",1282,300],["23:59-08:00","Night 23:59-08:00",1439,480],["23:59-10","Night 23:59-10:00",1439,600],["NT_23-04","23-04",1380,240],["08-17","08:00-17:00",600,1020],["Mng-06-14","06-14",360,840],["Eav_19-03","19-04",1140,180],["E 7-5","19-05",1140,300],["06-16","06:00-16:00",360,960],["Eavening 15-01","Eavening 15-01",900,60]],SEED=[];
+const TYPES=[["PUSHBACK","PB_NO","#7a1a4d"],["PMS","PMS","#0a84ff"],["LDL","LDL","#e8590c"],["BCL","BCL","#1f9d55"],["MDL","MDL","#9c36b5"],["ACU","ACU","#0c8599"],["GPU","GPU","#f08c00"],["AIR STARTER","AIR STARTER","#d6336c"],["Backup","Backup","#5c6773"]];
+const COL=Object.fromEntries(TYPES.map(t=>[t[0],t[2]]));
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const p2=n=>String(n).padStart(2,"0");
+const lt=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())+"T"+p2(d.getHours())+":"+p2(d.getMinutes());
+const fmt=ts=>new Date(ts).toLocaleString([],{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+const dkey=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
+const nice=sd=>new Date(sd+"T00:00:00").toLocaleDateString([],{weekday:"short",day:"2-digit",month:"short",year:"numeric"});
+const mm=m=>p2(Math.floor(m/60)%24)+":"+p2(m%60);
+const nf=s=>String(s||"").toUpperCase().replace(/\s+/g,"");
+const nr=s=>{s=nf(s);return /^[A-Z0-9]{2}[A-Z]{3}$/.test(s)?s.slice(0,2)+"-"+s.slice(2):s};
+let F={},I={},R={},CU={F:{},I:{},R:{},S:[],X:{},E:{},O:{}};
+FL.split(",").forEach(x=>{const a=x.split(":");F[a[0]]=a[1]});
+IA.split(";").forEach(x=>{const a=x.split(":");const b=a[1].split("|");I[a[0]]=b[0]+" - "+b[1]});
+RG.split(",").forEach(x=>{const a=x.split(":");R[a[0]]=[a[1],a[2]==="C"?"Cargo":"Passenger"]});
+let S={tab:"shift",data:[],q:"",f:"",dl:7,D:null,addK:null,cur:null,gd:"",view:null,ready:false,mt:{cloud:false,last:0,tomb:{},seeded:0,migrated:0},msg:""};
+
+let _lg=0;
+function logo(sz){const id="lg"+(++_lg);return `<svg width="${sz}" height="${sz}" viewBox="0 0 512 512" style="flex:none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9b2c6b"/><stop offset="1" stop-color="#0a84ff"/></linearGradient></defs><rect width="512" height="512" rx="116" fill="url(#${id})"/><path d="M262 168V300a80 80 0 0 1-80 80h-40" fill="none" stroke="#fff" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/><path d="M120 440h272" stroke="#fff" stroke-opacity=".55" stroke-width="14" stroke-linecap="round" stroke-dasharray="34 26"/><g transform="translate(374 150) rotate(40) scale(1.05)" fill="#fff"><path d="M0-66 L13-22 L66 8 L66 25 L13 9 L9 47 L28 61 L28 74 L0 66 L-28 74 L-28 61 L-9 47 L-13 9 L-66 25 L-66 8 L-13-22 Z"/></g></svg>`}
+/* ---- local database: SQLite inside the app (IndexedDB only as fallback) ---- */
+const NATIVE=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+const plug=n=>window.Capacitor?((Capacitor.Plugins&&Capacitor.Plugins[n])||Capacitor.registerPlugin(n)):null;
+const SQ=NATIVE?plug("CapacitorSQLite"):null;
+const DBN="workslog";
+let IDB=null,ENGINE="",SQERR="";
+const idbOpen=()=>new Promise((res,rej)=>{const r=indexedDB.open("workslog",1);r.onupgradeneeded=()=>{r.result.createObjectStore("works",{keyPath:"id"});r.result.createObjectStore("meta")};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const tx=(st,mode,fn)=>new Promise((res,rej)=>{const t=IDB.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out&&out.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
+const INS="INSERT OR REPLACE INTO works(id,u,sd,shift,data) VALUES (?,?,?,?,?)";
+const wv=e=>[e.id,e.u||1,e.sd||"",e.shift||"",JSON.stringify(e)];
+const sqRun=(statement,values)=>SQ.run({database:DBN,statement,values:values||[],transaction:true,readonly:false});
+const sqQuery=async(statement,values)=>{const r=await SQ.query({database:DBN,statement,values:values||[],readonly:false});return (r&&r.values)||[]};
+async function dbOpen(){
+ if(SQ){
+  try{
+   try{await SQ.createConnection({database:DBN,version:1,encrypted:false,mode:"no-encryption",readonly:false})}catch(e){if(!/exist/i.test(String(e&&e.message||e)))throw e}
+   await SQ.open({database:DBN,readonly:false});
+   await SQ.execute({database:DBN,statements:"CREATE TABLE IF NOT EXISTS works(id INTEGER PRIMARY KEY,u INTEGER,sd TEXT,shift TEXT,data TEXT);CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT);CREATE INDEX IF NOT EXISTS i_sd ON works(sd);",transaction:true,readonly:false});
+   ENGINE="sqlite";return true;
+  }catch(e){SQERR=String(e&&e.message||e)}
+ }
+ try{IDB=await idbOpen();ENGINE="idb";return true}catch(e){ENGINE="";return false}
+}
+async function dbAll(){
+ if(ENGINE==="sqlite")return (await sqQuery("SELECT data FROM works")).filter(x=>x&&x.data!==undefined).map(x=>JSON.parse(x.data));
+ if(ENGINE==="idb")return (await tx("works","readonly",s=>s.getAll()))||[];
+ return [];
+}
+async function dbGetMeta(k){
+ if(ENGINE==="sqlite"){const r=(await sqQuery("SELECT v FROM meta WHERE k=?",[k])).filter(x=>x&&x.v!==undefined);return r.length?JSON.parse(r[0].v):null}
+ if(ENGINE==="idb")return await tx("meta","readonly",s=>s.get(k));
+ return null;
+}
+const fail=()=>toast("Could not save to the database");
+const putWork=e=>ENGINE==="sqlite"?sqRun(INS,wv(e)).catch(fail):ENGINE==="idb"?tx("works","readwrite",s=>s.put(e)).catch(fail):Promise.resolve();
+const delWork=id=>ENGINE==="sqlite"?sqRun("DELETE FROM works WHERE id=?",[id]).catch(()=>{}):ENGINE==="idb"?tx("works","readwrite",s=>s.delete(id)).catch(()=>{}):Promise.resolve();
+async function bulk(rows){
+ try{
+  if(ENGINE==="sqlite"){for(let i=0;i<rows.length;i+=150){await SQ.executeSet({database:DBN,set:rows.slice(i,i+150).map(r=>({statement:INS,values:wv(r)})),transaction:true,readonly:false})}}
+  else if(ENGINE==="idb")await tx("works","readwrite",s=>{rows.forEach(r=>s.put(r))});
+ }catch(e){fail()}
+}
+const putMeta=(k,v)=>ENGINE==="sqlite"?sqRun("INSERT OR REPLACE INTO meta(k,v) VALUES (?,?)",[k,JSON.stringify(v)]).catch(()=>{}):ENGINE==="idb"?tx("meta","readwrite",s=>s.put(v,k)).catch(()=>{}):Promise.resolve();
+const clearWorks=()=>ENGINE==="sqlite"?sqRun("DELETE FROM works"):ENGINE==="idb"?tx("works","readwrite",s=>s.clear()):Promise.resolve();
+const save=()=>putMeta("cu",CU);
+const saveMt=()=>putMeta("mt",S.mt);
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3400)}
+
+/* ---- shifts ---- */
+const shifts=()=>SH0.concat(CU.S||[]).map(s=>(CU.E||{})[s[0]]?[s[0],s[1],CU.E[s[0]][0],CU.E[s[0]][1]]:s);
+const sdef=id=>shifts().find(s=>s[0]===id);
+const durOf=s=>((s[3]-s[2]+1440)%1440)||1440;
+function instOf(s,date){
+ const key=s[0]+"|"+date,o=(CU.O||{})[key];if(o)s=[s[0],s[1],o[0],o[1]];
+ const start=new Date(date+"T00:00:00").getTime()+s[2]*60000,ext=(CU.X||{})[key]||0,dur=durOf(s);
+ return{id:s[0],sd:date,s,start,dur,ext,end:start+(dur+ext)*60000,key,cap:Math.max(0,720-dur)};
+}
+function insts(t){
+ const out=[];
+ [0,-1].forEach(off=>{const d=new Date(t);d.setDate(d.getDate()+off);const ds=dkey(d);shifts().forEach(s=>{const i=instOf(s,ds);if(t>=i.start&&t<i.end)out.push(i)})});
+ return out.sort((a,b)=>b.start-a.start);
+}
+const activeInst=()=>insts(Date.now())[0]||null;
+const guessInst=ts=>insts(new Date(ts).getTime())[0]||null;
+function sdFor(id,ts){
+ let sd=ts.slice(0,10);const s=sdef(id);
+ if(s&&s[2]>s[3]){const m=+ts.slice(11,13)*60+ +ts.slice(14,16);if(m<s[3]){const d=new Date(sd+"T00:00:00");d.setDate(d.getDate()-1);sd=dkey(d)}}
+ return sd;
+}
+function norm(e){
+ e.types=e.types||[];e.refs=e.refs||{};e.photos=e.photos||[];e.ts=e.ts||lt(new Date());e.u=e.u||1;
+ if(!e.shift){const g=guessInst(e.ts);if(g)e.shift=g.id}
+ if(!e.sd){if(sdef(e.shift))e.sd=sdFor(e.shift,e.ts);else{const g=guessInst(e.ts);e.sd=g?g.sd:e.ts.slice(0,10)}}
+ return e;
+}
+async function init(){
+ $("#splash").innerHTML=`${logo(120)}<b>Works Log</b><span>Jamshi Solutions</span>`;
+ $("#app").innerHTML='<div class="empty">Loading…</div>';
+ const ok=await dbOpen();
+ let rows=[],cu=null,mt=null;
+ if(ok){try{rows=await dbAll();cu=await dbGetMeta("cu");mt=await dbGetMeta("mt")}catch(e){ENGINE="";toast("Could not read the database. Changes will not be saved.")}}
+ else toast("Database unavailable: data will not persist");
+ if(mt)Object.assign(S.mt,mt);
+ const fresh=!mt;
+ if(S.mt.theme&&S.mt.theme!=="auto"&&document.documentElement.setAttribute)document.documentElement.setAttribute("data-theme",S.mt.theme);
+ if(cu)CU=Object.assign({F:{},I:{},R:{},S:[],X:{},E:{},O:{}},cu);
+ let dirty=false;
+ if(!S.mt.migrated){
+  S.mt.migrated=1;dirty=true;
+  try{
+   const old=JSON.parse(localStorage.getItem("works_v1")||"[]"),ids=new Set(rows.map(r=>r.id));
+   old.forEach(e=>{if(e&&!ids.has(e.id))rows.push(e)});
+   const c=JSON.parse(localStorage.getItem("works_custom")||"null");
+   if(c){["F","I","R","X"].forEach(k=>Object.assign(CU[k],c[k]||{}));(c.S||[]).forEach(s=>{if(!CU.S.some(x=>x[0]===s[0]))CU.S.push(s)})}
+   if(localStorage.getItem("works_seed2"))S.mt.seeded=1;
+  }catch(e){}
+ }
+ if(!S.mt.seeded){const ids=new Set(rows.map(r=>r.id));SEED.forEach(e=>{if(!ids.has(e.id))rows.push(e)});S.mt.seeded=1;dirty=true}
+ rows=rows.filter(e=>e&&typeof e==="object").map(norm);
+ S.data=rows;
+ Object.assign(F,CU.F);Object.assign(I,CU.I);Object.assign(R,CU.R);
+ if(dirty){await bulk(rows);await save();await saveMt()}
+ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ S.ready=true;try{S.persist=await navigator.storage.persisted()}catch(e){}render();
+ setTimeout(()=>{const sp=$("#splash");sp.style.opacity=0;setTimeout(()=>sp.remove&&sp.remove(),500)},900);
+ if(S.mt.cloud)setTimeout(()=>cloudSync(false),2500);
+}
+
+/* ---- Google Sheets backup (optional) ---- */
+const strip=e=>{const o=Object.assign({},e);delete o.photos;return o};
+let stm=null;
+const scheduleSync=()=>{if(S.mt.cloud&&S.mt.sheetUrl){clearTimeout(stm);stm=setTimeout(()=>cloudSync(false),5000)}};
+const sheetRow=e=>({id:e.id,u:e.u||1,sd:e.sd||"",shift:e.shift||"",time:(e.ts||"").slice(11,16),flight:e.flight||"",reg:e.reg||"",type:e.type||"",iata:e.iata||"",city:e.city||"",bay:e.bay||"",jobs:(e.types||[]).map(t=>t+(t==="LDL"&&e.ldl?" "+e.ldl:"")).join(", "),refs:Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>(a[0]==="PUSHBACK"?"PB":a[0])+" "+a[1]).join(", "),notes:e.notes||"",json:JSON.stringify(strip(e))});
+async function sheetPost(body){
+ const r=await fetch(S.mt.sheetUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)});
+ const j=await r.json();if(!j||!j.ok)throw new Error((j&&j.error)||"Bad response from the sheet");return j;
+}
+async function cloudSync(manual){
+ if(S.syncing)return;const url=S.mt.sheetUrl;
+ if(!url){S.msg="Add your Google Sheets URL first";if(manual)toast(S.msg);return}
+ S.syncing=true;S.msg="Syncing…";if(S.tab==="set")render();
+ try{
+  const r=await fetch(url+(url.includes("?")?"&":"?")+"action=pull"),j=await r.json();
+  const remote={};(j.rows||[]).forEach(x=>{remote[x.id]=x});
+  const tomb=S.mt.tomb||{};let down=0,up=0;const LM=new Map(S.data.map(e=>[e.id,e])),batch=[];
+  Object.values(remote).forEach(x=>{
+   let w;try{w=JSON.parse(x.json)}catch(e){return}
+   if(tomb[w.id])return;
+   const l=LM.get(w.id);
+   if(!l||x.u>l.u){const ne=norm(Object.assign({},w,{photos:l?l.photos:[]}));if(l)Object.assign(l,ne);else S.data.push(ne);batch.push(ne);down++}
+  });
+  await bulk(batch);
+  const push=S.data.filter(e=>!remote[e.id]||e.u>remote[e.id].u);
+  for(let i=0;i<push.length;i+=100){await sheetPost({action:"push",rows:push.slice(i,i+100).map(sheetRow)});up+=Math.min(100,push.length-i)}
+  const ids=Object.keys(tomb).map(Number);
+  if(ids.length){await sheetPost({action:"delete",ids});S.mt.tomb={}}
+  S.mt.last=Date.now();await saveMt();
+  S.msg="Synced ✓  ↑"+up+"  ↓"+down;if(manual)toast("Google Sheets sync done");
+ }catch(err){S.msg="Sync failed: "+(err&&(err.message||err.code)||"check the URL and internet");if(manual)toast("Sync failed")}
+ S.syncing=false;if(S.tab!=="add")render();
+}
+function sheetSave(){
+ const v=(($("#shurl")||{}).value||"").trim();
+ if(!/^https:\/\/script\.google\.com\/.+\/exec$/.test(v)){toast("Paste the Web app URL that ends with /exec");return}
+ S.mt.sheetUrl=v;S.mt.cloud=true;saveMt();cloudSync(true);
+}
+function cloudOff(){S.mt.cloud=false;saveMt();S.msg="";render()}
+
+/* ---- navigation ---- */
+function blank(){
+ const ts=lt(new Date()),a=activeInst(),c=S.cur;
+ return{id:null,ts,types:[],refs:{},fl:"",iata:"",city:"",reg:"",type:"",role:"",dep:"",ldl:"",bay:"",notes:"",photos:[],shift:c?c.id:(a?a.id:""),sd:c?c.sd:(a?a.sd:ts.slice(0,10))};
+}
+function newWork(id,sd){
+ S.D=blank();S.addK=null;
+ if(id){S.D.shift=id;S.D.sd=sd}
+ go("add");
+}
+function start(id,sd){S.pick="";S.cur={id,sd};S.tab="shift";S.addK=null;render();scrollTo(0,0)}
+function go(t){S.tab=t;if(t==="add"&&!S.D)S.D=blank();render();scrollTo(0,0)}
+function render(){
+ if(!S.ready)return;
+ try{
+  if(!S.cur){$("#nav").innerHTML="";$("#fab").innerHTML="";$("#app").innerHTML=gate();return}
+  $("#nav").innerHTML=[["shift","⏱️","Shift"],["home","📊","Dashboard"],["hist","🗂️","History"],["set","⚙️","Data"],["about","ℹ️","About"]].map(a=>`<button class="${S.tab===a[0]?"on":""}" onclick="go('${a[0]}')"><span>${a[1]}</span>${a[2]}</button>`).join("");
+  $("#fab").innerHTML=["add","about","set"].includes(S.tab)?"":`<button onclick="newWork()" aria-label="Add work">＋</button>`;
+  $("#app").innerHTML=({shift:shiftTab,home,add,hist,set,about})[S.tab]();
+  if(S.tab==="hist")list();
+ }catch(err){$("#app").innerHTML=`<div class="card"><b>Something went wrong</b><div class="meta">${esc(err.message)}</div></div>`}
+}
+setInterval(()=>{if(S.cur&&(S.tab==="shift"||S.tab==="home")&&!S.view)render()},60000);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(S.view||S.rep))closeSheet()});
+
+/* ---- shift gate ---- */
+function gate(){
+ const td=dkey(new Date()),yd=dkey(new Date(Date.now()-864e5)),d0=S.gd||td,p=S.pick||"";
+ const cnt=id=>S.data.filter(e=>e.sd===d0&&e.shift===id).length;
+ const list=shifts().slice().sort((x,y)=>x[2]-y[2]);
+ const chip=(d,l)=>`<button class="chip ${d0===d?"on":""}" style="${d0===d?"background:var(--ac)":""}" onclick="S.gd='${d}';render()">${l}</button>`;
+ const tip=(navigator.standalone===false&&!S.mt.tipx)?`<div class="card"><b>📲 Get the full app</b><div class="meta">Tap Share, then Add to Home Screen. It opens full screen like a normal app.</div><button class="btn sec" onclick="S.mt.tipx=1;saveMt();render()">Dismiss</button></div>`:"";
+ return `<div class="row" style="margin-bottom:6px">${logo(44)}<div><b style="font-size:18px">Works Log</b><div class="meta">Jamshi Solutions</div></div></div>
+ <h1>Select your shift</h1>
+ ${tip}
+ <label>Shift date</label><div class="chips" style="margin-bottom:8px">${chip(td,"Today")}${chip(yd,"Yesterday")}</div><input type="date" value="${esc(d0)}" onchange="S.gd=this.value;render()">
+ <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<button class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span><div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div></button>`}).join("")}</div>
+ <button class="btn sec" onclick="S.addK='sh';render()">＋ New shift</button>${S.addK==="sh"?addPanel():""}
+ <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Save & start shift · "+esc(p):"Select a shift to continue"}</button></div>`;
+}
+function shiftTab(){
+ const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],i=instOf(s,c.sd),now=Date.now(),a=activeInst(),live=a&&a.id===c.id&&a.sd===c.sd;
+ const list=S.data.filter(e=>e.shift===c.id&&e.sd===c.sd).sort((x,y)=>y.ts.localeCompare(x.ts));
+ const tc=count(list,e=>e.types);
+ let st;
+ if(live){const l=Math.max(0,i.end-now);st=`● Active · ends in ${Math.floor(l/36e5)}h ${Math.floor(l%36e5/6e4)}m${i.ext?" (+"+i.ext/60+"h)":""}`}
+ else st=now<i.start?"Starts "+fmt(i.start):"Shift ended "+fmt(i.end);
+ return `<div class="ban ${live?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(c.id)}</div><div>${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
+  <div class="row" style="flex-wrap:wrap"><button class="bb" onclick="newWork()">＋ Add work</button>${live&&i.ext<i.cap?`<button class="bb" onclick="extend()">Extend +1h</button>`:""}<button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift time</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
+  ${S.addK==="esh"?addPanel():""}
+  ${S.mt.cloud&&S.msg?`<div class="meta" style="margin:0 4px 8px">☁ ${esc(S.msg)}</div>`:""}
+  ${tc.length?`<div class="chips" style="margin-bottom:12px">${tc.map(a=>`<span class="tag" style="background:${COL[a[0]]||"#666"};font-size:13px;padding:5px 12px">${esc(a[0])} · ${a[1]}</span>`).join("")}</div>`:""}
+  <h2>Works in this shift</h2>${list.length?`<div class="cg">${list.map(card).join("")}</div>`:'<div class="empty">No works yet.<br>Tap ＋ to add the first one.</div>'}`;
+}
+function extend(){const a=activeInst();if(!a||a.ext>=a.cap)return;CU.X[a.key]=Math.min(a.cap,a.ext+60);save();render();toast("Shift extended")}
+
+function tags(e){return e.types.map(t=>`<span class="tag" style="background:${COL[t]||"#666"}">${esc(t)}${t==="LDL"&&e.ldl?" · "+(e.ldl==="ARR"?"ARR":"DEP"):""}</span>`).join("")}
+function count(arr,fn){const m={};arr.forEach(e=>fn(e).forEach(k=>{if(k)m[k]=(m[k]||0)+1}));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+
+/* ---- dashboard ---- */
+function home(){
+ const d=S.data,now=new Date(),td=dkey(now);
+ const wk=new Date(now);wk.setDate(now.getDate()-6);wk.setHours(0,0,0,0);
+ const today=d.filter(e=>e.ts.slice(0,10)===td).length;
+ const week=d.filter(e=>new Date(e.ts)>=wk).length;
+ const month=d.filter(e=>e.ts.slice(0,7)===td.slice(0,7)).length;
+ const tc=Object.fromEntries(count(d,e=>e.types));const mx=Math.max(1,...Object.values(tc));
+ const days=[];for(let i=13;i>=0;i--){const x=new Date(now);x.setDate(now.getDate()-i);days.push(x)}
+ const dc=days.map(x=>d.filter(e=>e.sd===dkey(x)).length);const dm=Math.max(1,...dc);
+ const top=fn=>count(d,fn).slice(0,5).map(a=>`<div class="row sp" style="padding:5px 0"><b>${esc(a[0])}</b><span class="meta">${a[1]}</span></div>`).join("")||'<div class="meta">No data yet</div>';
+ return `<h1>Dashboard</h1>
+ <div class="grid"><div class="stat hero"><b>${today}</b><span>Today</span></div><div class="stat"><b>${week}</b><span>Last 7 days</span></div><div class="stat"><b>${month}</b><span>This month</span></div><div class="stat"><b>${d.length}</b><span>All time</span></div></div>
+ <div class="g2"><div><h2>Jobs by type</h2><div class="card">${TYPES.map(t=>`<div class="row" style="margin:7px 0"><div class="lbl" style="color:${t[2]}">${t[0]}</div><div class="bar"><i style="width:${(tc[t[0]]||0)/mx*100}%;background:${t[2]}"></i></div><div class="n">${tc[t[0]]||0}</div></div>`).join("")}</div></div>
+ <div><h2>Works per shift day · 14 days</h2><div class="card"><div class="cols">${dc.map(n=>`<div style="height:${n/dm*100}%"></div>`).join("")}</div><div class="cols l">${days.map(x=>`<span>${x.getDate()}</span>`).join("")}</div></div></div></div>
+ <div class="g2"><div><h2>Aircraft types</h2><div class="card">${top(e=>[e.type])}</div></div><div><h2>Destinations</h2><div class="card">${top(e=>[(e.city||e.iata||"").split(" - ")[0]])}</div></div>
+ <div><h2>Registrations</h2><div class="card">${top(e=>[e.reg])}</div></div><div><h2>Bays</h2><div class="card">${top(e=>[e.bay])}</div></div></div>`;
+}
+
+/* ---- combo boxes ---- */
+function cbox(k,val,ph){return `<input id="in_${k}" value="${esc(val)}" placeholder="${ph}" autocomplete="off" autocapitalize="characters" oninput="sug('${k}')" onfocus="sug('${k}')"><div class="sg" id="sg_${k}"></div>`}
+function sug(k){
+ const el=$("#in_"+k),q=k==="fl"?nf(el.value):nr(el.value),map=k==="fl"?F:R,fld=k==="fl"?"iata":"type";
+ S.D[k]=q;if(q&&map[q])S.D[fld]=k==="fl"?F[q]:R[q][0];
+ const keys=Object.keys(map);let m=[];
+ if(q){m=keys.filter(x=>x.startsWith(q));if(m.length<8)m=m.concat(keys.filter(x=>!x.startsWith(q)&&x.includes(q)));m=m.slice(0,8)}
+ else m=recent(k==="fl"?"flight":"reg").slice(0,6);
+ const sub=x=>k==="fl"?(F[x]?F[x]+" · "+(I[F[x]]||""):""):(R[x]?R[x][0]+" · "+R[x][1]:"");
+ let h=m.map(x=>`<button onclick="pick('${k}','${x}')"><b>${esc(x)}</b> <small>${esc(sub(x))}</small></button>`).join("");
+ if(q&&!map[q])h+=`<button class="new" onclick="openAdd('${k}')">＋ Add “${esc(q)}” as new ${k==="fl"?"flight":"registration"}</button>`;
+ $("#sg_"+k).innerHTML=h;
+}
+function recent(f){const o=[],s=new Set();S.data.slice().sort((a,b)=>b.ts.localeCompare(a.ts)).forEach(e=>{const v=e[f];if(v&&!s.has(v)&&o.length<8){s.add(v);o.push(v)}});return o}
+function pick(k,x){
+ const D=S.D;
+ if(k==="fl"){D.fl=x;D.iata=F[x]||"";D.city=I[D.iata]||""}
+ else{D.reg=x;if(R[x]){D.type=R[x][0];D.role=R[x][1]}}
+ S.addK=null;render();
+}
+function openAdd(k){S.addK=k;render();setTimeout(()=>{const e=$("#ad1")||$("#s1");e&&e.scrollIntoView({block:"center"})},50)}
+function addPanel(){
+ const k=S.addK,D=S.D;if(!k)return"";
+ if(k==="sh")return `<div class="panel"><label>New shift</label><div class="two"><div><label>Start</label><input id="s1" type="time" value="07:00"></div><div><label>End</label><input id="s2" type="time" value="17:00"></div></div><label>Name (optional)</label><input id="s3" placeholder="e.g. Morning"><div class="meta" style="margin-top:6px">If it ends earlier than it starts, it runs past midnight.</div><button class="btn" onclick="saveShift()">Save shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+ if(k==="esh"){const e=S.es,sd0=sdef(e.id)||[e.id,e.id,0,60],ss=e.sd?instOf(sd0,e.sd).s:sd0,has=e.sd&&CU.O[e.id+"|"+e.sd];
+  return `<div class="panel"><label>Edit shift ${esc(e.id)}${e.sd?" · "+nice(e.sd):""}</label><div class="two"><div><label>Start</label><input id="e1" type="time" value="${mm(ss[2])}"></div><div><label>End</label><input id="e2" type="time" value="${mm(ss[3])}"></div></div>${e.sd?`<label>Apply to</label><select id="e3"><option value="day">This day only (${nice(e.sd)})</option><option value="all">All days</option></select>`:`<div class="meta" style="margin-top:6px">Applies to all days.</div>`}<button class="btn" onclick="saveEsh()">Save shift time</button>${has?`<button class="btn sec" onclick="resetDay()">Reset this day to normal</button>`:""}<button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`}
+ if(k==="fl")return `<div class="panel"><label>New flight ${esc(D.fl)}</label><label>Destination IATA code</label><input id="ad1" maxlength="4" placeholder="e.g. LHR" autocapitalize="characters" value="${esc(D.iata)}" oninput="this.value=this.value.toUpperCase();const c=I[this.value];if(c){$('#ad2').value=c.split(' - ')[0];$('#ad3').value=c.split(' - ')[1]||''}"><div class="two"><div><label>City</label><input id="ad2"></div><div><label>Country</label><input id="ad3"></div></div><button class="btn" onclick="saveFl()">Save flight</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+ const types=[...new Set(Object.values(R).map(r=>r[0]).filter(Boolean))].sort();
+ return `<div class="panel"><label>New registration ${esc(D.reg)}</label><label>Aircraft type</label><select id="ad1" onchange="$('#ad4').style.display=this.value==='_'?'block':'none'">${types.map(t=>`<option>${esc(t)}</option>`).join("")}<option value="_">Other…</option></select><input id="ad4" placeholder="Type, e.g. A321neo" style="display:none;margin-top:6px"><label>Role</label><select id="ad2"><option>Passenger</option><option>Cargo</option></select><button class="btn" onclick="saveReg()">Save registration</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+}
+function saveFl(){
+ const no=S.D.fl,ia=$("#ad1").value.trim().toUpperCase(),c=$("#ad2").value.trim(),n=$("#ad3").value.trim();
+ if(!ia){toast("Enter IATA code");return}
+ if(!I[ia]&&!c){toast("Enter city for new code");return}
+ if(!I[ia]){I[ia]=c+(n?" - "+n:"");CU.I[ia]=I[ia]}
+ F[no]=ia;CU.F[no]=ia;save();pick("fl",no);toast("Flight added ✓");
+}
+function saveReg(){
+ let t=$("#ad1").value;if(t==="_")t=$("#ad4").value.trim();if(!t){toast("Enter aircraft type");return}
+ const r=S.D.reg,role=$("#ad2").value;R[r]=[t,role];CU.R[r]=[t,role];save();pick("reg",r);toast("Registration added ✓");
+}
+function saveShift(){
+ const a=$("#s1").value,b=$("#s2").value,name=$("#s3").value.trim();
+ if(!a||!b){toast("Set start and end");return}
+ const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),id=a.replace(":","")+"-"+b.replace(":","");
+ if(sdef(id))toast("Shift already exists");
+ else{CU.S.push([id,name||id,tm(a),tm(b)]);save();toast("Shift added ✓")}
+ if(S.D){S.D.shift=id;S.D.sd=sdFor(id,S.D.ts)}
+ S.addK=null;render();
+}
+function delShift(id){if(!confirm("Delete shift "+id+"?"))return;CU.S=CU.S.filter(s=>s[0]!==id);save();render()}
+
+/* ---- add / edit form ---- */
+function add(){
+ const D=S.D,hasL=D.types.includes("LDL"),a=activeInst();
+ const ids=shifts().map(s=>s[0]);if(D.shift&&!ids.includes(D.shift))ids.push(D.shift);
+ const live=a&&a.id===D.shift&&a.sd===D.sd;
+ return `<h1>${D.id?"Edit work":"New work"}</h1>
+ <div class="ban ${live?"on":"idle"}" style="padding:10px 14px"><div class="row sp"><b>${esc(D.shift)||"No shift"} · ${D.sd?nice(D.sd):""}</b>${live?"<span>● active</span>":""}</div></div>
+ <label>Job type</label><div class="chips">${TYPES.map(t=>`<button class="chip ${D.types.includes(t[0])?"on":""}" style="${D.types.includes(t[0])?"background:"+t[2]:""}" onclick="tog('${t[0]}')">${t[0]}</button>`).join("")}</div>
+ ${hasL?`<label style="color:#e8590c">LDL — arrival or departure?</label><div class="seg"><button class="chip ${D.ldl==="ARR"?"on":""}" style="${D.ldl==="ARR"?"background:#e8590c":""}" onclick="S.D.ldl='ARR';render()">🛬 Arrival</button><button class="chip ${D.ldl==="DEP"?"on":""}" style="${D.ldl==="DEP"?"background:#e8590c":""}" onclick="S.D.ldl='DEP';render()">🛫 Departure</button></div>`:""}
+ ${D.types.length?`<div class="fg">${D.types.map(t=>{const f=TYPES.find(x=>x[0]===t);return `<div class="ref"><label style="color:${f[2]}">${f[1]}</label><input value="${esc(D.refs[t]||"")}" oninput="S.D.refs['${t}']=this.value" autocapitalize="characters"></div>`}).join("")}</div>`:""}
+ <div class="fg"><div><label>Flight no</label>${cbox("fl",D.fl,"Type or pick, e.g. QR830")}
+ ${S.addK==="fl"?addPanel():""}
+ ${D.fl&&F[D.fl]?`<div class="info">✈ <b>${esc(F[D.fl])}</b> · ${esc(I[F[D.fl]]||"")}</div>`:""}</div>
+ <div><label>Registration</label>${cbox("reg",D.reg,"Type or pick, e.g. A7-BAC")}
+ ${S.addK==="reg"?addPanel():""}
+ ${D.reg&&R[D.reg]?`<div class="info"><b>${esc(R[D.reg][0])}</b> · ${esc(R[D.reg][1])}</div>`:""}</div>
+ <div><label>${D.ldl==="ARR"?"Arrival":"Departure"} time</label><input type="time" value="${esc(D.dep)}" onchange="S.D.dep=this.value"></div>
+ <div><label>Bay no</label><input value="${esc(D.bay)}" oninput="S.D.bay=this.value" autocapitalize="characters"></div></div>
+ <label>Notes</label><textarea rows="3" oninput="S.D.notes=this.value">${esc(D.notes)}</textarea>
+ <label>Attachments</label><input type="file" accept="image/*" multiple onchange="pics(this)">
+ <div class="thumbs">${D.photos.map((p,i)=>`<img src="${p}" onclick="S.D.photos.splice(${i},1);render()">`).join("")}</div>
+ ${D.photos.length?'<div class="meta" style="margin-top:4px">Tap a photo to remove</div>':""}
+ <div class="fg"><div><label>Created at</label><input type="datetime-local" value="${esc(D.ts)}" onchange="S.D.ts=this.value"></div>
+ <div><label>Shift</label><select onchange="if(this.value==='_new'){openAdd('sh')}else{S.D.shift=this.value;S.D.sd=sdFor(this.value,S.D.ts);render()}">${ids.map(s=>`<option ${s===D.shift?"selected":""} value="${esc(s)}">${esc(s)}${sdef(s)?"  ("+mm(sdef(s)[2])+"–"+mm(sdef(s)[3])+")":""}</option>`).join("")}<option value="_new">＋ New shift…</option></select>
+ ${S.addK==="sh"?addPanel():""}</div>
+ <div><label>Shift date</label><input type="date" value="${esc(D.sd)}" onchange="S.D.sd=this.value"></div></div>
+ <div class="savebar"><button class="btn" style="flex:2" onclick="submit()">${D.id?"Save changes":"Save work"}</button><button class="btn sec" style="flex:1" onclick="cancelAdd()">Cancel</button></div>`;
+}
+function cancelAdd(){S.D=null;S.addK=null;go(S.cur?"shift":"hist")}
+function tog(t){const a=S.D.types,i=a.indexOf(t);i<0?a.push(t):a.splice(i,1);if(t==="LDL"&&i>=0)S.D.ldl="";render()}
+function pics(el){[...el.files].forEach(f=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);S.D.photos.push(c.toDataURL("image/jpeg",.7));render()};im.src=r.result};r.readAsDataURL(f)})}
+function submit(){
+ const D=S.D;if(!D.types.length){toast("Pick at least one job type first");scrollTo(0,0);return}
+ if(D.types.includes("LDL")&&!D.ldl){toast("LDL: choose Arrival or Departure");return}
+ D.fl=nf(D.fl);D.reg=nr(D.reg);
+ if(D.fl&&F[D.fl]===undefined){F[D.fl]="";CU.F[D.fl]=""}
+ if(D.reg&&!R[D.reg]){R[D.reg]=["",""];CU.R[D.reg]=["",""]}
+ save();
+ const e={id:D.id||Date.now(),u:Date.now(),ts:D.ts,sd:D.sd||D.ts.slice(0,10),shift:D.shift,types:D.types,refs:Object.fromEntries(D.types.map(t=>[t,(D.refs[t]||"").trim()])),ldl:D.types.includes("LDL")?D.ldl:"",flight:D.fl,iata:D.iata||F[D.fl]||"",city:D.fl?(I[F[D.fl]]||""):"",reg:D.reg,type:D.reg?R[D.reg][0]:"",role:D.reg?R[D.reg][1]:"",dep:D.dep,bay:D.bay.trim(),notes:D.notes.trim(),photos:D.photos};
+ if(D.id&&S.mt.tomb)delete S.mt.tomb[e.id];
+ const i=S.data.findIndex(x=>x.id===e.id);
+ i<0?S.data.push(e):S.data[i]=e;
+ putWork(e);scheduleSync();
+ toast("Saved ✓");S.D=null;S.addK=null;go(S.cur?"shift":"hist");
+}
+
+/* ---- cards, detail sheet ---- */
+function card(e){
+ const refs=Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>`${esc(a[0]==="PUSHBACK"?"PB":a[0])}: <b>${esc(a[1])}</b>`).join(" · ");
+ return `<div class="card tap" onclick="show(${e.id})"><div class="row sp"><b>${esc(e.flight)||"No flight"} · ${esc(e.reg)||"No reg"}</b><span class="meta">${fmt(e.ts)}</span></div><div class="meta">${[e.type,e.city||e.iata,e.bay?"Bay "+e.bay:"",e.dep].filter(Boolean).map(esc).join(" · ")}</div><div style="margin-top:6px">${tags(e)}</div>${refs?`<div class="meta">${refs}</div>`:""}${e.photos&&e.photos.length?`<div class="meta">📷 ${e.photos.length}</div>`:""}</div>`;
+}
+function show(id){S.view=id;sheet()}
+function closeSheet(){S.view=null;S.rep=null;sheet()}
+function sheet(){
+ if(S.rep){repRender();return}
+ const el=$("#sheet"),e=S.data.find(x=>x.id===S.view);
+ document.documentElement.style.overflow=e?"hidden":"";
+ if(!e){el.className="";el.innerHTML="";return}
+ const tile=(k,v,c)=>v?`<div class="tile"><small>${esc(k)}</small><b${c?` style="color:${c}"`:""}>${esc(v)}</b></div>`:"";
+ el.className="open";el.onclick=ev=>{if(ev.target===el)closeSheet()};
+ el.innerHTML=`<div class="sh"><div class="row sp"><button class="x" onclick="closeSheet()" aria-label="Close">✕</button><span class="meta">${fmt(e.ts)}</span></div>
+ <div class="dflt">${esc(e.flight)||"No flight"}</div>
+ <div style="font-size:20px;font-weight:700">${esc(e.reg)||"No registration"} <span class="meta" style="font-weight:500">${esc(e.type)}${e.role?" · "+esc(e.role):""}</span></div>
+ <div style="margin-top:8px">${tags(e)}</div>
+ <div class="tiles">${tile("Route",e.iata)}${tile("Destination",e.city)}${tile("Bay",e.bay)}${tile(e.ldl==="ARR"?"Arrival":"Departure",e.dep)}${tile("Shift",e.shift)}${tile("Shift date",e.sd?nice(e.sd):"")}</div>
+ ${Object.entries(e.refs||{}).filter(a=>a[1]).length?`<h2>Equipment</h2><div class="tiles">${Object.entries(e.refs).filter(a=>a[1]).map(a=>tile(a[0]==="PUSHBACK"?"PB no":a[0],a[1],COL[a[0]])).join("")}</div>`:""}
+ ${e.notes?`<h2>Notes</h2><div class="card" style="white-space:pre-wrap">${esc(e.notes)}</div>`:""}
+ ${e.photos&&e.photos.length?`<h2>Attachments</h2>${e.photos.map(p=>`<img class="pic" src="${p}">`).join("")}`:""}
+ <button class="btn" onclick="closeSheet();edit(${e.id})">Edit</button>
+ <button class="btn sec" style="color:#d33" onclick="del(${e.id})">Delete</button>
+ <button class="btn sec" onclick="closeSheet()">Close</button></div>`;
+ el.scrollTop=0;
+}
+
+/* ---- history grouped by day and shift ---- */
+function hist(){return `<h1>History</h1><input placeholder="Search flight, reg, bay, city, notes…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;list()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
+function list(){
+ const q=S.q.toLowerCase().trim(),toks=q.split(/\s+/).filter(Boolean),a=activeInst(),flt=!!(toks.length||S.f);
+ let r=S.data.filter(e=>(!S.f||e.types.includes(S.f))&&(!toks.length||(h=>toks.every(t=>h.includes(t)))(JSON.stringify([e.flight,e.reg,e.type,e.bay,e.city,e.iata,e.notes,e.refs,e.sd,e.shift,e.role,e.types]).toLowerCase()))).sort((x,y)=>y.ts.localeCompare(x.ts));
+ const total=r.length;if(r.length>300)r=r.slice(0,300);
+ const days={};
+ r.forEach(e=>{const sh=e.shift||"No shift";days[e.sd]=days[e.sd]||{};(days[e.sd][sh]=days[e.sd][sh]||[]).push(e)});
+ if(a&&!flt){days[a.sd]=days[a.sd]||{};days[a.sd][a.id]=days[a.sd][a.id]||[]}
+ const keys=Object.keys(days).sort().reverse();
+ $("#cnt").textContent=total+" work"+(total===1?"":"s")+" · "+keys.length+" day"+(keys.length===1?"":"s")+(total>300?" · showing the newest 300, refine your search":"");
+ let h=keys.slice(0,flt?9999:S.dl).map((sd,i)=>{
+  const g=days[sd],tot=Object.values(g).reduce((n,x)=>n+x.length,0);
+  const order=Object.keys(g).sort((x,y)=>((g[y][0]||{ts:"z"}).ts).localeCompare((g[x][0]||{ts:"z"}).ts));
+  return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
+   const s=sdef(sh),live=a&&a.id===sh&&a.sd===sd;
+   return `<div class="gh ${live?"act":""}"><div><b>${esc(sh)}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● ACTIVE</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
+ if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;list()">Show more days</button>`;
+ $("#list").innerHTML=h||'<div class="empty">Nothing found</div>';
+}
+function edit(id){const e=S.data.find(x=>x.id===id);S.D=Object.assign(blank(),JSON.parse(JSON.stringify(e)),{fl:e.flight||"",ldl:e.ldl||"",refs:e.refs||{},photos:e.photos||[]});go("add")}
+function del(id){
+ if(!confirm("Delete this work?"))return;
+ const e=S.data.find(x=>x.id===id);S.data=S.data.filter(x=>x.id!==id);delWork(id);
+ if(e){S.mt.tomb=S.mt.tomb||{};S.mt.tomb[id]={u:Date.now(),m:(e.sd||e.ts).slice(0,7)};saveMt();scheduleSync()}
+ closeSheet();render();
+}
+
+/* ---- data tab ---- */
+function csv(){
+ const h=["CREATED_AT","SHIFT_DATE","SHIFT_ID","JOB_TYPE","PB_NO","FLIGHT_NO","AIRCRAFT_TYPE","REGISTRATION","DEPARTURE","ROUTE","CITY_COUNTRY","BAY_NO","PMS","LDL","BCL","MDL","ACU","GPU","AIR STARTER","LDL_DIR","NOTES","ROLE"];
+ const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+ return [h.map(q).join(",")].concat(S.data.slice().sort((a,b)=>a.ts.localeCompare(b.ts)).map(e=>{const r=e.refs||{};return [e.ts.replace("T"," "),e.sd,e.shift,e.types.join(", "),r.PUSHBACK,e.flight,e.type,e.reg,e.dep,e.iata,e.city,e.bay,r.PMS,r.LDL,r.BCL,r.MDL,r.ACU,r.GPU,r["AIR STARTER"],e.ldl,e.notes,e.role].map(q).join(",")})).join("\n");
+}
+async function dl(name,text){
+ try{
+  const type=name.endsWith(".csv")?"text/csv":name.endsWith(".json")?"application/json":"text/html";
+  const file=new File([text],name,{type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Saved ✓");
+ }catch(e){if(e&&e.name==="AbortError")return;cp(text)}
+}
+function cp(t){const o=$("#out");if(o){o.value=t;o.select()}try{navigator.clipboard.writeText(t).then(()=>toast("Copied ✓"),()=>toast("Select and copy manually"))}catch(e){toast("Select and copy manually")}}
+function set(){
+ const last=S.mt.last?new Date(S.mt.last).toLocaleString():"never";
+ return `<h1>Data</h1>
+ <div class="g2"><div class="card"><b>💾 Local database</b><div class="meta">${ENGINE==="sqlite"?"Stored in this app’s own SQLite database on your iPhone. It is not browser storage.":ENGINE==="idb"?"Stored in this app’s private database on your iPhone (inside the installed app). Works offline.":"Database unavailable."}<br>Deleting the app deletes its data. Use Google Sheets backup or Download full backup to keep a copy.<br>${S.data.length} works · ${Object.keys(F).length} flights · ${Object.keys(R).length} registrations</div></div>
+ <div class="card"><b>📗 Google Sheets backup</b><div class="meta">${S.mt.cloud&&S.mt.sheetUrl?"On · last sync "+last:"Off (optional)"}${S.msg?"<br>"+esc(S.msg):""}<br>Photos stay on this iPhone.</div>
+ <label>Apps Script web app URL</label><input id="shurl" value="${esc(S.mt.sheetUrl||"")}" placeholder="https://script.google.com/macros/s/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false">
+ <button class="btn" onclick="sheetSave()" ${S.syncing?"disabled":""}>${S.syncing?"Syncing…":"Save and sync now"}</button>${S.mt.cloud?`<button class="btn sec" onclick="cloudOff()">Turn off</button>`:""}</div></div>
+ <h2>Appearance</h2><div class="card"><div class="seg">${["auto","light","dark"].map(t=>`<button class="chip ${(S.mt.theme||"auto")===t?"on":""}" style="${(S.mt.theme||"auto")===t?"background:var(--ac)":""}" onclick="setTheme('${t}')">${t[0].toUpperCase()+t.slice(1)}</button>`).join("")}</div></div>
+ <h2>Shifts</h2><div class="card">${shifts().map(s=>`<div class="row sp" style="padding:6px 0"><div><b>${esc(s[0])}</b> <span class="meta">${mm(s[2])}–${mm(s[3])} · ${durOf(s)/60}h</span></div><div class="row"><button class="btn del" style="width:auto;margin:0;padding:8px;color:var(--ac2)" onclick="editShift('${esc(s[0])}','')">Edit</button>${(CU.S||[]).some(c=>c[0]===s[0])?`<button class="btn del" style="width:auto;margin:0;padding:8px" onclick="delShift('${esc(s[0])}')">Delete</button>`:""}</div></div>`).join("")}<button class="btn sec" onclick="S.addK='sh';render()">＋ Add new shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}</div>
+ <h2>Reports</h2><div class="card"><div class="meta">Full report of any shift day: print it, save it as a file, or copy it as text.</div><button class="btn" onclick="repOpen()">🖨 Open report (yesterday)</button></div>
+ <h2>Export and backup</h2><div class="card"><div class="g2" style="gap:8px"><button class="btn" style="margin:0" onclick="dl('works.csv',csv())">Download CSV (Google Sheets / Excel)</button><button class="btn sec" style="margin:0" onclick="dl('works-backup.json',JSON.stringify({d:S.data,c:CU}))">Download full backup</button></div><textarea class="big" id="out" readonly style="margin-top:10px;display:none"></textarea></div>
+ <h2>Restore backup</h2><div class="card"><input type="file" accept=".json,application/json" onchange="restoreFile(this)"></div>
+ <button class="btn sec" style="color:#d33" onclick="eraseLocal()">Erase works on this device</button>`;
+}
+function restoreFile(el){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>restoreText(r.result);r.readAsText(f)}
+function restoreText(t){
+ try{
+  const j=JSON.parse(t);if(!Array.isArray(j.d))throw 0;
+  const LM=new Map(S.data.map(e=>[e.id,e])),b=[];
+  j.d.forEach(e=>{norm(e);const l=LM.get(e.id);if(!l){S.data.push(e);b.push(e)}else if(e.u>l.u){Object.assign(l,e);b.push(l)}});
+  if(j.c){["F","I","R","X","E","O"].forEach(k=>Object.assign(CU[k],j.c[k]||{}));(j.c.S||[]).forEach(s=>{if(!sdef(s[0]))CU.S.push(s)});Object.assign(F,CU.F);Object.assign(I,CU.I);Object.assign(R,CU.R);save()}
+  bulk(b);scheduleSync();toast("Restored "+b.length+" works ✓");render();
+ }catch(e){toast("Invalid backup file")}
+}
+async function eraseLocal(){
+ if(!confirm("Erase all works on this device? A Google Sheets copy, if you use one, is kept."))return;
+ S.data=[];await clearWorks();render();
+}
+function editShift(id,sd){S.es={id,sd};S.addK="esh";render()}
+function saveEsh(){
+ const e=S.es,a=$("#e1").value,b=$("#e2").value;if(!a||!b){toast("Set start and end");return}
+ const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),sc=$("#e3")?$("#e3").value:"all";
+ if(sc==="day")CU.O[e.id+"|"+e.sd]=[tm(a),tm(b)];else CU.E[e.id]=[tm(a),tm(b)];
+ save();S.addK=null;render();toast("Shift time updated ✓");
+}
+function resetDay(){delete CU.O[S.es.id+"|"+S.es.sd];save();S.addK=null;render();toast("Reset ✓")}
+/* ---- reports ---- */
+function repOpen(date,sh){S.rep={date:date||dkey(new Date(Date.now()-864e5)),sh:sh||""};S.view=null;sheet()}
+function repSet(k,v){S.rep[k]=v;if(k==="date")S.rep.sh="";repRender()}
+const jobs=e=>e.types.map(t=>t+(t==="LDL"&&e.ldl?" "+e.ldl:"")).join(", ");
+const eqs=e=>Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>(a[0]==="PUSHBACK"?"PB":a[0])+" "+a[1]).join(", ");
+function repData(){const r=S.rep;return S.data.filter(e=>e.sd===r.date&&(!r.sh||e.shift===r.sh)).sort((a,b)=>a.ts.localeCompare(b.ts))}
+function repBody(){
+ const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(" · "),g={};
+ rows.forEach(e=>{const k=e.shift||"No shift";(g[k]=g[k]||[]).push(e)});
+ let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh||"All shifts")}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
+ Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(sh)}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Job</th><th>Equipment</th><th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(e.flight)}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(e.bay)}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td><td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
+ if(!rows.length)h+='<div class="empty">No works on this day.</div>';
+ h+='<div class="meta" style="margin-top:14px">Works Log · Jamshi Solutions</div>';
+ return h;
+}
+function repRender(){
+ const el=$("#sheet"),r=S.rep,ids=[...new Set(S.data.filter(e=>e.sd===r.date).map(e=>e.shift).filter(Boolean))];
+ el.className="open";el.onclick=null;document.documentElement.style.overflow="hidden";
+ el.innerHTML=`<div class="sh wide"><div class="noprint"><div class="row sp"><button class="x" onclick="closeSheet()" aria-label="Close">✕</button><b>Report</b><span></span></div>
+ <div class="chips" style="margin:10px 0"><button class="chip" onclick="repSet('date',dkey(new Date()))">Today</button><button class="chip" onclick="repSet('date',dkey(new Date(Date.now()-864e5)))">Yesterday</button></div>
+ <div class="fg"><div><label>Shift date</label><input type="date" value="${esc(r.date)}" onchange="repSet('date',this.value)"></div><div><label>Shift</label><select onchange="repSet('sh',this.value)"><option value="">All shifts</option>${ids.map(i=>`<option ${i===r.sh?"selected":""}>${esc(i)}</option>`).join("")}</select></div></div>
+ <div class="g2" style="gap:8px"><button class="btn" style="margin:8px 0 0" onclick="repPrint()">🖨 Print</button><button class="btn sec" style="margin:8px 0 0" onclick="repFile()">Save as file</button><button class="btn sec" style="margin:8px 0 0" onclick="repText()">Copy as text</button></div>
+ <div class="meta" style="margin-top:8px">If Print does nothing, tap Save as file, open it, then print or share it as PDF from there.</div></div>
+ <div id="rbody" style="margin-top:14px">${repBody()}</div></div>`;
+ el.scrollTop=0;
+}
+function repPrint(){if(NATIVE){repFile();return}try{window.print()}catch(e){toast("Printing is blocked here. Use Save as file.")}}
+function repFile(){
+ const r=S.rep,css="body{font:14px -apple-system,system-ui,sans-serif;margin:20px;color:#000}table{border-collapse:collapse;width:100%}th,td{border:1px solid #888;padding:4px 6px;font-size:12px;text-align:left;vertical-align:top}th{background:#eee}h3{margin:18px 0 6px}@media print{.np{display:none}}";
+ dl("works-report-"+r.date+(r.sh?"-"+r.sh:"")+".html",`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Works Report ${r.date}</title><style>${css}</style></head><body><div class="np"><button onclick="window.print()">Print</button></div>${repBody()}</body></html>`);
+}
+function repText(){
+ const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(", ");
+ const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh||"All shifts"),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
+ rows.forEach((e,i)=>L.push((i+1)+". "+e.ts.slice(11,16)+" "+[e.flight,e.reg,e.type,e.iata,e.bay?"Bay "+e.bay:"",jobs(e),eqs(e),e.notes].filter(Boolean).join(" | ")));
+ cp(L.join("\n"));
+}
+function setTheme(t){S.mt.theme=t;const r=document.documentElement;if(r.setAttribute){t==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",t)}saveMt();render()}
+function about(){
+ return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.0</div></div>
+ <div class="cert"><div class="cin"><div class="cs">CERTIFICATE OF AUTHENTICITY</div><div class="cl"><span></span>✦<span></span></div>
+ <div class="ct">This is to certify that</div><div class="cn">Works Log</div><div class="ct">is an original application designed and developed by</div><div class="cn" style="font-size:26px;color:var(--ac)">Jamshi Solutions</div>
+ <div class="cmeta"><div><small>Certificate no.</small><b>JS-WL-2026-001</b></div><div><small>Issued</small><b>14 Nov 2026</b></div><div><small>Edition</small><b>Version 1.0</b></div></div>
+ <div class="seal">${logo(46)}</div></div></div>
+ <h2>Contact</h2><div class="card"><b>Jamshi Solutions</b><a class="btn" style="display:block;text-align:center;text-decoration:none" href="mailto:Jamshi285@gmail.com">✉ Jamshi285@gmail.com</a><button class="btn sec" onclick="cp('Jamshi285@gmail.com')">Copy email address</button></div>
+ <h2>Storage</h2><div class="card meta">Your works are saved in the app’s own database on this iPhone and work fully offline.</div>
+ <div class="meta" style="text-align:center;margin:16px 0">© ${new Date().getFullYear()} Jamshi Solutions. All rights reserved.</div>`;
+}
+init();
+</script></body></html>
