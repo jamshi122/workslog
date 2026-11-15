@@ -149,6 +149,8 @@ input,textarea,select,.sh,.rtab,#rbody{-webkit-user-select:text;user-select:text
 .catch.go{background:#1f9d55}.catch.stop{background:#d33}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
 .tgrid input[type=time],.tcard input[type=time]{font-size:22px;font-weight:700}
+.chip.sm{padding:5px 12px;min-height:34px;font-size:13px;display:inline-flex;align-items:center;cursor:pointer}
+.sbtn{cursor:pointer}
 </style></head><body>
 <div id="splash"></div>
 <div id="app"></div>
@@ -169,7 +171,7 @@ const nice=sd=>new Date(sd+"T00:00:00").toLocaleDateString([],{weekday:"short",d
 const mm=m=>p2(Math.floor(m/60)%24)+":"+p2(m%60);
 const nf=s=>String(s||"").toUpperCase().replace(/\s+/g,"");
 const nr=s=>{s=nf(s);return /^[A-Z0-9]{2}[A-Z]{3}$/.test(s)?s.slice(0,2)+"-"+s.slice(2):s};
-let F={},I={},R={},CU={F:{},I:{},R:{},S:[],X:{},E:{},O:{}};
+let F={},I={},R={},CU={F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[]};
 FL.split(",").forEach(x=>{const a=x.split(":");F[a[0]]=a[1]});
 IA.split(";").forEach(x=>{const a=x.split(":");const b=a[1].split("|");I[a[0]]=b[0]+" - "+b[1]});
 RG.split(",").forEach(x=>{const a=x.split(":");R[a[0]]=[a[1],a[2]==="C"?"Cargo":"Passenger"]});
@@ -226,7 +228,8 @@ const saveMt=()=>putMeta("mt",S.mt);
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3400)}
 
 /* ---- shifts ---- */
-const shifts=()=>SH0.concat(CU.S||[]).map(s=>(CU.E||{})[s[0]]?[s[0],s[1],CU.E[s[0]][0],CU.E[s[0]][1]]:s);
+const shifts=()=>SH0.concat(CU.S||[]).filter(s=>!(CU.H||[]).includes(s[0])).map(s=>{const E=(CU.E||{})[s[0]];return E?[s[0],E[2]||s[1],E[0],E[1]]:s});
+function shName(id){const s=sdef(id);return s&&s[1]?s[1]:(id||"")}
 const sdef=id=>shifts().find(s=>s[0]===id);
 const durOf=s=>((s[3]-s[2]+1440)%1440)||1440;
 function instOf(s,date){
@@ -262,7 +265,7 @@ async function init(){
  if(mt)Object.assign(S.mt,mt);
  const fresh=!mt;
  if(S.mt.theme&&S.mt.theme!=="auto"&&document.documentElement.setAttribute)document.documentElement.setAttribute("data-theme",S.mt.theme);
- if(cu)CU=Object.assign({F:{},I:{},R:{},S:[],X:{},E:{},O:{}},cu);
+ if(cu)CU=Object.assign({F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[]},cu);
  let dirty=false;
  if(!S.mt.migrated){
   S.mt.migrated=1;dirty=true;
@@ -280,6 +283,7 @@ async function init(){
  Object.assign(F,CU.F);Object.assign(I,CU.I);Object.assign(R,CU.R);
  if(dirty){await bulk(rows);await save();await saveMt()}
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ await checkAccess();
  S.ready=true;try{S.persist=await navigator.storage.persisted()}catch(e){}render();
  setTimeout(()=>{const sp=$("#splash");sp.style.opacity=0;setTimeout(()=>sp.remove&&sp.remove(),500)},900);
  if(S.mt.cloud)setTimeout(()=>cloudSync(false),2500);
@@ -340,14 +344,17 @@ function go(t){S.tab=t;if(t==="add"&&!S.D)S.D=blank();render();scrollTo(0,0)}
 function render(){
  if(!S.ready)return;
  try{
+  if(S.lock){$("#nav").innerHTML="";$("#fab").innerHTML="";$("#app").innerHTML=lockScreen();return}
   if(!S.cur){$("#nav").innerHTML="";$("#fab").innerHTML="";$("#app").innerHTML=gate();return}
   $("#nav").innerHTML=[["shift","⏱️","Shift"],["home","📊","Dashboard"],["hist","🗂️","History"],["set","⚙️","Data"],["about","ℹ️","About"]].map(a=>`<button class="${S.tab===a[0]?"on":""}" onclick="go('${a[0]}')"><span>${a[1]}</span>${a[2]}</button>`).join("");
   $("#fab").innerHTML=["add","about","set"].includes(S.tab)?"":`<button onclick="newWork()" aria-label="Add work">＋</button>`;
   $("#app").innerHTML=({shift:shiftTab,home,add,hist,set,about})[S.tab]();
   if(S.tab==="hist")list();
+  if(S.tab==="about")loadCodes();
  }catch(err){$("#app").innerHTML=`<div class="card"><b>Something went wrong</b><div class="meta">${esc(err.message)}</div></div>`}
 }
 setInterval(()=>{if(S.cur&&(S.tab==="shift"||S.tab==="home")&&!S.view)render()},60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.ready&&S.mt.act&&Date.now()-(S.mt.act.chk||0)>6*36e5)checkAccess().then(render)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(S.view||S.rep))closeSheet()});
 
 /* ---- shift gate ---- */
@@ -361,9 +368,9 @@ function gate(){
  <h1>Select your shift</h1>
  ${tip}
  <label>Shift date</label><div class="chips" style="margin-bottom:8px">${chip(td,"Today")}${chip(yd,"Yesterday")}</div><input type="date" value="${esc(d0)}" onchange="S.gd=this.value;render()">
- <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<button class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span><div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div></button>`}).join("")}</div>
- <button class="btn sec" onclick="S.addK='sh';render()">＋ New shift</button>${S.addK==="sh"?addPanel():""}
- <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Save & start shift · "+esc(p):"Select a shift to continue"}</button></div>`;
+ <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<div class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[1]||s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span><div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div><div class="row" style="margin-top:8px"><span class="chip sm" onclick="event.stopPropagation();editShift('${esc(s[0])}','${d0}')">Edit</span><span class="chip sm" style="color:#d33" onclick="event.stopPropagation();delShift('${esc(s[0])}')">Delete</span></div></div>`}).join("")}</div>
+ <button class="btn sec" onclick="S.addK='sh';render()">＋ New shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}
+ <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Save & start shift · "+esc(shName(p)):"Select a shift to continue"}</button></div>`;
 }
 function shiftTab(){
  const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],i=instOf(s,c.sd),now=Date.now(),a=activeInst(),live=a&&a.id===c.id&&a.sd===c.sd;
@@ -372,8 +379,8 @@ function shiftTab(){
  let st;
  if(live){const l=Math.max(0,i.end-now);st=`● Active · ends in ${Math.floor(l/36e5)}h ${Math.floor(l%36e5/6e4)}m${i.ext?" (+"+i.ext/60+"h)":""}`}
  else st=now<i.start?"Starts "+fmt(i.start):"Shift ended "+fmt(i.end);
- return `<div class="ban ${live?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(c.id)}</div><div>${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
-  <div class="row" style="flex-wrap:wrap"><button class="bb" onclick="newWork()">＋ Add work</button>${live&&i.ext<i.cap?`<button class="bb" onclick="extend()">Extend +1h</button>`:""}<button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift time</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
+ return `<div class="ban ${live?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(shName(c.id))}</div><div>${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
+  <div class="row" style="flex-wrap:wrap"><button class="bb" onclick="newWork()">＋ Add work</button>${live&&i.ext<i.cap?`<button class="bb" onclick="extend()">Extend +1h</button>`:""}<button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift</button><button class="bb" onclick="delShift('${esc(c.id)}')">Delete shift</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
   ${S.addK==="esh"?addPanel():""}
   ${S.mt.cloud&&S.msg?`<div class="meta" style="margin:0 4px 8px">☁ ${esc(S.msg)}</div>`:""}
   ${tc.length?`<div class="chips" style="margin-bottom:12px">${tc.map(a=>`<span class="tag" style="background:${COL[a[0]]||"#666"};font-size:13px;padding:5px 12px">${esc(a[0])} · ${a[1]}</span>`).join("")}</div>`:""}
@@ -423,12 +430,12 @@ function pick(k,x){
  else{D.reg=x;if(R[x]){D.type=R[x][0];D.role=R[x][1]}}
  S.addK=null;render();
 }
-function openAdd(k){S.addK=k;render();setTimeout(()=>{const e=$("#ad1")||$("#s1");e&&e.scrollIntoView({block:"center"})},50)}
+function openAdd(k){S.addK=k;render();setTimeout(()=>{const e=$("#ad1")||$("#s1");e&&e.scrollIntoView&&e.scrollIntoView({block:"center"})},50)}
 function addPanel(){
  const k=S.addK,D=S.D;if(!k)return"";
- if(k==="sh")return `<div class="panel"><label>New shift</label><div class="two"><div><label>Start</label><input id="s1" type="time" value="07:00"></div><div><label>End</label><input id="s2" type="time" value="17:00"></div></div><label>Name (optional)</label><input id="s3" placeholder="e.g. Morning"><div class="meta" style="margin-top:6px">If it ends earlier than it starts, it runs past midnight.</div><button class="btn" onclick="saveShift()">Save shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
- if(k==="esh"){const e=S.es,sd0=sdef(e.id)||[e.id,e.id,0,60],ss=e.sd?instOf(sd0,e.sd).s:sd0,has=e.sd&&CU.O[e.id+"|"+e.sd];
-  return `<div class="panel"><label>Edit shift ${esc(e.id)}${e.sd?" · "+nice(e.sd):""}</label><div class="two"><div><label>Start</label><input id="e1" type="time" value="${mm(ss[2])}"></div><div><label>End</label><input id="e2" type="time" value="${mm(ss[3])}"></div></div>${e.sd?`<label>Apply to</label><select id="e3"><option value="day">This day only (${nice(e.sd)})</option><option value="all">All days</option></select>`:`<div class="meta" style="margin-top:6px">Applies to all days.</div>`}<button class="btn" onclick="saveEsh()">Save shift time</button>${has?`<button class="btn sec" onclick="resetDay()">Reset this day to normal</button>`:""}<button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`}
+ if(k==="sh")return `<div class="panel"><label>New shift</label><div class="two"><div><label>Start</label><input id="s1" type="time" value="07:00"></div><div><label>End</label><input id="s2" type="time" value="17:00"></div></div><label>Shift name</label><input id="s3" placeholder="e.g. Morning"><div class="meta" style="margin-top:6px">If it ends earlier than it starts, it runs past midnight.</div><button class="btn" onclick="saveShift()">Save shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+ if(k==="esh"){const e=S.es,s0=sdef(e.id)||[e.id,e.id,0,60],ss=e.sd?instOf(s0,e.sd).s:s0,has=e.sd&&CU.O[e.id+"|"+e.sd];
+  return `<div class="panel"><label>Edit shift</label><label>Shift name</label><input id="e0" value="${esc(s0[1]||e.id)}" placeholder="e.g. Morning"><div class="two"><div><label>Start</label><input id="e1" type="time" value="${mm(ss[2])}"></div><div><label>End</label><input id="e2" type="time" value="${mm(ss[3])}"></div></div>${e.sd?`<label>Apply times to</label><select id="e3"><option value="day">This day only (${nice(e.sd)})</option><option value="all">All days</option></select>`:`<div class="meta" style="margin-top:6px">Times apply to all days.</div>`}<button class="btn" onclick="saveEsh()">Save shift</button>${has?`<button class="btn sec" onclick="resetDay()">Reset this day to normal</button>`:""}<button class="btn sec" style="color:#d33" onclick="delShift('${esc(e.id)}')">Delete shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`}
  if(k==="fl")return `<div class="panel"><label>New flight ${esc(D.fl)}</label><label>Destination IATA code</label><input id="ad1" maxlength="4" placeholder="e.g. LHR" autocapitalize="characters" value="${esc(D.iata)}" oninput="this.value=this.value.toUpperCase();const c=I[this.value];if(c){$('#ad2').value=c.split(' - ')[0];$('#ad3').value=c.split(' - ')[1]||''}"><div class="two"><div><label>City</label><input id="ad2"></div><div><label>Country</label><input id="ad3"></div></div><button class="btn" onclick="saveFl()">Save flight</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
  const types=[...new Set(Object.values(R).map(r=>r[0]).filter(Boolean))].sort();
  return `<div class="panel"><label>New registration ${esc(D.reg)}</label><label>Aircraft type</label><select id="ad1" onchange="$('#ad4').style.display=this.value==='_'?'block':'none'">${types.map(t=>`<option>${esc(t)}</option>`).join("")}<option value="_">Other…</option></select><input id="ad4" placeholder="Type, e.g. A321neo" style="display:none;margin-top:6px"><label>Role</label><select id="ad2"><option>Passenger</option><option>Cargo</option></select><button class="btn" onclick="saveReg()">Save registration</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
@@ -445,15 +452,20 @@ function saveReg(){
  const r=S.D.reg,role=$("#ad2").value;R[r]=[t,role];CU.R[r]=[t,role];save();pick("reg",r);toast("Registration added ✓");
 }
 function saveShift(){
- const a=$("#s1").value,b=$("#s2").value,name=$("#s3").value.trim();
+ const a=$("#s1").value,b=$("#s2").value,name=($("#s3").value||"").trim();
+ if(!name){toast("Enter a shift name");return}
  if(!a||!b){toast("Set start and end");return}
- const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),id=a.replace(":","")+"-"+b.replace(":","");
- if(sdef(id))toast("Shift already exists");
- else{CU.S.push([id,name||id,tm(a),tm(b)]);save();toast("Shift added ✓")}
+ const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),base=a.replace(":","")+"-"+b.replace(":","");let id=base,n=2;
+ while(SH0.concat(CU.S||[]).some(s=>s[0]===id))id=base+"-"+n++;
+ CU.S.push([id,name,tm(a),tm(b)]);save();toast("Shift added ✓");
  if(S.D){S.D.shift=id;S.D.sd=sdFor(id,S.D.ts)}
  S.addK=null;render();
 }
-function delShift(id){if(!confirm("Delete shift "+id+"?"))return;CU.S=CU.S.filter(s=>s[0]!==id);save();render()}
+function delShift(id){
+ if(!confirm("Delete shift \""+shName(id)+"\"? Works already saved in it are kept."))return;
+ if((CU.S||[]).some(s=>s[0]===id))CU.S=CU.S.filter(s=>s[0]!==id);else{CU.H=CU.H||[];if(!CU.H.includes(id))CU.H.push(id)}
+ if(S.cur&&S.cur.id===id)S.cur=null;if(S.pick===id)S.pick="";S.addK=null;save();render();toast("Shift deleted");
+}
 
 /* ---- add / edit form ---- */
 function add(){
@@ -461,7 +473,7 @@ function add(){
  const ids=shifts().map(s=>s[0]);if(D.shift&&!ids.includes(D.shift))ids.push(D.shift);
  const live=a&&a.id===D.shift&&a.sd===D.sd;
  return `<h1>${D.id?"Edit work":"New work"}</h1>
- <div class="ban ${live?"on":"idle"}" style="padding:10px 14px"><div class="row sp"><b>${esc(D.shift)||"No shift"} · ${D.sd?nice(D.sd):""}</b>${live?"<span>● active</span>":""}</div></div>
+ <div class="ban ${live?"on":"idle"}" style="padding:10px 14px"><div class="row sp"><b>${esc(shName(D.shift))||"No shift"} · ${D.sd?nice(D.sd):""}</b>${live?"<span>● active</span>":""}</div></div>
  <label>Job type</label><div class="chips">${TYPES.map(t=>`<button class="chip ${D.types.includes(t[0])?"on":""}" style="${D.types.includes(t[0])?"background:"+t[2]:""}" onclick="tog('${t[0]}')">${t[0]}</button>`).join("")}</div>
  ${hasL?`<label style="color:#e8590c">LDL — arrival or departure?</label><div class="seg"><button class="chip ${D.ldl==="ARR"?"on":""}" style="${D.ldl==="ARR"?"background:#e8590c":""}" onclick="S.D.ldl='ARR';render()">🛬 Arrival</button><button class="chip ${D.ldl==="DEP"?"on":""}" style="${D.ldl==="DEP"?"background:#e8590c":""}" onclick="S.D.ldl='DEP';render()">🛫 Departure</button></div>`:""}
  ${D.types.filter(t=>t!=="TOWING").length?`<div class="fg">${D.types.filter(t=>t!=="TOWING").map(t=>{const f=TYPES.find(x=>x[0]===t);return `<div class="ref"><label style="color:${f[2]}">${f[1]}</label><input value="${esc(D.refs[t]||"")}" oninput="S.D.refs['${t}']=this.value" autocapitalize="characters"></div>`}).join("")}</div>`:""}
@@ -479,7 +491,7 @@ function add(){
  <div class="thumbs">${D.photos.map((p,i)=>`<img src="${p}" onclick="S.D.photos.splice(${i},1);render()">`).join("")}</div>
  ${D.photos.length?'<div class="meta" style="margin-top:4px">Tap a photo to remove</div>':""}
  <div class="fg"><div><label>Created at</label><input type="datetime-local" value="${esc(D.ts)}" onchange="S.D.ts=this.value"></div>
- <div><label>Shift</label><select onchange="if(this.value==='_new'){openAdd('sh')}else{S.D.shift=this.value;S.D.sd=sdFor(this.value,S.D.ts);render()}">${ids.map(s=>`<option ${s===D.shift?"selected":""} value="${esc(s)}">${esc(s)}${sdef(s)?"  ("+mm(sdef(s)[2])+"–"+mm(sdef(s)[3])+")":""}</option>`).join("")}<option value="_new">＋ New shift…</option></select>
+ <div><label>Shift</label><select onchange="if(this.value==='_new'){openAdd('sh')}else{S.D.shift=this.value;S.D.sd=sdFor(this.value,S.D.ts);render()}">${ids.map(s=>`<option ${s===D.shift?"selected":""} value="${esc(s)}">${esc(shName(s))}${sdef(s)?"  ("+mm(sdef(s)[2])+"–"+mm(sdef(s)[3])+")":""}</option>`).join("")}<option value="_new">＋ New shift…</option></select>
  ${S.addK==="sh"?addPanel():""}</div>
  <div><label>Shift date</label><input type="date" value="${esc(D.sd)}" onchange="S.D.sd=this.value"></div></div>
  <div class="savebar"><button class="btn" style="flex:2" onclick="submit()">${D.id?"Save changes":"Save work"}</button><button class="btn sec" style="flex:1" onclick="cancelAdd()">Cancel</button></div>`;
@@ -521,7 +533,7 @@ function sheet(){
  <div class="dflt">${esc(e.flight)||(isTow(e)?"Towing":"No flight")}</div>
  <div style="font-size:20px;font-weight:700">${esc(e.reg)||"No registration"} <span class="meta" style="font-weight:500">${esc(e.type)}${e.role?" · "+esc(e.role):""}</span></div>
  <div style="margin-top:8px">${tags(e)}</div>
- <div class="tiles">${tile("Route",e.iata)}${tile("Destination",e.city)}${tile("Bay",e.bay)}${tile("From bay",e.bayFrom)}${tile("To bay",e.bayTo)}${tile(e.ldl==="ARR"?"Arrival":"Departure",e.dep)}${tile("Shift",e.shift)}${tile("Shift date",e.sd?nice(e.sd):"")}</div>
+ <div class="tiles">${tile("Route",e.iata)}${tile("Destination",e.city)}${tile("Bay",e.bay)}${tile("From bay",e.bayFrom)}${tile("To bay",e.bayTo)}${tile(e.ldl==="ARR"?"Arrival":"Departure",e.dep)}${tile("Shift",shName(e.shift))}${tile("Shift date",e.sd?nice(e.sd):"")}</div>
  ${isTow(e)?towTiles(e,tile):""}
  ${Object.entries(e.refs||{}).filter(a=>a[1]).length?`<h2>Equipment</h2><div class="tiles">${Object.entries(e.refs).filter(a=>a[1]).map(a=>tile(a[0]==="PUSHBACK"?"PB no":a[0],a[1],COL[a[0]])).join("")}</div>`:""}
  ${e.notes?`<h2>Notes</h2><div class="card" style="white-space:pre-wrap">${esc(e.notes)}</div>`:""}
@@ -533,10 +545,17 @@ function sheet(){
 }
 
 /* ---- history grouped by day and shift ---- */
-function hist(){return `<h1>History</h1><input placeholder="Search flight, reg, bay, city, notes…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;list()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
+function hist(){return `<h1>History</h1><input type="search" enterkeyhint="search" placeholder="Search anything: flight, reg, bay, date, note…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;list()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
 function list(){
  const q=S.q.toLowerCase().trim(),toks=q.split(/\s+/).filter(Boolean),a=activeInst(),flt=!!(toks.length||S.f);
- let r=S.data.filter(e=>(!S.f||e.types.includes(S.f))&&(!toks.length||(h=>toks.every(t=>h.includes(t)))(JSON.stringify([e.flight,e.reg,e.type,e.bay,e.city,e.iata,e.notes,e.refs,e.sd,e.shift,e.role,e.types,e.bayFrom,e.bayTo]).toLowerCase()))).sort((x,y)=>y.ts.localeCompare(x.ts));
+ const pass=e=>!S.f||e.types.includes(S.f);
+ let r;
+ if(!toks.length)r=S.data.filter(pass);
+ else{
+  const full=toks.join("").replace(/[^a-z0-9]/g,""),m1=toks.length>1&&full?S.data.filter(e=>pass(e)&&hayOf(e).includes(full)):[];
+  r=m1.length?m1:S.data.filter(e=>{if(!pass(e))return false;const hy=hayOf(e);return toks.every(t=>{const c=t.replace(/[^a-z0-9]/g,"");return hy.includes(t)||(c&&hy.includes(c))})});
+ }
+ r=r.slice().sort((x,y)=>y.ts.localeCompare(x.ts));
  const total=r.length;if(r.length>300)r=r.slice(0,300);
  const days={};
  r.forEach(e=>{const sh=e.shift||"No shift";days[e.sd]=days[e.sd]||{};(days[e.sd][sh]=days[e.sd][sh]||[]).push(e)});
@@ -548,7 +567,7 @@ function list(){
   const order=Object.keys(g).sort((x,y)=>((g[y][0]||{ts:"z"}).ts).localeCompare((g[x][0]||{ts:"z"}).ts));
   return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
    const s=sdef(sh),live=a&&a.id===sh&&a.sd===sd;
-   return `<div class="gh ${live?"act":""}"><div><b>${esc(sh)}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● ACTIVE</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
+   return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● ACTIVE</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
  if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;list()">Show more days</button>`;
  $("#list").innerHTML=h||'<div class="empty">Nothing found</div>';
 }
@@ -584,7 +603,7 @@ function set(){
  <label>Apps Script web app URL</label><input id="shurl" value="${esc(S.mt.sheetUrl||"")}" placeholder="https://script.google.com/macros/s/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false">
  <button class="btn" onclick="sheetSave()" ${S.syncing?"disabled":""}>${S.syncing?"Syncing…":"Save and sync now"}</button>${S.mt.cloud?`<button class="btn sec" onclick="cloudOff()">Turn off</button>`:""}</div></div>
  <h2>Appearance</h2><div class="card"><div class="seg">${["auto","light","dark"].map(t=>`<button class="chip ${(S.mt.theme||"auto")===t?"on":""}" style="${(S.mt.theme||"auto")===t?"background:var(--ac)":""}" onclick="setTheme('${t}')">${t[0].toUpperCase()+t.slice(1)}</button>`).join("")}</div></div>
- <h2>Shifts</h2><div class="card">${shifts().map(s=>`<div class="row sp" style="padding:6px 0"><div><b>${esc(s[0])}</b> <span class="meta">${mm(s[2])}–${mm(s[3])} · ${durOf(s)/60}h</span></div><div class="row"><button class="btn del" style="width:auto;margin:0;padding:8px;color:var(--ac2)" onclick="editShift('${esc(s[0])}','')">Edit</button>${(CU.S||[]).some(c=>c[0]===s[0])?`<button class="btn del" style="width:auto;margin:0;padding:8px" onclick="delShift('${esc(s[0])}')">Delete</button>`:""}</div></div>`).join("")}<button class="btn sec" onclick="S.addK='sh';render()">＋ Add new shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}</div>
+ <h2>Shifts</h2><div class="card">${shifts().map(s=>`<div class="row sp" style="padding:6px 0"><div><b>${esc(s[1]||s[0])}</b> <span class="meta">${mm(s[2])}–${mm(s[3])} · ${durOf(s)/60}h</span></div><div class="row"><button class="btn del" style="width:auto;margin:0;padding:8px;color:var(--ac2)" onclick="editShift('${esc(s[0])}','')">Edit</button><button class="btn del" style="width:auto;margin:0;padding:8px" onclick="delShift('${esc(s[0])}')">Delete</button></div></div>`).join("")}${(CU.H||[]).length?`<button class="btn sec" onclick="CU.H=[];save();render()">Show ${(CU.H||[]).length} deleted shift(s) again</button>`:""}<button class="btn sec" onclick="S.addK='sh';render()">＋ Add new shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}</div>
  <h2>Reports</h2><div class="card"><div class="meta">Full report of any shift day: print it, save it as a file, or copy it as text.</div><button class="btn" onclick="repOpen()">🖨 Open report (yesterday)</button></div>
  <h2>Export and backup</h2><div class="card"><div class="g2" style="gap:8px"><button class="btn" style="margin:0" onclick="dl('works.csv',csv())">Download CSV (Google Sheets / Excel)</button><button class="btn sec" style="margin:0" onclick="dl('works-backup.json',JSON.stringify({d:S.data,c:CU}))">Download full backup</button></div><textarea class="big" id="out" readonly style="margin-top:10px;display:none"></textarea></div>
  <h2>Restore backup</h2><div class="card"><input type="file" accept=".json,application/json" onchange="restoreFile(this)"></div>
@@ -604,12 +623,14 @@ async function eraseLocal(){
  if(!confirm("Erase all works on this device? A Google Sheets copy, if you use one, is kept."))return;
  S.data=[];await clearWorks();render();
 }
-function editShift(id,sd){S.es={id,sd};S.addK="esh";render()}
+function editShift(id,sd){S.es={id,sd};S.addK="esh";render();setTimeout(()=>{const x=$("#e0");x&&x.scrollIntoView&&x.scrollIntoView({block:"center"})},60)}
 function saveEsh(){
- const e=S.es,a=$("#e1").value,b=$("#e2").value;if(!a||!b){toast("Set start and end");return}
- const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),sc=$("#e3")?$("#e3").value:"all";
- if(sc==="day")CU.O[e.id+"|"+e.sd]=[tm(a),tm(b)];else CU.E[e.id]=[tm(a),tm(b)];
- save();S.addK=null;render();toast("Shift time updated ✓");
+ const e=S.es,a=$("#e1").value,b=$("#e2").value,name=($("#e0").value||"").trim();
+ if(!name){toast("Enter a shift name");return}
+ if(!a||!b){toast("Set start and end");return}
+ const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),sc=$("#e3")?$("#e3").value:"all",base=SH0.concat(CU.S||[]).find(s=>s[0]===e.id)||[e.id,e.id,0,60],cur=CU.E[e.id]||[base[2],base[3]];
+ if(sc==="day"){CU.O[e.id+"|"+e.sd]=[tm(a),tm(b)];CU.E[e.id]=[cur[0],cur[1],name]}else CU.E[e.id]=[tm(a),tm(b),name];
+ save();S.addK=null;render();toast("Shift saved ✓");
 }
 function resetDay(){delete CU.O[S.es.id+"|"+S.es.sd];save();S.addK=null;render();toast("Reset ✓")}
 /* ---- reports ---- */
@@ -622,8 +643,8 @@ function repBody(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(" · "),g={};
  rows.forEach(e=>{const k=e.shift||"No shift";(g[k]=g[k]||[]).push(e)});
  const hasTow=rows.some(isTow);
- let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh||"All shifts")}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
- Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(sh)}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Job</th><th>Equipment</th>${hasTow?"<th>Towing</th>":""}<th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(e.flight||(isTow(e)?"TOWING":""))}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(bayOf(e))}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td>${hasTow?`<td>${esc(towSummary(e))}</td>`:""}<td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
+ let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh?shName(r.sh):"All shifts")}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
+ Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(shName(sh))}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Job</th><th>Equipment</th>${hasTow?"<th>Towing</th>":""}<th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(e.flight||(isTow(e)?"TOWING":""))}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(bayOf(e))}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td>${hasTow?`<td>${esc(towSummary(e))}</td>`:""}<td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
  if(!rows.length)h+='<div class="empty">No works on this day.</div>';
  h+='<div class="meta" style="margin-top:14px">Works Log · Jamshi Solutions</div>';
  return h;
@@ -633,7 +654,7 @@ function repRender(){
  el.className="open";el.onclick=null;document.documentElement.style.overflow="hidden";
  el.innerHTML=`<div class="sh wide"><div class="noprint"><div class="row sp"><button class="x" onclick="closeSheet()" aria-label="Close">✕</button><b>Report</b><span></span></div>
  <div class="chips" style="margin:10px 0"><button class="chip" onclick="repSet('date',dkey(new Date()))">Today</button><button class="chip" onclick="repSet('date',dkey(new Date(Date.now()-864e5)))">Yesterday</button></div>
- <div class="fg"><div><label>Shift date</label><input type="date" value="${esc(r.date)}" onchange="repSet('date',this.value)"></div><div><label>Shift</label><select onchange="repSet('sh',this.value)"><option value="">All shifts</option>${ids.map(i=>`<option ${i===r.sh?"selected":""}>${esc(i)}</option>`).join("")}</select></div></div>
+ <div class="fg"><div><label>Shift date</label><input type="date" value="${esc(r.date)}" onchange="repSet('date',this.value)"></div><div><label>Shift</label><select onchange="repSet('sh',this.value)"><option value="">All shifts</option>${ids.map(i=>`<option value="${esc(i)}" ${i===r.sh?"selected":""}>${esc(shName(i))}</option>`).join("")}</select></div></div>
  <div class="g2" style="gap:8px"><button class="btn" style="margin:8px 0 0" onclick="repPrint()">🖨 Print</button><button class="btn sec" style="margin:8px 0 0" onclick="repFile()">Save as file</button><button class="btn sec" style="margin:8px 0 0" onclick="repText()">Copy as text</button></div>
  <div class="meta" style="margin-top:8px">If Print does nothing, tap Save as file, open it, then print or share it as PDF from there.</div></div>
  <div id="rbody" style="margin-top:14px">${repBody()}</div></div>`;
@@ -646,7 +667,7 @@ function repFile(){
 }
 function repText(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(", ");
- const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh||"All shifts"),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
+ const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh?shName(r.sh):"All shifts"),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
  rows.forEach((e,i)=>L.push((i+1)+". "+e.ts.slice(11,16)+" "+[e.flight||(isTow(e)?"TOWING":""),e.reg,e.type,e.iata,bayTxt(e),jobs(e),eqs(e),towSummary(e),e.notes].filter(Boolean).join(" | ")));
  cp(L.join("\n"));
 }
@@ -675,14 +696,97 @@ function towPanel(){
   ${!t.st?`<button class="catch go" style="margin-top:10px" onclick="towToggle()">▶ Start towing</button>`:!t.en?`<button class="catch stop" style="margin-top:10px" onclick="towToggle()">■ End towing</button>`:`<div class="info" style="margin-top:8px">Towing time: <b>${dur}</b></div>`}</div>
  <div class="fg"><div><label>From bay</label><input value="${esc(D.bayFrom)}" oninput="S.D.bayFrom=this.value" autocapitalize="characters"></div><div><label>To bay</label><input value="${esc(D.bayTo)}" oninput="S.D.bayTo=this.value" autocapitalize="characters"></div></div>`;
 }
+
+/* ---- search ---- */
+const _dc={};
+function dtxt(sd){if(!sd)return"";if(!_dc[sd]){const d=new Date(sd+"T00:00:00");_dc[sd]=[d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}),d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"}),sd.split("-").reverse().join("/"),sd].join(" ")}return _dc[sd]}
+function hayOf(e){
+ const t=e.tw||{};
+ const raw=[e.flight,e.reg,e.type,e.role,e.bay,e.bayFrom,e.bayTo,bayOf(e),e.city,e.iata,e.notes,e.shift,shName(e.shift),dtxt(e.sd),(e.ts||"").replace("T"," "),e.dep,e.ldl==="ARR"?"arrival":e.ldl==="DEP"?"departure":"",(e.types||[]).join(" "),Object.entries(e.refs||{}).map(a=>a[0]+" "+a[1]).join(" "),isTow(e)?"towing tow":"",hm(t.rcv),hm(t.rep),hm(t.eng),hm(t.fol),hm(t.st),hm(t.en)].filter(Boolean).join(" ").toLowerCase();
+ return raw+" "+raw.replace(/[^a-z0-9]/g,"");
+}
+
+/* ---- activation ---- */
+const b64e=u=>btoa(String.fromCharCode(...u));
+const b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function pbk(code,salt){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(code),"PBKDF2",false,["deriveBits"]);return b64e(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:b64d(salt),iterations:100000},k,256)))}
+const okEntry=(l,hh)=>(l.codes||[]).find(c=>c.h===hh&&(!c.exp||c.exp>=dkey(new Date())));
+async function fetchList(){
+ const ctl=typeof AbortController!=="undefined"?new AbortController():null,tm=ctl?setTimeout(()=>ctl.abort(),6000):null;
+ try{const r=await fetch("activation.json?t="+Date.now(),{cache:"no-store",signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("bad");return await r.json()}finally{if(tm)clearTimeout(tm)}
+}
+const newId=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID():"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+async function jget(base,params){
+ const ctl=typeof AbortController!=="undefined"?new AbortController():null,tm=ctl?setTimeout(()=>ctl.abort(),15000):null;
+ try{const r=await fetch(base+(base.includes("?")?"&":"?")+new URLSearchParams(params).toString(),{cache:"no-store",signal:ctl?ctl.signal:undefined});return await r.json()}finally{if(tm)clearTimeout(tm)}
+}
+async function checkAccess(){
+ if(!S.mt.dev){S.mt.dev=newId();await saveMt()}
+ const a=S.mt.act;
+ if(!a){S.lock="need";try{const l=await fetchList();S.srv=l.server||""}catch(e){}return}
+ try{
+  const l=await fetchList();S.srv=l.server||"";
+  if(a.srv){
+   if(!S.srv)throw new Error("no server");
+   const r=await jget(S.srv,{action:"status",device:S.mt.dev});
+   if(!r||!r.ok)throw new Error("bad answer");
+   if(r.status!=="approved"){S.mt.act=null;await saveMt();S.lock="revoked";return}
+   a.chk=Date.now();await saveMt();S.lock="";return;
+  }
+  const c=okEntry(l,a.h);
+  if(!c){S.mt.act=null;await saveMt();S.lock="revoked";return}
+  a.name=c.name;a.owner=!!c.owner;a.chk=Date.now();await saveMt();S.lock="";
+ }catch(e){S.lock=(Date.now()-(a.chk||a.at||0)>30*864e5)?"offline":""}
+}
+let _bad=0,_wait=0;
+async function activate(){
+ const inp=$("#acode"),raw=((inp&&inp.value)||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+ if(Date.now()<_wait){toast("Too many tries. Wait a moment.");return}
+ if(/^\d{6}$/.test(raw)){
+  if(!S.srv){toast("Email codes are not set up. Use your 12-character code.");return}
+  try{
+   const r=await jget(S.srv,{action:"verify",device:S.mt.dev,code:raw,name:S.reqName||""});
+   if(!r||!r.ok){if(++_bad>=5){_wait=Date.now()+30000;_bad=0}toast((r&&r.error)||"Wrong or expired code");return}
+   S.mt.act={id:"srv",srv:true,name:r.name||S.reqName||"",owner:false,at:Date.now(),chk:Date.now()};await saveMt();S.lock="";S.tab="shift";render();toast("Activated ✓");
+  }catch(e){toast("Could not reach the server. Check your internet.")}
+  return;
+ }
+ if(raw.length<10){toast("Enter the full code");return}
+ try{
+  const l=await fetchList(),hh=await pbk(raw,l.salt),c=okEntry(l,hh);
+  if(!c){if(++_bad>=5){_wait=Date.now()+30000;_bad=0}toast("Wrong or expired code");return}
+  S.mt.act={id:c.id,name:c.name,owner:!!c.owner,h:hh,at:Date.now(),chk:Date.now()};await saveMt();S.lock="";S.tab="shift";render();toast("Activated ✓");
+ }catch(e){toast("Could not check the code. Connect to the internet and try again.")}
+}
+async function requestCode(){
+ const name=(($("#rname")||{}).value||"").trim();if(!name){toast("Enter your name");return}
+ S.reqName=name;
+ try{const r=await jget(S.srv,{action:"request",device:S.mt.dev,name});if(r&&r.ok){S.reqSent=true;render();toast("Request sent to the owner")}else toast((r&&r.error)||"Could not send the request")}
+ catch(e){toast("Could not reach the server. Check your internet.")}
+}
+function fmtCode(el){const v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");el.value=/^\d+$/.test(v)?v.slice(0,6):v.replace(/(.{4})(?=.)/g,"$1-").slice(0,14)}
+async function recheck(){await checkAccess();render()}
+function lockScreen(){
+ const msg={need:"Enter the activation code you received.",revoked:"Your access was removed. Ask the owner for a new code.",offline:"Connect to the internet once to confirm your access."}[S.lock]||"";
+ return `<div style="max-width:420px;margin:30px auto;text-align:center">${logo(84)}<h1 style="margin:12px 0 4px">Works Log</h1><div class="meta">Jamshi Solutions</div>
+ <div class="card" style="margin-top:20px;text-align:left"><b>Activate</b><div class="meta">${msg}</div>
+ ${S.lock==="offline"?`<button class="btn" onclick="recheck()">Check again</button>`:`<label>Activation code</label><input id="acode" inputmode="text" placeholder="6-digit or XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" style="font-size:20px;letter-spacing:.08em;text-align:center" oninput="fmtCode(this)"><button class="btn" onclick="activate()">Activate</button>`}</div>
+ ${S.srv&&S.lock!=="offline"?`<div class="card" style="text-align:left"><b>No code yet?</b><div class="meta">${S.reqSent?"Request sent. The owner gets a 6-digit code by email and will share it with you. Enter it above.":"Enter your name. The owner gets a 6-digit code by email and shares it with you."}</div><label>Your name</label><input id="rname" value="${esc(S.reqName||"")}" placeholder="Your name"><button class="btn sec" onclick="requestCode()">${S.reqSent?"Send a new request":"Request a code"}</button></div>`:""}
+ <div class="meta" style="margin-top:6px">Or email <b>Jamshi285@gmail.com</b>.</div></div>`;
+}
+function ownerTools(){
+ if(!(S.mt.act&&S.mt.act.owner))return"";
+ return `<h2>Owner · access</h2><div class="card"><div class="meta">${S.srv?"Email codes and Google Authenticator are on. A new phone asks for a code, which arrives in your email, or you read them the current Google Authenticator code. To lock a phone, open your Google Sheet, go to the Devices tab, and change its Status to revoked.":"The access server is not set up yet. Until then the 12-character codes work. See ACCESS-SETUP.md to turn on email codes and Google Authenticator."}</div></div>`;
+}
+function loadCodes(){}
 function setTheme(t){S.mt.theme=t;const r=document.documentElement;if(r.setAttribute){t==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",t)}saveMt();render()}
 function about(){
- return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.0</div></div>
+ return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.1</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
  <div class="cert"><div class="cin"><div class="cs">CERTIFICATE OF AUTHENTICITY</div><div class="cl"><span></span>✦<span></span></div>
  <div class="ct">This is to certify that</div><div class="cn">Works Log</div><div class="ct">is an original application designed and developed by</div><div class="cn" style="font-size:26px;color:var(--ac)">Jamshi Solutions</div>
  <div class="cmeta"><div><small>Certificate no.</small><b>JS-WL-2026-001</b></div><div><small>Issued</small><b>14 Nov 2026</b></div><div><small>Edition</small><b>Version 1.0</b></div></div>
  <div class="seal">${logo(46)}</div></div></div>
- <h2>Contact</h2><div class="card"><b>Jamshi Solutions</b><a class="btn" style="display:block;text-align:center;text-decoration:none" href="mailto:Jamshi285@gmail.com">✉ Jamshi285@gmail.com</a><button class="btn sec" onclick="cp('Jamshi285@gmail.com')">Copy email address</button></div>
+ ${ownerTools()}<h2>Contact</h2><div class="card"><b>Jamshi Solutions</b><a class="btn" style="display:block;text-align:center;text-decoration:none" href="mailto:Jamshi285@gmail.com">✉ Jamshi285@gmail.com</a><button class="btn sec" onclick="cp('Jamshi285@gmail.com')">Copy email address</button></div>
  <h2>Storage</h2><div class="card meta">Your works are saved in the app’s own database on this iPhone and work fully offline.</div>
  <div class="meta" style="text-align:center;margin:16px 0">© ${new Date().getFullYear()} Jamshi Solutions. All rights reserved.</div>`;
 }
