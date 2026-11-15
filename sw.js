@@ -1,5 +1,5 @@
 // Works Log offline cache. The page itself is always fetched fresh when online.
-const C = "workslog-v4";
+const C = "workslog-v5";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(C).then(c => Promise.all(FILES.map(f => c.add(new Request(f, { cache: "reload" }))))).then(() => self.skipWaiting()));
