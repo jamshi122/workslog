@@ -151,6 +151,9 @@ input,textarea,select,.sh,.rtab,#rbody{-webkit-user-select:text;user-select:text
 .tgrid input[type=time],.tcard input[type=time]{font-size:22px;font-weight:700}
 .chip.sm{padding:5px 12px;min-height:34px;font-size:13px;display:inline-flex;align-items:center;cursor:pointer}
 .sbtn{cursor:pointer}
+.t24{display:flex;align-items:center;gap:6px}
+.t24 select{width:auto;flex:1;min-width:72px;font-size:20px;font-weight:700;text-align:center;padding:10px 4px}
+.t24 b{font-size:20px}
 </style></head><body>
 <div id="splash"></div>
 <div id="app"></div>
@@ -159,19 +162,19 @@ input,textarea,select,.sh,.rtab,#rbody{-webkit-user-select:text;user-select:text
 <div id="sheet"></div>
 <script>if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
 <script>const FL="QR001:LHR,QR002:LHR,QR003:LHR,QR004:LHR,QR005:LHR,QR006:LHR,QR007:LHR,QR008:LHR,QR009:LHR,QR010:LHR,QR011:LGW,QR012:LGW,QR015:LHR,QR016:CDG,QR017:DUB,QR018:DUB,QR019:DUB,QR020:DUB,QR021:MAN,QR022:MAN,QR027:BHX,QR028:BHX,QR029:EDI,QR030:EDI,QR037:CDG,QR038:CDG,QR041:CDG,QR042:CDG,QR057:MUC,QR058:MUC,QR059:MUC,QR060:MUC,QR067:FRA,QR068:FRA,QR069:FRA,QR070:FRA,QR079:BER,QR080:BER,QR081:BER,QR082:BER,QR087:MAD,QR088:MAD,QR095:ZRH,QR096:ZRH,QR099:BCN,QR100:BCN,QR101:FCO,QR102:FCO,QR116:FCO,QR117:MXP,QR118:MXP,QR149:MAD,QR150:MAD,QR151:MAD,QR152:MAD,QR162:CPH,QR169:ARN,QR170:ARN,QR175:OSL,QR176:OSL,QR204:ATH,QR240:IST,QR273:AMS,QR274:AMS,QR500:BOM,QR501:BOM,QR506:TRV,QR507:BOM,QR557:BOM,QR571:DEL,QR579:DEL,QR572:BLR,QR573:BLR,QR528:MAA,QR529:MAA,QR535:HYD,QR540:CCU,QR541:CCU,QR514:COK,QR515:COK,QR516:COK,QR517:COK,QR504:AMD,QR505:AMD,QR532:ATQ,QR533:ATQ,QR520:GOI,QR521:GOI,QR590:MLE,QR591:MLE,QR605:KHI,QR620:LHE,QR621:LHE,QR633:ISB,QR638:DAC,QR639:KTM,QR641:DAC,QR665:CMB,QR701:JFK,QR702:JFK,QR704:JFK,QR705:JFK,QR706:JFK,QR707:IAD,QR708:IAD,QR709:IAD,QR710:IAD,QR714:IAH,QR720:SEA,QR723:ORD,QR724:ORD,QR726:ORD,QR730:DFW,QR732:DFW,QR738:SFO,QR740:LAX,QR741:LAX,QR742:LAX,QR744:BOS,QR756:ATL,QR763:YUL,QR764:YUL,QR767:YYZ,QR768:YYZ,QR771:GRU,QR772:GRU,QR774:GRU,QR778:MIA,QR780:GRU,QR782:MIA,QR804:NRT,QR805:NRT,QR807:NRT,QR808:NRT,QR809:NRT,QR812:HND,QR813:HND,QR814:HKG,QR815:HKG,QR816:HKG,QR817:HKG,QR829:BKK,QR830:BKK,QR831:BKK,QR832:BKK,QR833:BKK,QR837:BKK,QR841:HKT,QR843:HKT,QR844:KUL,QR845:KUL,QR847:SIN,QR848:KUL,QR853:KUL,QR859:ICN,QR862:ICN,QR863:ICN,QR871:PVG,QR875:CAN,QR891:SYD,QR893:PKX,QR899:BNE,QR901:PER,QR905:MEL,QR906:PER,QR907:PER,QR914:ADL,QR915:ADL,QR920:AKL,QR921:AKL,QR928:MNL,QR929:MNL,QR933:MNL,QR942:SIN,QR943:SIN,QR944:SIN,QR945:SIN,QR946:SIN,QR947:SIN,QR954:CGK,QR955:CGK,QR960:DPS,QR961:DPS,QR963:DPS,QR964:DPS,QR965:DPS,QR988:MEL,QR989:MEL,QR1014:DXB,QR1015:DXB,QR1018:DXB,QR1019:DXB,QR1020:DXB,QR1021:DXB,QR1041:AUH,QR1060:SHJ,QR1061:KWI,QR1103:BAH,QR1123:MCT,QR1165:RUH,QR1201:JED,QR1202:JED,QR1301:CAI,QR1302:CAI,QR1306:CAI,QR1341:NBO,QR1342:NBO,QR1351:NBO,QR1352:NBO,QR1364:JNB,QR1377:JNB,QR1378:JNB,QR1379:LOS,QR1380:LOS,QR1427:ADD,QR1428:ADD,QR8101:ORD,QR8102:MST,QR8131:LGG,QR8157:SZX,QR8181:HKG,QR8190:PVG,QR8201:AMS,QR8217:HND,QR8222:ICN,QR8351:FRA,QR8441:BOM,QR8477:DEL,QR8890:ANC,AA120:DOH,AI961:DOH,AI971:DOH,6E1307:DOH,6E1303:DOH,6E1311:DOH,IX375:DOH,IX473:DOH,QP491:DOH,BA123:DOH,TK780:DOH,TK782:DOH,PC660:DOH,CZ8059:DOH,MF823:DOH,MS935:DOH,ET628:DOH,EY661:DOH,FZ001:DOH,G9135:DOH,GF524:DOH,WY237:DOH,SV542:DOH,SV540:DOH,KNE225:DOH,KU617:DOH,JL059:DOH,IB6700:DOH,AY1981:DOH,GA710:DOH,PR684:DOH,BG325:DOH,PK287:DOH,RA239:DOH,KZR653:DOH,WB300:DOH,AI962:BOM,AI972:DEL,6E1308:DEL,6E1304:BOM,6E1312:MAA,IX376:CCJ,IX474:COK,QP492:BOM,PC661:SAW,CZ8060:PKX,MF824:PKX,MS936:CAI,ET629:ADD,EY662:AUH,FZ002:DXB,G9136:SHJ,GF525:BAH,WY238:MCT,SV543:JED,SV541:RUH,KNE226:RUH,KU618:KWI,JL050:HND,IB6701:MAD,AY1982:HEL,GA711:CGK,BG326:DAC,PK288:ISB,KZR654:ALA,WB301:KGL,QR055:NCE,QR045:DUB,QR131:FCO,QR984:HAN,QR8265:MAD,QR8432:SIN,QR8245:LHR,QR1062:SHJ,QR1192:JED,QR1152:DMM,J9116:KWI,QR113:FCO,QR033:BHX,QR227:SOF,QR155:AGP,6E1326:CNN,QR1194:ELQ,MH165:KUL,QR1006:DXB,QR1178:MED,QR1303:CAI,6E1324:COK,QR410:DAM,QR1212:BSR,QR0840:HKT,QR0928:MNL,QR0946:SIN,QR0175:OSL,QR0163:YYZ,QR0149:YUL,QR0085:DUS,QR0125:VCE,QR0193:BRU,QR1100:BAH,QR0906:SYD,QR0707:IAD,QR0956:CGK,QR0069:FRA,QR0053:NCE,QR0123:MXP,QR0159:CPH,QR0416:BEY,QR0381:MLA,QR0402:AMM,QR1399:TUN,QR0183:VIE,QR0217:ZAG,QR0337:GYD,QR0131:STN,QR0057:MUC,QR0079:BER,QR1120:SHJ,QR023:MAN,QR0301:HEL,QR0161:CPH,QR0107:LHR,QR0169:ARN,QR0155:AGP,QR0195:BRU,QR0209:ATH,QR0081:BER,QR0127:MXP,QR0003:LHR,QR0103:LHR,QR0109:LHR,QR0041:CDG,QR0151:MAD,QR1044:AUH,QR0137:PRG,QR0101:LHR,QR0011:LHR,QR1315:CAI,QR0043:CDG,QR0237:IST,QR0327:NQZ,QR1371:JNB,QR1435:ALG,QR1114:MCT,QR141:BCN,QR285:EVN,QR838:BKK,6E1302:BLR,QR377:TAS,VA22:PER,G9139:SHJ,QR404:AMM,QR1034:SHJ,QR982:HAN,QR1365:JNB,QR522:GOX,6E1306:BOM,QR548:ATQ,QR600:PEW,QR908:SYD,QR418:BEY,FZ6:DXB,QR8954:HAN,WY662:MCT,IX476:COK,G928:SHJ,AI2290:BOM,AI2284:DEL,IX774:CNN,GF531:BAH,QR8900:MFM,FZ20:DXB,UL218:CMB,XY294:RUH,EY670:AUH,QR1182:JED,RQ978:KBL,BS334:DAC,MH6127:KUL,QR1174:MED,IB392:MAD,QR436:ISU,QR648:KTM,QR1184:JED,AT217:CMN,QR1499:JRO,QR8249:CMN,BG126:CGP,QR628:LHE,6E1346:DEL,PC615:SAW,QR137:BCN,QR195:BRU,QR614:ISB,QR818:HKG,QR948:SIN,QTR56M:BRU,QR69:FRA,QR1156:DMM,6E1342:BOM,QR91:HAM,GA901:CGK,QR237:IST,QR215:ZAG,QR610:KHI,QR660:CMB,QR956:CGK,QR87:DUS,QR123:MXP,QR219:OTP,QR79:BER,QR93:ZRH,QR8233:STN,QR59:MUC,QR105:LHR,QR263:WAW,QR189:VIE,QR678:SEZ,QR8187:AMS,QTR40W:AMS,QR8205:AMS,QR8267:LGG,WY668:MCT,MS938:CAI,QR1160:RUH,EY664:AUH,QR8203:AMS,G982:SHJ,QR8706:LOS,QR8758:AUH,QTR1HV:AMS,GF521:BAH,3T235:PZU,RJ651:AMM,QR490:IKA,QR8406:HKG,QR8420:MCT,QR8042:MCT,QR8724:SHJ,QR8902:KUL,QR231:BEG,QR241:SAW,QR1220:TUU,QR3:LHR,QR27:MAN,QR1226:RSI,QR17:DUB,QR29:EDI,QR676:MLE,QR8728:KWI,CZ334:CAN,QR147:MAD,QR458:BGW,QR8814:EVN,QR19:DUB,QR31:EDI,QR103:LHR,QR1407:LOS,QR21:MAN,QR41:CDG,QR343:LIS,QR1375:MPM,QR8245:BRU,MH161:KUL,QR1116:BAH,QR1424:ABJ,QR1487:ZNZ,QR8730:RUH,QR329:LGW,QR834:BKK,QR860:TFU,QR1076:KWI,MF846:PKX,QR670:MLE,VA16:BNE,BA126:LHR,QR11:LHR,QR35:BHX,QR970:SGN,QR976:HAN,VA8:MEL,QR777:MIA,QR654:CMB,XY226:RUH,KC552:CIT,QR1383:EBB,QR400:AMM,QR8209:PRG,PC7291:SAW,QR1423:ABJ,QR031:EDI,QR1405:LOS,QR1389:KGL,QR402:AMM,QR781:MIA,QR115:FCO,RB522:DAM,OY-4038:DEL,QR1476:JRO,QR1070:KWI,QR1455:HRE,QR265:LCA,QR259:WAW,QR932:MNL,IX478:COK,QR1204:NUM,QR448:BSR,QR713:IAH,QR89:HAM,ET433:ADD,QR1190:JED,QR1170:RUH,QR640:DAC,QR8148:ATL,QR719:SEA,VA002:SYD,QR703:JFK,QR806:NRT,BA122:LHR,ME435:BEY,QR203:ATH,QR8219:AMS,IX484:COK,QR1216:YNB,QR570:DEL,QR826:BKK,QR646:KTM,QR1040:AUH,QR630:SKT,QR1345:NBO,QR221:OTP,QR8700:NBO,QR1206:TIF,QR353:GYD,QR900:PER,QR8734:BGW,QR773:GRU,QR836:BKK,QR1397:CMN,QR444:BGW,QR8168:LGG-ORD,QR892:PKX,QR962:DPS,QR1363:JNB,QR828:BKK,QR8221:FRA,QR1172:RUH,QR8694:BLR,QR8412:HKG,QR874:CAN,QR8622:MAA,QR1369:CPT,QR1126:MCT,QR211:ATH,QR870:PVG,QR1183:JED- Arrival,QR8290:BUD -qrt,QR852:KUL,QR1335:NBO,J4681:PZU,QR8470:HKG,QR337:SVO,QR842:HKT,QR1228:HAS,QR339:SVO,QR616:MUX,QR664:CMB,QR1108:BAH,QR8014:SYD MEL,QR898:BNE,PK280:ISB,QR1168:RUH,QR604:KHI,QR119:LHR,QR556:BOM,PK286:PEW,QR632:ISB,QR662:CMB,QR1491:FIH-NBJ,QR1148:MCT,QR8211:AMS,QR8680:KHI,QR1054:AUH,QR1154:DMM,6E1314:HYD,QR8942:CAN,QR426:BEY,QR1066:SHJ,QR311:JMK,QR1038:SHJ,QR8064:KUL,QR8400:HKG,QR8564:LOS-GRU,QR8273:MAD,QR145:BCN,QR039:CGD,QR737:SFO,QR8088:LOS-GRU,QR1150:DMM,QR1240:RUH,QR755:ATL,QR8207:AMS,QR8962:PVG,QR8742:SHJ,QR1050:AUH,QR1164:RUH,QR9950:BCG/DOH-DOH,QR085:DUS,QR1102:BAH,RB652:DAM,QR729:DFW,QR1481:DAR,QR291:PRG,QR1248:JED,H9-353HIMALAYA:KTM,QR317:BJV,QR351:GYD,QR8500:HKG,QR245:IST,RJ653:AMM,QR1307:CAI,G9131:SHJ,KU620:KWI,QR450:EBL,QR8976:KTI,QR904:MEL,WB305:KGL,EY668:AUH,G9133:SHJ,QR1052:AUH,QR785:GRU,QR1309:CAI,QR934:MNL,QR658:CMB,PR648:MNL,QR1124:MCT,QR1401:TUN,QR1058:SHJ,IX498:COK,QR642:DAC,Y92565:HKG,QR854:KUL,GF527:BAH,XY224:RUH,QR958:CGK,QR534:AMD,QR8702:LOS EBB,QR416:BEY,QR1022:DXB,PC605:SAW,QR8650:HYD,QR9092:BLR,QR179:OSL,QR1144:SLL,QR926:CRK,J4683:KRT,QR8261:LGG,QR617:ArrivalDOH,QR8430:HGK,QR8080:LGG-JFK,QR8227:FRA,QR8281:STN,QR8970:SGN,QR880:CGK,QR725:ORD,QR99:GVA,QR1866:RUH,QR1319:PZU,QR872:PVG,QR743:BOS,QR8422:HKG,QR8162:ORD,QR255:TBS,QR239:IST,QR201:BUD,QR8482:STN,QR802:KIX,ME437:BEY,FZ020:DXB,QR1305:CAI,BG226:DAC,QR536:CCJ,6E1316:HYD,QR1188:JED,QR731:DFW,QR1391:EBB,QR289:PRG,QR779:GRU,QR8170:LGG ORD,QR389:ALA,QR8092:KHI,QR8402:HKG,QR8612:AMD,QR578:DEL,ME1435:BEY,QR1130:SLL,ES280:BAH,QR303:HEL,FZ10:DXB,QR8602:BOM,IX931:BLR,QR890:HGH,QR3094:DPS,QR8426:HKG,QR8948:SZX,QR1002:DXB,RJ655:AMM,QR8972:SGN,7L6862:GYD,QR8604:BOM,QR8082:HKG,QR8594:DMM,WY670:MCT,IX574:TRV,QR246:IST-DOH,IX932:BLR,QR8726:DWC,QR1236:RUH,QR146:LOS-DOH,FZ18:DXB,WY664:MCT,6E1323:MAA,6E1322:MAA,QR442:BGW,QR8154:MXP ORD,VA07:MEL-DOH,QR8257:LEJ,QR8452:SYD-HKG,QR1186:JED,B47350:MCT,GF7186:BAH,RA254:KTM,QR313:ESB,QR8269:LEJ,QR1176:MED,FZ3024:DWC,QR8279:BUD,QR8836:LGG-JFK,WB303:KGL,QR207:ATH,QR253:TBS,QR8418:HKG,QR644:KTM,QR727:PHL,QR1110:BAH,QR7390:MCT,QR1036:SHJ,IX494:COK,IX382:CCJ,QR8410:HKG,QR8414:HKG,QR83:BER,QR8852:KUL,QR8964:PVG,SV547:JED",IA="LHR:London|UK;LGW:London|UK;CDG:Paris|France;DUB:Dublin|Ireland;MAN:Manchester|UK;BHX:Birmingham|UK;EDI:Edinburgh|UK;MUC:Munich|Germany;FRA:Frankfurt|Germany;BER:Berlin|Germany;MAD:Madrid|Spain;ZRH:Zurich|Switzerland;BCN:Barcelona|Spain;FCO:Rome|Italy;MXP:Milan|Italy;CPH:Copenhagen|Denmark;ARN:Stockholm|Sweden;OSL:Oslo|Norway;ATH:Athens|Greece;IST:Istanbul|Turkey;AMS:Amsterdam|Netherlands;BOM:Mumbai|India;TRV:Tiruvandapuram|India;DEL:Delhi|India;BLR:Bengaluru|India;MAA:Chennai|India;HYD:Hyderabad|India;CCU:Kolkata|India;COK:Kochi|India;AMD:Ahmedabad|India;ATQ:Amritsar|India;GOI:Goa|India;MLE:Male|Maldives;KHI:Karachi|Pakistan;LHE:Lahore|Pakistan;ISB:Islamabad|Pakistan;DAC:Dhaka|Bangladesh;KTM:Kathmandu|Nepal;CMB:Colombo|Sri Lanka;JFK:New York|USA;IAD:Washington|USA;IAH:Houston|USA;SEA:Seattle|USA;ORD:Chicago|USA;DFW:Dallas|USA;SFO:San Francisco|USA;LAX:Los Angeles|USA;BOS:Boston|USA;ATL:Atlanta|USA;YUL:Montreal|Canada;YYZ:Toronto|Canada;GRU:Sao Paulo|Brazil;MIA:Miami|USA;NRT:Tokyo|Japan;HND:Tokyo|Japan;HKG:Hong Kong|China;BKK:Bangkok|Thailand;HKT:Phuket|Thailand;KUL:Kuala Lumpur|Malaysia;SIN:Singapore|Singapore;ICN:Seoul|South Korea;PVG:Shanghai|China;CAN:Guangzhou|China;SYD:Sydney|Australia;PKX:Beijing|China;BNE:Brisbane|Australia;PER:Perth|Australia;MEL:Melbourne|Australia;ADL:Adelaide|Australia;AKL:Auckland|New Zealand;MNL:Manila|Philippines;CGK:Jakarta|Indonesia;DPS:Bali|Indonesia;DXB:Dubai|UAE;AUH:Abu Dhabi|UAE;SHJ:SHARJAH |UAE;KWI:Kuwait City|Kuwait;BAH:Manama|Bahrain;MCT:Muscat|Oman;RUH:Riyadh|Saudi Arabia;JED:Jeddah|Saudi Arabia;CAI:Cairo|Egypt;NBO:Nairobi|Kenya;JNB:Johannesburg|South Africa;LOS:Lagos|Nigeria;ADD:Addis Ababa|Ethiopia;MST:Maastricht|Netherlands (Cargo);LGG:Liege|Belgium (Cargo);SZX:Shenzhen|China (Cargo);ANC:Anchorage|USA (Cargo);DOH:Doha|Qatar;CCJ:Kozhikode|India;SAW:Istanbul|Turkey;HEL:Helsinki|Finland;ALA:Almaty|Kazakhstan;KGL:Kigali|Rwanda;NCE:Côte d'Azur International Airport|France;HAN:Hanoi|Vietnam;DMM:Dammam|Saudi Arabia;SOF:Sofia|Bulgaria;AGP:Malaga|Spain;CNN:Kannur|India;ELQ:Buraidah (Gassim)|Saudi Arabia;MED:Medina|Saudi Arabia;DAM:Damascus|Syria;BSR:Basra|Iraq;DUS:Dusseldorf|Germany;VCE:Venice|Italy;BRU:Brussels|Belgium;BEY:Beirut|Lebanon;MLA:Malta|Malta;AMM:Amman|Jordan;TUN:Tunis|Tunisia;VIE:Vienna|Austria;ZAG:Zagreb|Croatia;GYD:Baku|Azerbaijan;STN:London|United Kingdom;PRG:Prague|Czech Republic;NQZ:Astana|Kazakhstan;ALG:Algiers|Algeria;EVN:Yerevan|Armenia;TAS:Tashkent|Uzbekistan;GOX:Goa|India;PEW:Peshawar|Pakistan;MFM:Macau|China;KBL:Kabul|Afghanistan;ISU:Sulaimaniyah|Iraq;CMN:Casablanca|Morocco;JRO:Kilimanjaro|Tanzania;CGP:Chittagong|Bangladesh;HAM:Hamburg|Germany;OTP:Bucharest|Romania;WAW:Warsaw|Poland;SEZ:Victoria|Seychelles;PZU:Port Sudan|Sudan;IKA:Tehran|Iran;BEG:Belgrade|Serbia;TUU:Tabuk|Saudi Arabia;RSI:Red Sea Project|Saudi Arabia;BGW:Baghdad|Iraq;LIS:Lisbon|Portugal;MPM:Maputo|Mozambique;ABJ:Abidjan|Ivory Coast;ZNZ:Zanzibar|Tanzania;TFU:Chengdu|China;SGN:Ho Chi Minh City|Vietnam;CIT:Shymkent|Kazakhstan;EBB:Entebbe|Uganda;HRE:Harare|Zimbabwe;LCA:Larnaca|Cyprus;NUM:Neom|Saudi Arabia;YNB:Yanbu|Saudi Arabia;SKT:Sialkot|Pakistan;TIF:Taif|Saudi Arabia;LGG-ORD:Liège – Belgium|Chicago – United States;CPT:Cape Town|South Africa;JED- Arrival:Jeddah|Saudi Arabia;BUD -qrt:Budapest – Hungary|Hungary;SVO:Moscow|Russia;HAS:Hail|Saudi Arabia;MUX:Multan|Pakistan;SYD MEL:Sydney,Melbon|Australia;FIH-NBJ:Kinshasa&Nairobi|Congo& Kenya;JMK:Mykonos|Greece;LOS-GRU:Los Angeles & Brazil|USA&Brazil;CGD:Paris|France;BCG/DOH-DOH:Qatar|Qatar;DAR:Darussalam|Tanzania;BJV:Milas–Bodrum Airport|Turkey 🇹🇷;EBL:Erbil|Iraq 🇮🇶;KTI:Kratié,|Cambodia 🇰🇭;LOS EBB:Lagos, Nigeria|Entebbe, Uganda 🇺🇬;SLL:Salalah,|Oman 🇴🇲;CRK:Clark|Philippines 🇵🇭;KRT:Khartoum,|Sudan 🇸🇩;ArrivalDOH:Doha|Qatar;HGK:HongKong|HongKong;LGG-JFK:Liège&     New York City|Belgium 🇧🇪 → New York City, USA;GVA:Geneva,|Switzerland 🇨🇭;TBS:Tbilisi|Georgia 🇬🇪;BUD:Budapest,|Hungary 🇭🇺;KIX:Osaka,|Japan 🇯🇵;LGG ORD:Belgium → Chicago,|Belgium → USA;HGH:Hangzhou,|China 🇨🇳;IST-DOH:Doha|Qatar;DWC:Dubai|UAE;LOS-DOH:Doha|Qatar;MXP ORD:Milan - Italy Chicago - USA|Italy -USA;MEL-DOH:Melbourne- Doha|Qatar;LEJ:Leipzig|Germany;SYD-HKG:Sydney - Hong Kong|Australia  - Hong Kong;ESB:Esbjerg|Denmark;PHL:Philadelphia|USA",RG="A7-APA:A380-800:P,A7-APB:A380-800:P,A7-APC:A380-800:P,A7-APD:A380-800:P,A7-APE:A380-800:P,A7-APF:A380-800:P,A7-APG:A380-800:P,A7-APH:A380-800:P,A7-API:A380-800:P,A7-APJ:A380-800:P,A7-ANA:A350-1000:P,A7-ANB:A350-1000:P,A7-ANC:A350-1000:P,A7-AND:A350-1000:P,A7-ANE:A350-1000:P,A7-ANF:A350-1000:P,A7-ANG:A350-1000:P,A7-ANH:A350-1000:P,A7-ANI:A350-1000:P,A7-ANJ:A350-1000:P,A7-ANK:A350-1000:P,A7-ANL:A350-1000:P,A7-ANM:A350-1000:P,A7-ANN:A350-1000:P,A7-ANO:A350-1000:P,A7-ANP:A350-1000:P,A7-ANQ:A350-1000:P,A7-ANR:A350-1000:P,A7-ANS:A350-1000:P,A7-ANT:A350-1000:P,A7-AOA:A350-1000:P,A7-AOB:A350-1000:P,A7-AOC:A350-1000:P,A7-AOD:A350-1000:P,A7-AOE:A350-1000:P,A7-AOF:A350-1000:P,A7-AOG:A350-1000:P,A7-AOH:A350-1000:P,A7-ALA:A350-900:P,A7-ALB:A350-900:P,A7-ALC:A350-900:P,A7-ALD:A350-900:P,A7-ALE:A350-900:P,A7-ALF:A350-900:P,A7-ALG:A350-900:P,A7-ALH:A350-900:P,A7-ALI:A350-900:P,A7-ALJ:A350-900:P,A7-ALK:A350-900:P,A7-ALL:A350-900:P,A7-ALM:A350-900:P,A7-ALN:A350-900:P,A7-ALO:A350-900:P,A7-ALP:A350-900:P,A7-ALQ:A350-900:P,A7-ALR:A350-900:P,A7-ALS:A350-900:P,A7-ALT:A350-900:P,A7-ALU:A350-900:P,A7-ALV:A350-900:P,A7-ALW:A350-900:P,A7-ALX:A350-900:P,A7-ALY:A350-900:P,A7-ALZ:A350-900:P,A7-AME:A350-900:P,A7-AMF:A350-900:P,A7-AMG:A350-900:P,A7-AMH:A350-900:P,A7-AMI:A350-900:P,A7-AMJ:A350-900:P,A7-AMK:A350-900:P,A7-AML:A350-900:P,A7-BAA:B777-300ER:P,A7-BAB:B777-300ER:P,A7-BAC:B777-300ER:P,A7-BAE:B777-300ER:P,A7-BAF:B777-300ER:P,A7-BAG:B777-300ER:P,A7-BAH:B777-300ER:P,A7-BAI:B777-300ER:P,A7-BAJ:B777-300ER:P,A7-BAK:B777-300ER:P,A7-BAL:B777-300ER:P,A7-BAM:B777-300ER:P,A7-BAN:B777-300ER:P,A7-BAO:B777-300ER:P,A7-BAP:B777-300ER:P,A7-BAQ:B777-300ER:P,A7-BAS:B777-300ER:P,A7-BAT:B777-300ER:P,A7-BAU:B777-300ER:P,A7-BAV:B777-300ER:P,A7-BAW:B777-300ER:P,A7-BAX:B777-300ER:P,A7-BAY:B777-300ER:P,A7-BAZ:B777-300ER:P,A7-BEA:B777-300ER:P,A7-BEB:B777-300ER:P,A7-BEC:B777-300ER:P,A7-BED:B777-300ER:P,A7-BEE:B777-300ER:P,A7-BEF:B777-300ER:P,A7-BEG:B777-300ER:P,A7-BEH:B777-300ER:P,A7-BEI:B777-300ER:P,A7-BEJ:B777-300ER:P,A7-BEK:B777-300ER:P,A7-BEL:B777-300ER:P,A7-BEM:B777-300ER:P,A7-BEN:B777-300ER:P,A7-BEO:B777-300ER:P,A7-BEP:B777-300ER:P,A7-BEQ:B777-300ER:P,A7-BES:B777-300ER:P,A7-BBA:B777-200LR:P,A7-BBB:B777-200LR:P,A7-BBC:B777-200LR:P,A7-BBD:B777-200LR:P,A7-BBE:B777-200LR:P,A7-BBF:B777-200LR:P,A7-BBG:B777-200LR:P,A7-BBI:B777-200LR:P,A7-BHA:B787-9:P,A7-BHB:B787-9:P,A7-BHC:B787-9:P,A7-BHD:B787-9:P,A7-BHE:B787-9:P,A7-BHF:B787-9:P,A7-BHG:B787-9:P,A7-BHH:B787-9:P,A7-BHI:B787-9:P,A7-BHJ:B787-9:P,A7-BHK:B787-9:P,A7-BHL:B787-9:P,A7-BHM:B787-9:P,A7-BHN:B787-9:P,A7-BHO:B787-9:P,A7-BHY:B787-9:P,A7-BHZ:B787-9:P,A7-BCA:B787-8:P,A7-BCB:B787-8:P,A7-BCC:B787-8:P,A7-BCZ:B787-8:P,A7-BSA:B737-MAX8:P,A7-BSB:B737-MAX8:P,A7-BSC:B737-MAX8:P,A7-BSD:B737-MAX8:P,A7-BSE:B737-MAX8:P,A7-AHA:A320-200:P,A7-AHB:A320-200:P,A7-AHL:A320-200:P,A7-AJA:A321neo:P,A7-AJB:A321neo:P,A7-AJC:A321neo:P,A7-AJD:A321neo:P,A7-AJE:A321neo:P,A7-AJF:A321neo:P,A7-AJG:A321neo:P,A7-ACM:A330-200:P,A7-ACT:A330-200:P,A7-AED:A330-300:P,A7-AEE:A330-300:P,A7-BFA:B777-F:C,A7-BFB:B777-F:C,A7-BFC:B777-F:C,A7-BFD:B777-F:C,A7-BFE:B777-F:C,A7-BFF:B777-F:C,A7-BFG:B777-F:C,A7-BFH:B777-F:C,A7-BFI:B777-F:C,A7-BFJ:B777-F:C,A7-BFK:B777-F:C,A7-BFL:B777-F:C,A7-BFM:B777-F:C,A7-BFN:B777-F:C,A7-BFO:B777-F:C,A7-BFP:B777-F:C,A7-BFQ:B777-F:C,A7-BFR:B777-F:C,A7-BFS:B777-F:C,A7-BFT:B777-F:C,A7-BFU:B777-F:C,A7-BFV:B777-F:C,A7-BFW:B777-F:C,A7-BFX:B777-F:C,A7-BFY:B777-F:C,A7-BFZ:B777-F:C,A7-BGA:B777-F:C,A7-BGB:B777-F:C,A7-BGC:B777-F:C,A7-BCU:B787-800:P,A6-BLD:787-8:P,A7-BHV:B787-900:P,A7-BCH:B787-800:P,A7-BCL:B787-800:P,A6-AEP:A320Q:P,A7-ACX:A330-200:P,A7-LAF:A320:P,9K-CAN:A320:P,A7-BCQ:B787-800:P,A7-BDC:B787-800:P,A7-AEF:A330-300:P,A6-AEJ:A321:P,A7-LAC:A320:P,HZ-NS49:A320:P,EIKDF:A321:P,A7-BCO:B787-800:P,A7-BTB:B777-200:C,A9C-AB:A320:P,A7-AHQ:A320:P,A7-AEQ:A330-300:P,TCDCL:320:P,A7-AHE:A320:P,A7-BCF:B787-8:P,A7-BDB:B787-800:P,CNRAM:B787-9:P,JYRAK:A320:P,A7-BUB:B787-800:P,A7-AHW:A320:P,YK-AKG:A320:P,A7-AHG:A320:P,A7-BCS:B787-8:P,SU-GFS:A320Q:P,A7-BCX:B787-800:P,A7-AHC:A320:P,A7-ACW:A330-200:P,A4-OBT:B737M:P,VT-GHE:B737-800:P,A7-LAG:A320:P,A7-AER:A330-300:P,A7-BHU:B787-900:P,B-2769:B78-7800:P,A7-BCR:B787-800:P,A6-AOS:A320:P,A7-BCI:B787-800:P,A7-BCV:B787-800:P,ET-AYD:B787-900-Ethopia Air:P,A7-BHP:B787-900:P,A7-BOD:B777-300:P,A7-LAD:A320:P,A7-AHT:A320:P,A7-BOA:B777-300:P,A7-BEU:B777-300:P,SU-GFT:A321-Egypt Air:P,GZ-BLC:B787-1000:P,A7-BER:B777-300:P,A7-AEO:A330-300:P,OD-MRM:A320- Mea airways:P,A7-AHH:A320:P,VT-TGH:B737-800 Air India express:P,A7-BDD:B787-800:P,9M-MAF:A350-900-Malaysia Airline:P,9M-MUA:A330 Malaysian Airline:C,A7-BOI:B777-300:P,A7-AHX:A320:P,GZ-BLK:B787-1000 British Airways:P,A7-AHP:A320:P,A7-AHJ:A320:P,OD-MRN:A320- MEA Airline:P,A7-LAB:A320:P,A7-BCP:B787-800:P,A7-BCK:B787-800:P,A7-BHT:B787-900:P,A7-BCM:B787-800:P,A7-BET:B777-300:P,A7-BHS:B787-900:P,A7-BCD:B787-800:P,A7-BHR:B787-900:P,A7-BHQ:B787-900:P,A7-BCT:B787-800:P,JYREC:E290- Royal Jordhan:P,STBDG:B737:P,ST BDK:B737-8 - BADR AIR:P,A9-CAD:A320- Gulf Air:P,A7-BHX:B7879:P,A9-CXA:A321- Gulf Air:P,A7-BHW:B787-900:P,A7-AHO:A320:P,S2AJH:B737-800 Us bangla:P,A4OMI:B737M8:P,VT-IPM INDGO:A320:P,A7-BEW:B777-300:P,A9-CTE:A320 Gulf Air:P,VT-TQH:A32N Air India:P,VT-IPG:A320N IndiGo:P,VT-IQH:A320 IndiGo:P,A7-AHS:A320:P,APBLC:A320 pakistan:P,A7-BEV:B777-300:P,APBOM:A320- Pakistan Air:P,A9-CNF:A320:P,A7-AHD:A320:P,VT-TQD:320N:P,VT-ISJ INDIGO:A320:P,VT-IIS INDIGO:A320:P,A7-AHY:A320:P,C5-FBN:B737800:P,SU-GFR:A321:P,A7-BCJ:B787-800:P,VT-ILM INDIGO:A32Q:P,A6-FKB FLYDUBAI:B737M:P,YK-SYR:737-500 (Small pin):P,VT-BWO INDIANEXPRESS:737-800:P,HZ-AS58:A320Soudi Air:P,AP-BLB:A320:P,HZ-AS84:A320:P,A6-FKD FLY DUBAI:B737M:P,A7-BCG:787-800:P,A7-BDA:B787800:P,A6-AEB:A320:P,9N-ALV HIMALAYA AIR:A320:P,VT-AYB EXPRESS:B737:P,A6-EIH:A320:P,JY-RAM ROYAL JORDHAN:A320- (CCL):P,A6-AOO:A320 Air Arabia:P,9K-APL:A330900:P,VT-IMQ INDIGO:A32Q:P,A7-AHI:A320:P,HZ-AS82 SOUDI AIRLINE:A320:P,VY-TQI:A320:P,9X-RWG RWANDA AIR:B737800:P,A6-EII ETHIHAD:A320:P,A7-BOG:B777-300:P,A7-BBH:B777L:P,A7-BOH:B777-300:P,YA-KME:A340-300:P,RP-C8781:A330:P,VT-IBL:A32Q:P,A4-OMK:B737-800:P,VT-ICV:A32Q:P,4R-ANA:A320:P,A9-CNG:A32Q Gilf Air:P,A6-EIJ:A320:P,UK75058-    B757 TYPE:B757 Ukrain:C,A6-FGI:B737800:P,CNRGC:B7878:P,A9CAH:A320:P,A6-ANS:A320:P,JY-RAE:A320N:P,A6-FMT:B737:P,A7-BOE:B7773:P,HZN-S43:A320:P,A7-BOB:B7773:P,A7-BOF:B7773( aft small whole):P,YA-KAC:A3403:P,TCRBT:A320Q:P,9MMAH:A350-900:P,A7-BTA:B7772:C,A7-BEX:B7773:P,S7-VEV:A320:P,A7-AHR:A320:P,VT-ILG:A320 Indigo:P,STBDS:B7378:P,A7-BCW:B7878:P,VT-IXH:A32N:P,TCRFL:A320:P,SUGFW:A320Q:P,BLZ:A320 Pakistan:P,A7-BIA:B7879:P,VT-IPZ:A32N:P,A7-BTC:B777X:C,OD-MRL         CCL:A320:P,A7-AHU:A320:P,A7-BCN:B787-8:P,VT-IME:A320:P,ET-AWI:B737M:P,VT-ILL:A320Q:P,A7-BCE:B787:P,T7-ME3:A321 CCL:P,A7-FKR:B737M:P,S2AJV:B7878:P,9K-AQC:A320Q:P,VT-IBZ:A320:P,VT-EXN:A320:P,VT-ILF:A320:P,A6-AQP:A320:P,A9-CTG:A320:P,S2AJS:B7878:P,OD-MRO:A320:P,HZN-S29:A320:P,A7-BIB:B7879:P,HZN-S22:A320:P,A9C-TXZ:B7378:P,4R-ANC:A32Q:P,VT-IPD:A320:P,VT-IMC:A320:P,A4-OMJ:B7378:P,HZ-NS77:A320:P,VT-EXP:A320:P,A6-FNA:B737M:P,T7-ME5:A320 CCL:P,HZ-NS85:A320:P,A7-AOI:A350-1000:P,VT-CIO:A320:P,A6-FES:B7378M:P,VT-BXS:B7378:P,T7-ME8:A320-CCL:P,VT-TNR:A320:P,A7-BVC:B7878:P,A6-LRH:A320:P,OD-M10:A320-CCL:P,A7-AOJ:A350-1000:P,4R-ANE:A321Neo:P,A9-CTB:A320:P,A6-FGA:B7378M:P,VT-TQP:A320:P,HZ-NS48:A320:P,A7-BCY:B7878:P,4K-BBH:B747-8:P,A7-FMP:B7378M:P,A6-ANY:A320:P,9K-AKM:A320:P,A4-OMG:B7378:P,VT-AXW:B737:P,VT-IXG:A320:P,A6-ARE:A320:P,A4-OME:B7378:P,VT-BXJ:B7378:P,VT-BXL:B7378:P,T7-MEI:A320:P,A6-FPB:B787-8:P,A4-OMR:B7378:P,VT-AXT:B7378:P,VT-RTT:A320:P,A6-AOE:A320:P,VT-IQC:A320:P,A4-OBY:B7378:P,VT-BXN:B7378M:P,HZN-S33:A320:P,9K-AKR:A320:P,A6-FKE FLYDUBAI:B737M:P,A6-FKQ FLYDUBAI:B737M:P,A6-LRA:A321:P,S2AHJ:B7378:P,VT-IQD:A320:P,A6-AOT:A320:P,8Q FBB:A321:P,AP-BLY:A320:P,A6-AOU:A320:P,A6-AQU:A320:P,9N-ALY:A3303:P,VT-IBV:A320:P,A6-ANR:A320:P,A9-CXB:A32Q:P,GV-IIV:B7772:P,A6-SHO:B7378:C,A7-BTD:B7772:C,9XRWF:B7378:P,A6-AQF:A320:P,A4-OMD:B737M:P,A9-CXD:A320:P,9K-AKT:A320:P,A6-FKI:B7378:P,A6-FEB:B7378:P,VT-BWE:B7378:P,A7-BIC:B7879:P,VT-GHB:B737-8:P,VT-IQI:A320:P,VT-BXI:B7378:P,VT-BXU:B7378:P,A7-BUA:B787:P,VT-ICR:A320:P,A4-OMH:B737- Oman Air:P,A4-OMB:B737-8 Oman Air:P,A6-FKC:B737-8M. Fly Dubai:P,A6-AQT:A320-  Air Arabia:P,HZ-AS56:A320- Saudi Air:P,VT-IXJ:A320-  IndiGo:P,A9-CXC:A320. Gulf Air:P,A6-FKN:B737-M FlyDubai:P,A4-OMP:B737-Oman Air:P,A6-FKT:B737-8M FlyDubai:P,A6-EIB:A320 Ethihad:P",SH0=[["0700-1700","Mornings",420,1020],["1600-0200","Eavening",960,120],["1700-0300","Eavening5",1020,180],["2359-1000","Night1",1439,600],["SPL-NIGHT","Night 2",1282,300],["23:59-08:00","Night 23:59-08:00",1439,480],["23:59-10","Night 23:59-10:00",1439,600],["NT_23-04","23-04",1380,240],["08-17","08:00-17:00",600,1020],["Mng-06-14","06-14",360,840],["Eav_19-03","19-04",1140,180],["E 7-5","19-05",1140,300],["06-16","06:00-16:00",360,960],["Eavening 15-01","Eavening 15-01",900,60]],SEED=[];
-const TYPES=[["PUSHBACK","PB_NO","#7a1a4d"],["TOWING","TOWING","#2b6777"],["PMS","PMS","#0a84ff"],["LDL","LDL","#e8590c"],["BCL","BCL","#1f9d55"],["MDL","MDL","#9c36b5"],["ACU","ACU","#0c8599"],["GPU","GPU","#f08c00"],["AIR STARTER","AIR STARTER","#d6336c"],["Backup","Backup","#5c6773"]];
+const TYPES=[["PUSHBACK","PB_NO","#7a1a4d"],["TOWING","TOWING","#2b6777"],["PMS","PMS","#0a84ff"],["LDL","LDL","#e8590c"],["BCL","BCL","#1f9d55"],["MDL","MDL","#9c36b5"],["MHL","MHL","#8e5a2b"],["ACU","ACU","#0c8599"],["GPU","GPU","#f08c00"],["AIR STARTER","AIR STARTER","#d6336c"],["Backup","Backup","#5c6773"]];
 const COL=Object.fromEntries(TYPES.map(t=>[t[0],t[2]]));
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const p2=n=>String(n).padStart(2,"0");
 const lt=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())+"T"+p2(d.getHours())+":"+p2(d.getMinutes());
-const fmt=ts=>new Date(ts).toLocaleString([],{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+const fmt=ts=>{const d=new Date(ts);return d.toLocaleDateString([],{day:"2-digit",month:"short"})+" "+p2(d.getHours())+":"+p2(d.getMinutes())};
 const dkey=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
 const nice=sd=>new Date(sd+"T00:00:00").toLocaleDateString([],{weekday:"short",day:"2-digit",month:"short",year:"numeric"});
 const mm=m=>p2(Math.floor(m/60)%24)+":"+p2(m%60);
 const nf=s=>String(s||"").toUpperCase().replace(/\s+/g,"");
 const nr=s=>{s=nf(s);return /^[A-Z0-9]{2}[A-Z]{3}$/.test(s)?s.slice(0,2)+"-"+s.slice(2):s};
-let F={},I={},R={},CU={F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[]};
+let F={},I={},R={},CU={F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[],W:{}};
 FL.split(",").forEach(x=>{const a=x.split(":");F[a[0]]=a[1]});
 IA.split(";").forEach(x=>{const a=x.split(":");const b=a[1].split("|");I[a[0]]=b[0]+" - "+b[1]});
 RG.split(",").forEach(x=>{const a=x.split(":");R[a[0]]=[a[1],a[2]==="C"?"Cargo":"Passenger"]});
@@ -251,6 +254,9 @@ function sdFor(id,ts){
 }
 function norm(e){
  e.types=e.types||[];e.refs=e.refs||{};e.photos=e.photos||[];e.ts=e.ts||lt(new Date());e.u=e.u||1;
+ if(!e.dirs){e.dirs={};if(e.ldl)e.dirs.LDL=e.ldl}
+ if(e.ldl==="ARR"&&!e.arr&&e.dep){e.arr=e.dep;e.dep=""}
+ e.ldl=e.dirs.LDL||"";
  if(!e.shift){const g=guessInst(e.ts);if(g)e.shift=g.id}
  if(!e.sd){if(sdef(e.shift))e.sd=sdFor(e.shift,e.ts);else{const g=guessInst(e.ts);e.sd=g?g.sd:e.ts.slice(0,10)}}
  return e;
@@ -265,7 +271,7 @@ async function init(){
  if(mt)Object.assign(S.mt,mt);
  const fresh=!mt;
  if(S.mt.theme&&S.mt.theme!=="auto"&&document.documentElement.setAttribute)document.documentElement.setAttribute("data-theme",S.mt.theme);
- if(cu)CU=Object.assign({F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[]},cu);
+ if(cu)CU=Object.assign({F:{},I:{},R:{},S:[],X:{},E:{},O:{},H:[],W:{}},cu);
  let dirty=false;
  if(!S.mt.migrated){
   S.mt.migrated=1;dirty=true;
@@ -293,7 +299,7 @@ async function init(){
 const strip=e=>{const o=Object.assign({},e);delete o.photos;return o};
 let stm=null;
 const scheduleSync=()=>{if(S.mt.cloud&&S.mt.sheetUrl){clearTimeout(stm);stm=setTimeout(()=>cloudSync(false),5000)}};
-const sheetRow=e=>({id:e.id,u:e.u||1,sd:e.sd||"",shift:e.shift||"",time:(e.ts||"").slice(11,16),flight:e.flight||"",reg:e.reg||"",type:e.type||"",iata:e.iata||"",city:e.city||"",bay:bayOf(e),jobs:(e.types||[]).map(t=>t+(t==="LDL"&&e.ldl?" "+e.ldl:"")).join(", "),refs:Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>(a[0]==="PUSHBACK"?"PB":a[0])+" "+a[1]).join(", ")+(isTow(e)&&towSummary(e)?" | "+towSummary(e):""),notes:e.notes||"",json:JSON.stringify(strip(e))});
+const sheetRow=e=>({id:e.id,u:e.u||1,sd:e.sd||"",shift:e.shift||"",time:(e.ts||"").slice(11,16),flight:fltTxt(e),reg:e.reg||"",type:e.type||"",iata:e.iata||"",city:e.city||"",bay:bayOf(e),jobs:(e.types||[]).map(t=>t+(t==="LDL"&&e.ldl?" "+e.ldl:"")).join(", "),refs:Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>(a[0]==="PUSHBACK"?"PB":a[0])+" "+a[1]).join(", ")+(isTow(e)&&towSummary(e)?" | "+towSummary(e):"")+(e.mhl&&mhlSummary(e)?" | "+mhlSummary(e):""),notes:e.notes||"",json:JSON.stringify(strip(e))});
 async function sheetPost(body){
  const r=await fetch(S.mt.sheetUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)});
  const j=await r.json();if(!j||!j.ok)throw new Error((j&&j.error)||"Bad response from the sheet");return j;
@@ -331,8 +337,8 @@ function cloudOff(){S.mt.cloud=false;saveMt();S.msg="";render()}
 
 /* ---- navigation ---- */
 function blank(){
- const ts=lt(new Date()),a=activeInst(),c=S.cur;
- return{id:null,ts,types:[],refs:{},fl:"",iata:"",city:"",reg:"",type:"",role:"",dep:"",ldl:"",bay:"",bayFrom:"",bayTo:"",tw:{rcv:"",rep:"",eng:"",fol:"",st:"",en:""},notes:"",photos:[],shift:c?c.id:(a?a.id:""),sd:c?c.sd:(a?a.sd:ts.slice(0,10))};
+ const ts=lt(new Date()),c=S.cur;
+ return{id:null,ts,types:[],refs:{},dirs:{LDL:"",MDL:"",MHL:""},mhl:{rep:"",st:"",fin:"",fp:"",pl:""},fl:"",iata:"",city:"",fl2:"",iata2:"",city2:"",reg:"",type:"",role:"",dep:"",arr:"",bay:"",bayFrom:"",bayTo:"",tw:{rcv:"",rep:"",eng:"",fol:"",st:"",en:""},notes:"",photos:[],shift:c?c.id:"",sd:c?c.sd:ts.slice(0,10)};
 }
 function newWork(id,sd){
  S.D=blank();S.addK=null;
@@ -353,7 +359,7 @@ function render(){
   if(S.tab==="about")loadCodes();
  }catch(err){$("#app").innerHTML=`<div class="card"><b>Something went wrong</b><div class="meta">${esc(err.message)}</div></div>`}
 }
-setInterval(()=>{if(S.cur&&(S.tab==="shift"||S.tab==="home")&&!S.view)render()},60000);
+setInterval(()=>{if(S.cur&&(S.tab==="shift"||S.tab==="home")&&!S.view&&!S.addK)render()},60000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.ready){checkUpdate();if(S.mt.act&&Date.now()-(S.mt.act.chk||0)>6*36e5)checkAccess().then(render)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(S.view||S.rep))closeSheet()});
 
@@ -366,29 +372,28 @@ function gate(){
  const tip=(navigator.standalone===false&&!S.mt.tipx)?`<div class="card"><b>📲 Get the full app</b><div class="meta">Tap Share, then Add to Home Screen. It opens full screen like a normal app.</div><button class="btn sec" onclick="S.mt.tipx=1;saveMt();render()">Dismiss</button></div>`:"";
  return `<div class="row" style="margin-bottom:6px">${logo(44)}<div><b style="font-size:18px">Works Log</b><div class="meta">Jamshi Solutions</div></div></div>
  <h1>Select your shift</h1>
- ${tip}
+ ${tip}${backupBanner()}${runningCards()}
  <label>Shift date</label><div class="chips" style="margin-bottom:8px">${chip(td,"Today")}${chip(yd,"Yesterday")}</div><input type="date" value="${esc(d0)}" onchange="S.gd=this.value;render()">
- <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<div class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[1]||s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span><div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div><div class="row" style="margin-top:8px"><span class="chip sm" onclick="event.stopPropagation();editShift('${esc(s[0])}','${d0}')">Edit</span><span class="chip sm" style="color:#d33" onclick="event.stopPropagation();delShift('${esc(s[0])}')">Delete</span></div></div>`}).join("")}</div>
+ <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<div class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[1]||s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span>${isRunning(s[0],d0)?'<div class="live">● Running</div>':""}<div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div><div class="row" style="margin-top:8px"><span class="chip sm" onclick="event.stopPropagation();editShift('${esc(s[0])}','${d0}')">Edit</span><span class="chip sm" style="color:#d33" onclick="event.stopPropagation();delShift('${esc(s[0])}')">Delete</span></div></div>`}).join("")}</div>
  <button class="btn sec" onclick="S.addK='sh';render()">＋ New shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}
- <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Save & start shift · "+esc(shName(p)):"Select a shift to continue"}</button></div>`;
+ <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Open shift · "+esc(shName(p)):"Select a shift to continue"}</button></div>`;
 }
 function shiftTab(){
- const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],i=instOf(s,c.sd),now=Date.now(),a=activeInst(),live=a&&a.id===c.id&&a.sd===c.sd;
+ const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],r=runOf(c.id,c.sd),running=isRunning(c.id,c.sd),done=!!(r&&r.st&&r.en);
  const list=S.data.filter(e=>e.shift===c.id&&e.sd===c.sd).sort((x,y)=>y.ts.localeCompare(x.ts));
  const tc=count(list,e=>e.types);
- let st;
- if(live){const l=Math.max(0,i.end-now);st=`● Active · ends in ${Math.floor(l/36e5)}h ${Math.floor(l%36e5/6e4)}m${i.ext?" (+"+i.ext/60+"h)":""}`}
- else st=now<i.start?"Starts "+fmt(i.start):"Shift ended "+fmt(i.end);
- return `<div class="ban ${live?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(shName(c.id))}</div><div>${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
-  <div class="row" style="flex-wrap:wrap"><button class="bb" onclick="newWork()">＋ Add work</button>${live&&i.ext<i.cap?`<button class="bb" onclick="extend()">Extend +1h</button>`:""}<button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift</button><button class="bb" onclick="delShift('${esc(c.id)}')">Delete shift</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
-  ${S.addK==="esh"?addPanel():""}
+ const st=running?`● Running · started ${hm(r.st)} · ${dur(r.st,lt(new Date()))}`:done?`Finished ${hm(r.st)}–${hm(r.en)} · ${dur(r.st,r.en)}`:"Not started";
+ const main=running?`<button class="bb" style="background:#d33" onclick="shiftFinish()">■ Finish shift</button>`:done?`<button class="bb" onclick="shiftResume()">↺ Resume shift</button>`:`<button class="bb" style="background:#1f9d55" onclick="shiftStart()">▶ Start shift</button>`;
+ return `${backupBanner()}<div class="ban ${running?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(shName(c.id))}</div><div>Planned ${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
+  <div class="row" style="flex-wrap:wrap">${main}<button class="bb" onclick="newWork()">＋ Add work</button><button class="bb" onclick="S.addK='run';render()">Shift times</button><button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift</button><button class="bb" onclick="delShift('${esc(c.id)}')">Delete shift</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
+  ${S.addK==="esh"?addPanel():""}${S.addK==="run"?runPanel():""}
   ${S.mt.cloud&&S.msg?`<div class="meta" style="margin:0 4px 8px">☁ ${esc(S.msg)}</div>`:""}
   ${tc.length?`<div class="chips" style="margin-bottom:12px">${tc.map(a=>`<span class="tag" style="background:${COL[a[0]]||"#666"};font-size:13px;padding:5px 12px">${esc(a[0])} · ${a[1]}</span>`).join("")}</div>`:""}
   <h2>Works in this shift</h2>${list.length?`<div class="cg">${list.map(card).join("")}</div>`:'<div class="empty">No works yet.<br>Tap ＋ to add the first one.</div>'}`;
 }
 function extend(){const a=activeInst();if(!a||a.ext>=a.cap)return;CU.X[a.key]=Math.min(a.cap,a.ext+60);save();render();toast("Shift extended")}
 
-function tags(e){return e.types.map(t=>`<span class="tag" style="background:${COL[t]||"#666"}">${esc(t)}${t==="LDL"&&e.ldl?" · "+(e.ldl==="ARR"?"ARR":"DEP"):""}</span>`).join("")}
+function tags(e){return e.types.map(t=>{const d=DIRT.includes(t)?dirOf(e,t):"";return `<span class="tag" style="background:${COL[t]||"#666"}">${esc(t)}${d?" · "+(d==="ARR"?"ARR":d==="TURN"?"TURN":"DEP"):""}</span>`}).join("")}
 function count(arr,fn){const m={};arr.forEach(e=>fn(e).forEach(k=>{if(k)m[k]=(m[k]||0)+1}));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
 
 /* ---- dashboard ---- */
@@ -413,46 +418,47 @@ function home(){
 /* ---- combo boxes ---- */
 function cbox(k,val,ph){return `<input id="in_${k}" value="${esc(val)}" placeholder="${ph}" autocomplete="off" autocapitalize="characters" oninput="sug('${k}')" onfocus="sug('${k}')"><div class="sg" id="sg_${k}"></div>`}
 function sug(k){
- const el=$("#in_"+k),q=k==="fl"?nf(el.value):nr(el.value),map=k==="fl"?F:R,fld=k==="fl"?"iata":"type";
- S.D[k]=q;if(q&&map[q])S.D[fld]=k==="fl"?F[q]:R[q][0];
+ const isF=k==="fl"||k==="fl2",el=$("#in_"+k),q=isF?nf(el.value):nr(el.value),map=isF?F:R,fld=k==="fl"?"iata":k==="fl2"?"iata2":"type";
+ S.D[k]=q;if(q&&map[q])S.D[fld]=isF?F[q]:R[q][0];
  const keys=Object.keys(map);let m=[];
  if(q){m=keys.filter(x=>x.startsWith(q));if(m.length<8)m=m.concat(keys.filter(x=>!x.startsWith(q)&&x.includes(q)));m=m.slice(0,8)}
- else m=recent(k==="fl"?"flight":"reg").slice(0,6);
- const sub=x=>k==="fl"?(F[x]?F[x]+" · "+(I[F[x]]||""):""):(R[x]?R[x][0]+" · "+R[x][1]:"");
+ else m=recent(isF?"flight":"reg").slice(0,6);
+ const sub=x=>isF?(F[x]?F[x]+" · "+(I[F[x]]||""):""):(R[x]?R[x][0]+" · "+R[x][1]:"");
  let h=m.map(x=>`<button onclick="pick('${k}','${x}')"><b>${esc(x)}</b> <small>${esc(sub(x))}</small></button>`).join("");
- if(q&&!map[q])h+=`<button class="new" onclick="openAdd('${k}')">＋ Add “${esc(q)}” as new ${k==="fl"?"flight":"registration"}</button>`;
+ if(q&&!map[q])h+=`<button class="new" onclick="openAdd('${k}')">＋ Add “${esc(q)}” as new ${isF?"flight":"registration"}</button>`;
  $("#sg_"+k).innerHTML=h;
 }
 function recent(f){const o=[],s=new Set();S.data.slice().sort((a,b)=>b.ts.localeCompare(a.ts)).forEach(e=>{const v=e[f];if(v&&!s.has(v)&&o.length<8){s.add(v);o.push(v)}});return o}
 function pick(k,x){
  const D=S.D;
  if(k==="fl"){D.fl=x;D.iata=F[x]||"";D.city=I[D.iata]||""}
+ else if(k==="fl2"){D.fl2=x;D.iata2=F[x]||"";D.city2=I[D.iata2]||""}
  else{D.reg=x;if(R[x]){D.type=R[x][0];D.role=R[x][1]}}
  S.addK=null;render();
 }
 function openAdd(k){S.addK=k;render();setTimeout(()=>{const e=$("#ad1")||$("#s1");e&&e.scrollIntoView&&e.scrollIntoView({block:"center"})},50)}
 function addPanel(){
  const k=S.addK,D=S.D;if(!k)return"";
- if(k==="sh")return `<div class="panel"><label>New shift</label><div class="two"><div><label>Start</label><input id="s1" type="time" value="07:00"></div><div><label>End</label><input id="s2" type="time" value="17:00"></div></div><label>Shift name</label><input id="s3" placeholder="e.g. Morning"><div class="meta" style="margin-top:6px">If it ends earlier than it starts, it runs past midnight.</div><button class="btn" onclick="saveShift()">Save shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+ if(k==="sh")return `<div class="panel"><label>New shift</label><div class="two"><div><label>Start</label>${t24("s1","07:00","s1")}</div><div><label>End</label>${t24("s2","17:00","s2")}</div></div><label>Shift name</label><input id="s3" placeholder="e.g. Morning"><div class="meta" style="margin-top:6px">If it ends earlier than it starts, it runs past midnight.</div><button class="btn" onclick="saveShift()">Save shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
  if(k==="esh"){const e=S.es,s0=sdef(e.id)||[e.id,e.id,0,60],ss=e.sd?instOf(s0,e.sd).s:s0,has=e.sd&&CU.O[e.id+"|"+e.sd];
-  return `<div class="panel"><label>Edit shift</label><label>Shift name</label><input id="e0" value="${esc(s0[1]||e.id)}" placeholder="e.g. Morning"><div class="two"><div><label>Start</label><input id="e1" type="time" value="${mm(ss[2])}"></div><div><label>End</label><input id="e2" type="time" value="${mm(ss[3])}"></div></div>${e.sd?`<label>Apply times to</label><select id="e3"><option value="day">This day only (${nice(e.sd)})</option><option value="all">All days</option></select>`:`<div class="meta" style="margin-top:6px">Times apply to all days.</div>`}<button class="btn" onclick="saveEsh()">Save shift</button>${has?`<button class="btn sec" onclick="resetDay()">Reset this day to normal</button>`:""}<button class="btn sec" style="color:#d33" onclick="delShift('${esc(e.id)}')">Delete shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`}
- if(k==="fl")return `<div class="panel"><label>New flight ${esc(D.fl)}</label><label>Destination IATA code</label><input id="ad1" maxlength="4" placeholder="e.g. LHR" autocapitalize="characters" value="${esc(D.iata)}" oninput="this.value=this.value.toUpperCase();const c=I[this.value];if(c){$('#ad2').value=c.split(' - ')[0];$('#ad3').value=c.split(' - ')[1]||''}"><div class="two"><div><label>City</label><input id="ad2"></div><div><label>Country</label><input id="ad3"></div></div><button class="btn" onclick="saveFl()">Save flight</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+  return `<div class="panel"><label>Edit shift</label><label>Shift name</label><input id="e0" value="${esc(s0[1]||e.id)}" placeholder="e.g. Morning"><div class="two"><div><label>Start</label>${t24("e1",mm(ss[2]),"e1")}</div><div><label>End</label>${t24("e2",mm(ss[3]),"e2")}</div></div>${e.sd?`<label>Apply times to</label><select id="e3"><option value="day">This day only (${nice(e.sd)})</option><option value="all">All days</option></select>`:`<div class="meta" style="margin-top:6px">Times apply to all days.</div>`}<button class="btn" onclick="saveEsh()">Save shift</button>${has?`<button class="btn sec" onclick="resetDay()">Reset this day to normal</button>`:""}<button class="btn sec" style="color:#d33" onclick="delShift('${esc(e.id)}')">Delete shift</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`}
+ if(k==="fl"||k==="fl2")return `<div class="panel"><label>New flight ${esc(D[k])}</label><label>Destination IATA code</label><input id="ad1" maxlength="4" placeholder="e.g. LHR" autocapitalize="characters" value="${esc(k==="fl"?D.iata:D.iata2)}" oninput="this.value=this.value.toUpperCase();const c=I[this.value];if(c){$('#ad2').value=c.split(' - ')[0];$('#ad3').value=c.split(' - ')[1]||''}"><div class="two"><div><label>City</label><input id="ad2"></div><div><label>Country</label><input id="ad3"></div></div><button class="btn" onclick="saveFl()">Save flight</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
  const types=[...new Set(Object.values(R).map(r=>r[0]).filter(Boolean))].sort();
  return `<div class="panel"><label>New registration ${esc(D.reg)}</label><label>Aircraft type</label><select id="ad1" onchange="$('#ad4').style.display=this.value==='_'?'block':'none'">${types.map(t=>`<option>${esc(t)}</option>`).join("")}<option value="_">Other…</option></select><input id="ad4" placeholder="Type, e.g. A321neo" style="display:none;margin-top:6px"><label>Role</label><select id="ad2"><option>Passenger</option><option>Cargo</option></select><button class="btn" onclick="saveReg()">Save registration</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
 }
 function saveFl(){
- const no=S.D.fl,ia=$("#ad1").value.trim().toUpperCase(),c=$("#ad2").value.trim(),n=$("#ad3").value.trim();
+ const k=S.addK,no=S.D[k],ia=$("#ad1").value.trim().toUpperCase(),c=$("#ad2").value.trim(),n=$("#ad3").value.trim();
  if(!ia){toast("Enter IATA code");return}
  if(!I[ia]&&!c){toast("Enter city for new code");return}
  if(!I[ia]){I[ia]=c+(n?" - "+n:"");CU.I[ia]=I[ia]}
- F[no]=ia;CU.F[no]=ia;save();pick("fl",no);toast("Flight added ✓");
+ F[no]=ia;CU.F[no]=ia;save();pick(k,no);toast("Flight added ✓");
 }
 function saveReg(){
  let t=$("#ad1").value;if(t==="_")t=$("#ad4").value.trim();if(!t){toast("Enter aircraft type");return}
  const r=S.D.reg,role=$("#ad2").value;R[r]=[t,role];CU.R[r]=[t,role];save();pick("reg",r);toast("Registration added ✓");
 }
 function saveShift(){
- const a=$("#s1").value,b=$("#s2").value,name=($("#s3").value||"").trim();
+ const a=t24v("s1"),b=t24v("s2"),name=($("#s3").value||"").trim();
  if(!name){toast("Enter a shift name");return}
  if(!a||!b){toast("Set start and end");return}
  const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),base=a.replace(":","")+"-"+b.replace(":","");let id=base,n=2;
@@ -469,45 +475,53 @@ function delShift(id){
 
 /* ---- add / edit form ---- */
 function add(){
- const D=S.D,tow=D.types.includes("TOWING"),hasL=D.types.includes("LDL")&&!tow,a=activeInst();
+ const D=S.D,tow=D.types.includes("TOWING"),on=dirsOn(D),turn=anyTurn(D),na=needArr(D),nd=needDep(D);
  const ids=shifts().map(s=>s[0]);if(D.shift&&!ids.includes(D.shift))ids.push(D.shift);
- const live=a&&a.id===D.shift&&a.sd===D.sd;
+ const live=isRunning(D.shift,D.sd);
+ const seg=t=>{const c="#e8590c",b=(v,l)=>`<button class="chip ${D.dirs[t]===v?"on":""}" style="${D.dirs[t]===v?"background:"+c:""}" onclick="setDir('${t}','${v}')">${l}</button>`;return `<label style="color:${c}">${t}: arrival, departure or turnaround?</label><div class="seg">${b("ARR","🛬 Arrival")}${b("DEP","🛫 Departure")}${b("TURN","🔁 Turnaround")}</div>`};
+ const eq=D.types.filter(t=>t!=="TOWING");
  return `<h1>${D.id?"Edit work":"New work"}</h1>
- <div class="ban ${live?"on":"idle"}" style="padding:10px 14px"><div class="row sp"><b>${esc(shName(D.shift))||"No shift"} · ${D.sd?nice(D.sd):""}</b>${live?"<span>● active</span>":""}</div></div>
+ <div class="ban ${live?"on":"idle"}" style="padding:10px 14px"><div class="row sp"><b>${esc(shName(D.shift))||"No shift"} · ${D.sd?nice(D.sd):""}</b>${live?"<span>● running</span>":""}</div></div>
  <label>Job type</label><div class="chips">${TYPES.map(t=>`<button class="chip ${D.types.includes(t[0])?"on":""}" style="${D.types.includes(t[0])?"background:"+t[2]:""}" onclick="tog('${t[0]}')">${t[0]}</button>`).join("")}</div>
- ${hasL?`<label style="color:#e8590c">LDL — arrival or departure?</label><div class="seg"><button class="chip ${D.ldl==="ARR"?"on":""}" style="${D.ldl==="ARR"?"background:#e8590c":""}" onclick="S.D.ldl='ARR';render()">🛬 Arrival</button><button class="chip ${D.ldl==="DEP"?"on":""}" style="${D.ldl==="DEP"?"background:#e8590c":""}" onclick="S.D.ldl='DEP';render()">🛫 Departure</button></div>`:""}
- ${D.types.filter(t=>t!=="TOWING").length?`<div class="fg">${D.types.filter(t=>t!=="TOWING").map(t=>{const f=TYPES.find(x=>x[0]===t);return `<div class="ref"><label style="color:${f[2]}">${f[1]}</label><input value="${esc(D.refs[t]||"")}" oninput="S.D.refs['${t}']=this.value" autocapitalize="characters"></div>`}).join("")}</div>`:""}
+ ${on.map(seg).join("")}
+ ${eq.length?`<div class="fg">${eq.map(t=>{const f=TYPES.find(x=>x[0]===t);return `<div class="ref"><label style="color:${f[2]}">${f[1]}</label><input value="${esc(D.refs[t]||"")}" oninput="S.D.refs['${t}']=this.value" autocapitalize="characters"></div>`}).join("")}</div>`:""}
+ ${D.types.includes("MHL")?mhlPanel():""}
  ${tow?towPanel():""}
- <div class="fg">${tow?"":`<div><label>Flight no</label>${cbox("fl",D.fl,"Type or pick, e.g. QR830")}
+ <div class="fg">${tow?"":`<div><label>${turn?"Arrival flight no":"Flight no"}</label>${cbox("fl",D.fl,"Type or pick, e.g. QR830")}
  ${S.addK==="fl"?addPanel():""}
- ${D.fl&&F[D.fl]?`<div class="info">✈ <b>${esc(F[D.fl])}</b> · ${esc(I[F[D.fl]]||"")}</div>`:""}</div>`}
+ ${D.fl&&F[D.fl]?`<div class="info">✈ <b>${esc(F[D.fl])}</b> · ${esc(I[F[D.fl]]||"")}</div>`:""}</div>${turn?`<div><label>Departure flight no</label>${cbox("fl2",D.fl2||"","Departure flight, e.g. QR831")}
+ ${S.addK==="fl2"?addPanel():""}
+ ${D.fl2&&F[D.fl2]?`<div class="info">✈ <b>${esc(F[D.fl2])}</b> · ${esc(I[F[D.fl2]]||"")}</div>`:""}</div>`:""}`}
  <div><label>Registration</label>${cbox("reg",D.reg,"Type or pick, e.g. A7-BAC")}
  ${S.addK==="reg"?addPanel():""}
  ${D.reg&&R[D.reg]?`<div class="info"><b>${esc(R[D.reg][0])}</b> · ${esc(R[D.reg][1])}</div>`:""}</div>
- ${tow?"":`<div><label>${D.ldl==="ARR"?"Arrival":"Departure"} time</label><input type="time" value="${esc(D.dep)}" onchange="S.D.dep=this.value"></div>
+ ${tow?"":`${na?`<div><label>Arrival time (24h)</label>${t24("arr",D.arr)}</div>`:""}${nd?`<div><label>Departure time (24h)</label>${t24("dep",D.dep)}</div>`:""}
  <div><label>Bay no</label><input value="${esc(D.bay)}" oninput="S.D.bay=this.value" autocapitalize="characters"></div>`}</div>
  <label>Notes</label><textarea rows="3" oninput="S.D.notes=this.value">${esc(D.notes)}</textarea>
  <label>Attachments</label><input type="file" accept="image/*" multiple onchange="pics(this)">
  <div class="thumbs">${D.photos.map((p,i)=>`<img src="${p}" onclick="S.D.photos.splice(${i},1);render()">`).join("")}</div>
  ${D.photos.length?'<div class="meta" style="margin-top:4px">Tap a photo to remove</div>':""}
- <div class="fg"><div><label>Created at</label><input type="datetime-local" value="${esc(D.ts)}" onchange="S.D.ts=this.value"></div>
+ <div class="fg"><div><label>Created at</label><input type="date" value="${esc(D.ts.slice(0,10))}" onchange="S.D.ts=this.value+'T'+S.D.ts.slice(11,16)"></div>
+ <div><label>Time (24h)</label>${t24("ts",D.ts.slice(11,16))}</div>
  <div><label>Shift</label><select onchange="if(this.value==='_new'){openAdd('sh')}else{S.D.shift=this.value;S.D.sd=sdFor(this.value,S.D.ts);render()}">${ids.map(s=>`<option ${s===D.shift?"selected":""} value="${esc(s)}">${esc(shName(s))}${sdef(s)?"  ("+mm(sdef(s)[2])+"–"+mm(sdef(s)[3])+")":""}</option>`).join("")}<option value="_new">＋ New shift…</option></select>
  ${S.addK==="sh"?addPanel():""}</div>
  <div><label>Shift date</label><input type="date" value="${esc(D.sd)}" onchange="S.D.sd=this.value"></div></div>
  <div class="savebar"><button class="btn" style="flex:2" onclick="submit()">${D.id?"Save changes":"Save work"}</button><button class="btn sec" style="flex:1" onclick="cancelAdd()">Cancel</button></div>`;
 }
 function cancelAdd(){S.D=null;S.addK=null;go(S.cur?"shift":"hist")}
-function tog(t){const a=S.D.types,i=a.indexOf(t);i<0?a.push(t):a.splice(i,1);if((t==="LDL"&&i>=0)||(t==="TOWING"&&i<0))S.D.ldl="";render()}
+function tog(t){const a=S.D.types,i=a.indexOf(t);i<0?a.push(t):a.splice(i,1);if(DIRT.includes(t)&&i>=0)S.D.dirs[t]="";if(t==="TOWING"&&i<0)DIRT.forEach(x=>{S.D.dirs[x]=""});render()}
 function pics(el){[...el.files].forEach(f=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);S.D.photos.push(c.toDataURL("image/jpeg",.7));render()};im.src=r.result};r.readAsDataURL(f)})}
 function submit(){
  const D=S.D;if(!D.types.length){toast("Pick at least one job type first");scrollTo(0,0);return}
- const tow=D.types.includes("TOWING");
- if(D.types.includes("LDL")&&!tow&&!D.ldl){toast("LDL: choose Arrival or Departure");return}
- D.fl=tow?"":nf(D.fl);D.reg=nr(D.reg);
+ const tow=D.types.includes("TOWING"),on=dirsOn(D);
+ for(const t of on){if(!D.dirs[t]){toast(t+": choose Arrival, Departure or Turnaround");return}}
+ const turn=anyTurn(D),na=needArr(D),nd=needDep(D),dirs={};on.forEach(t=>{dirs[t]=D.dirs[t]});
+ D.fl=tow?"":nf(D.fl);D.fl2=(tow||!turn)?"":nf(D.fl2);if(D.fl2===D.fl)D.fl2="";D.reg=nr(D.reg);
  if(D.fl&&F[D.fl]===undefined){F[D.fl]="";CU.F[D.fl]=""}
+ if(D.fl2&&F[D.fl2]===undefined){F[D.fl2]="";CU.F[D.fl2]=""}
  if(D.reg&&!R[D.reg]){R[D.reg]=["",""];CU.R[D.reg]=["",""]}
  save();
- const e={id:D.id||Date.now(),u:Date.now(),ts:D.ts,sd:D.sd||D.ts.slice(0,10),shift:D.shift,types:D.types,refs:Object.fromEntries(D.types.map(t=>[t,(D.refs[t]||"").trim()])),ldl:D.types.includes("LDL")&&!tow?D.ldl:"",flight:D.fl,iata:tow?"":(D.iata||F[D.fl]||""),city:D.fl?(I[F[D.fl]]||""):"",reg:D.reg,type:D.reg?R[D.reg][0]:"",role:D.reg?R[D.reg][1]:"",dep:tow?"":D.dep,bay:tow?"":D.bay.trim(),bayFrom:tow?(D.bayFrom||"").trim():"",bayTo:tow?(D.bayTo||"").trim():"",tw:tow?Object.assign({},D.tw):undefined,notes:D.notes.trim(),photos:D.photos};
+ const e={id:D.id||Date.now(),u:Date.now(),ts:D.ts,sd:D.sd||D.ts.slice(0,10),shift:D.shift,types:D.types,refs:Object.fromEntries(D.types.map(t=>[t,(D.refs[t]||"").trim()])),dirs,ldl:dirs.LDL||"",arr:tow||!na?"":(D.arr||""),dep:tow||!nd?"":(D.dep||""),flight:D.fl,flight2:D.fl2,iata2:D.fl2?(F[D.fl2]||""):"",city2:D.fl2?(I[F[D.fl2]]||""):"",iata:tow?"":(D.iata||F[D.fl]||""),city:D.fl?(I[F[D.fl]]||""):"",reg:D.reg,type:D.reg?R[D.reg][0]:"",role:D.reg?R[D.reg][1]:"",bay:tow?"":D.bay.trim(),bayFrom:tow?(D.bayFrom||"").trim():"",bayTo:tow?(D.bayTo||"").trim():"",tw:tow?Object.assign({},D.tw):undefined,mhl:D.types.includes("MHL")?Object.assign({},D.mhl):undefined,notes:D.notes.trim(),photos:D.photos};
  if(D.id&&S.mt.tomb)delete S.mt.tomb[e.id];
  const i=S.data.findIndex(x=>x.id===e.id);
  i<0?S.data.push(e):S.data[i]=e;
@@ -518,7 +532,7 @@ function submit(){
 /* ---- cards, detail sheet ---- */
 function card(e){
  const refs=Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>`${esc(a[0]==="PUSHBACK"?"PB":a[0])}: <b>${esc(a[1])}</b>`).join(" · ");
- return `<div class="card tap" onclick="show(${e.id})"><div class="row sp"><b>${esc(e.flight)||(isTow(e)?"Towing":"No flight")} · ${esc(e.reg)||"No reg"}</b><span class="meta">${fmt(e.ts)}</span></div><div class="meta">${[e.type,e.city||e.iata,bayTxt(e),e.dep].filter(Boolean).map(esc).join(" · ")}</div>${isTow(e)&&towSummary(e)?`<div class="meta">${esc(towSummary(e))}</div>`:""}<div style="margin-top:6px">${tags(e)}</div>${refs?`<div class="meta">${refs}</div>`:""}${e.photos&&e.photos.length?`<div class="meta">📷 ${e.photos.length}</div>`:""}</div>`;
+ return `<div class="card tap" onclick="show(${e.id})"><div class="row sp"><b>${esc(fltTxt(e))||(isTow(e)?"Towing":"No flight")} · ${esc(e.reg)||"No reg"}</b><span class="meta">${fmt(e.ts)}</span></div><div class="meta">${[e.type,e.city||e.iata,bayTxt(e),timesTxt(e)].filter(Boolean).map(esc).join(" · ")}</div>${isTow(e)&&towSummary(e)?`<div class="meta">${esc(towSummary(e))}</div>`:""}${e.mhl&&mhlSummary(e)?`<div class="meta">${esc(mhlSummary(e))}</div>`:""}<div style="margin-top:6px">${tags(e)}</div>${refs?`<div class="meta">${refs}</div>`:""}${e.photos&&e.photos.length?`<div class="meta">📷 ${e.photos.length}</div>`:""}</div>`;
 }
 function show(id){S.view=id;sheet()}
 function closeSheet(){S.view=null;S.rep=null;sheet()}
@@ -530,11 +544,12 @@ function sheet(){
  const tile=(k,v,c)=>v?`<div class="tile"><small>${esc(k)}</small><b${c?` style="color:${c}"`:""}>${esc(v)}</b></div>`:"";
  el.className="open";el.onclick=ev=>{if(ev.target===el)closeSheet()};
  el.innerHTML=`<div class="sh"><div class="row sp"><button class="x" onclick="closeSheet()" aria-label="Close">✕</button><span class="meta">${fmt(e.ts)}</span></div>
- <div class="dflt">${esc(e.flight)||(isTow(e)?"Towing":"No flight")}</div>
+ <div class="dflt">${esc(fltTxt(e))||(isTow(e)?"Towing":"No flight")}</div>
  <div style="font-size:20px;font-weight:700">${esc(e.reg)||"No registration"} <span class="meta" style="font-weight:500">${esc(e.type)}${e.role?" · "+esc(e.role):""}</span></div>
  <div style="margin-top:8px">${tags(e)}</div>
- <div class="tiles">${tile("Route",e.iata)}${tile("Destination",e.city)}${tile("Bay",e.bay)}${tile("From bay",e.bayFrom)}${tile("To bay",e.bayTo)}${tile(e.ldl==="ARR"?"Arrival":"Departure",e.dep)}${tile("Shift",shName(e.shift))}${tile("Shift date",e.sd?nice(e.sd):"")}</div>
+ <div class="tiles">${tile("Route",e.iata)}${tile("Destination",e.city)}${tile("Departure route",e.iata2)}${tile("Departure to",e.city2)}${tile("Bay",e.bay)}${tile("From bay",e.bayFrom)}${tile("To bay",e.bayTo)}${tile("Arrival time",e.arr)}${tile("Departure time",e.dep)}${tile("Shift",shName(e.shift))}${tile("Shift date",e.sd?nice(e.sd):"")}</div>
  ${isTow(e)?towTiles(e,tile):""}
+ ${e.mhl?mhlTiles(e,tile):""}
  ${Object.entries(e.refs||{}).filter(a=>a[1]).length?`<h2>Equipment</h2><div class="tiles">${Object.entries(e.refs).filter(a=>a[1]).map(a=>tile(a[0]==="PUSHBACK"?"PB no":a[0],a[1],COL[a[0]])).join("")}</div>`:""}
  ${e.notes?`<h2>Notes</h2><div class="card" style="white-space:pre-wrap">${esc(e.notes)}</div>`:""}
  ${e.photos&&e.photos.length?`<h2>Attachments</h2>${e.photos.map(p=>`<img class="pic" src="${p}">`).join("")}`:""}
@@ -547,7 +562,7 @@ function sheet(){
 /* ---- history grouped by day and shift ---- */
 function hist(){return `<h1>History</h1><input type="search" enterkeyhint="search" placeholder="Search anything: flight, reg, bay, date, note…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;histList()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
 function histList(){
- const q=S.q.toLowerCase().trim(),toks=q.split(/\s+/).filter(Boolean),a=activeInst(),flt=!!(toks.length||S.f);
+ const q=S.q.toLowerCase().trim(),toks=q.split(/\s+/).filter(Boolean),flt=!!(toks.length||S.f);
  const pass=e=>!S.f||e.types.includes(S.f);
  let r;
  if(!toks.length)r=S.data.filter(pass);
@@ -559,19 +574,19 @@ function histList(){
  const total=r.length;if(r.length>300)r=r.slice(0,300);
  const days={};
  r.forEach(e=>{const sh=e.shift||"No shift";days[e.sd]=days[e.sd]||{};(days[e.sd][sh]=days[e.sd][sh]||[]).push(e)});
- if(a&&!flt){days[a.sd]=days[a.sd]||{};days[a.sd][a.id]=days[a.sd][a.id]||[]}
+ if(S.cur&&!flt){days[S.cur.sd]=days[S.cur.sd]||{};days[S.cur.sd][S.cur.id]=days[S.cur.sd][S.cur.id]||[]}
  const keys=Object.keys(days).sort().reverse();
  $("#cnt").textContent=total+" work"+(total===1?"":"s")+" · "+keys.length+" day"+(keys.length===1?"":"s")+(total>300?" · showing the newest 300, refine your search":"");
  let h=keys.slice(0,flt?9999:S.dl).map((sd,i)=>{
   const g=days[sd],tot=Object.values(g).reduce((n,x)=>n+x.length,0);
   const order=Object.keys(g).sort((x,y)=>((g[y][0]||{ts:"z"}).ts).localeCompare((g[x][0]||{ts:"z"}).ts));
   return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
-   const s=sdef(sh),live=a&&a.id===sh&&a.sd===sd;
-   return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● ACTIVE</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
+   const s=sdef(sh),live=isRunning(sh,sd);
+   return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● RUNNING</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
  if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;histList()">Show more days</button>`;
  $("#list").innerHTML=h||'<div class="empty">Nothing found</div>';
 }
-function edit(id){const e=S.data.find(x=>x.id===id);S.D=Object.assign(blank(),JSON.parse(JSON.stringify(e)),{fl:e.flight||"",ldl:e.ldl||"",refs:e.refs||{},photos:e.photos||[],tw:Object.assign({rcv:"",rep:"",eng:"",fol:"",st:"",en:""},e.tw||{}),bayFrom:e.bayFrom||"",bayTo:e.bayTo||""});go("add")}
+function edit(id){const e=S.data.find(x=>x.id===id);S.D=Object.assign(blank(),JSON.parse(JSON.stringify(e)),{fl:e.flight||"",fl2:e.flight2||"",refs:e.refs||{},photos:e.photos||[],dirs:Object.assign({LDL:"",MDL:"",MHL:""},e.dirs||{}),mhl:Object.assign({rep:"",st:"",fin:"",fp:"",pl:""},e.mhl||{}),tw:Object.assign({rcv:"",rep:"",eng:"",fol:"",st:"",en:""},e.tw||{}),bayFrom:e.bayFrom||"",bayTo:e.bayTo||""});go("add")}
 function del(id){
  if(!confirm("Delete this work?"))return;
  const e=S.data.find(x=>x.id===id);S.data=S.data.filter(x=>x.id!==id);delWork(id);
@@ -581,22 +596,22 @@ function del(id){
 
 /* ---- data tab ---- */
 function csv(){
- const h=["CREATED_AT","SHIFT_DATE","SHIFT_ID","JOB_TYPE","PB_NO","FLIGHT_NO","AIRCRAFT_TYPE","REGISTRATION","DEPARTURE","ROUTE","CITY_COUNTRY","BAY_NO","PMS","LDL","BCL","MDL","ACU","GPU","AIR STARTER","LDL_DIR","NOTES","ROLE","TASK_RECEIVED","REPORT_TIME","ENGINEER_REPORT","FOLLOW_ME_REPORT","TOW_START","TOW_END","FROM_BAY","TO_BAY"];
+ const h=["CREATED_AT","SHIFT_DATE","SHIFT_ID","JOB_TYPE","PB_NO","FLIGHT_NO","AIRCRAFT_TYPE","REGISTRATION","DEPARTURE","ROUTE","CITY_COUNTRY","BAY_NO","PMS","LDL","BCL","MDL","ACU","GPU","AIR STARTER","LDL_DIR","NOTES","ROLE","TASK_RECEIVED","REPORT_TIME","ENGINEER_REPORT","FOLLOW_ME_REPORT","TOW_START","TOW_END","FROM_BAY","TO_BAY","ARRIVAL","DEP_FLIGHT","DEP_ROUTE","MDL_DIR","MHL_DIR","MHL_REPORT","MHL_START","MHL_FINISH","MHL_FIRST_PAX","MHL_PAX_LOADING"];
  const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
- return [h.map(q).join(",")].concat(S.data.slice().sort((a,b)=>a.ts.localeCompare(b.ts)).map(e=>{const r=e.refs||{};return [e.ts.replace("T"," "),e.sd,e.shift,e.types.join(", "),r.PUSHBACK,e.flight,e.type,e.reg,e.dep,e.iata,e.city,e.bay,r.PMS,r.LDL,r.BCL,r.MDL,r.ACU,r.GPU,r["AIR STARTER"],e.ldl,e.notes,e.role,(e.tw||{}).rcv,(e.tw||{}).rep,(e.tw||{}).eng,(e.tw||{}).fol,(e.tw||{}).st,(e.tw||{}).en,e.bayFrom,e.bayTo].map(q).join(",")})).join("\n");
+ return [h.map(q).join(",")].concat(S.data.slice().sort((a,b)=>a.ts.localeCompare(b.ts)).map(e=>{const r=e.refs||{};return [e.ts.replace("T"," "),e.sd,e.shift,e.types.join(", "),r.PUSHBACK,e.flight,e.type,e.reg,e.dep,e.iata,e.city,e.bay,r.PMS,r.LDL,r.BCL,r.MDL,r.ACU,r.GPU,r["AIR STARTER"],e.ldl,e.notes,e.role,(e.tw||{}).rcv,(e.tw||{}).rep,(e.tw||{}).eng,(e.tw||{}).fol,(e.tw||{}).st,(e.tw||{}).en,e.bayFrom,e.bayTo,e.arr,e.flight2,e.iata2,dirOf(e,"MDL"),dirOf(e,"MHL"),hm((e.mhl||{}).rep),hm((e.mhl||{}).st),hm((e.mhl||{}).fin),hm((e.mhl||{}).fp),(e.mhl||{}).pl==="Y"?"Yes":(e.mhl||{}).pl==="N"?"No":""].map(q).join(",")})).join("\n");
 }
 async function dl(name,text){
  try{
   const type=name.endsWith(".csv")?"text/csv":name.endsWith(".json")?"application/json":"text/html";
   const file=new File([text],name,{type});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return true}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Saved ✓");
- }catch(e){if(e&&e.name==="AbortError")return;cp(text)}
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Saved ✓");return true;
+ }catch(e){if(e&&e.name==="AbortError")return false;cp(text);return false}
 }
 function cp(t){const o=$("#out");if(o){o.value=t;o.select()}try{navigator.clipboard.writeText(t).then(()=>toast("Copied ✓"),()=>toast("Select and copy manually"))}catch(e){toast("Select and copy manually")}}
 function set(){
- const last=S.mt.last?new Date(S.mt.last).toLocaleString():"never";
+ const last=S.mt.last?fmt(S.mt.last):"never";
  return `<h1>Data</h1>
  <div class="g2"><div class="card"><b>💾 Local database</b><div class="meta">${ENGINE==="sqlite"?"Stored in this app’s own SQLite database on your iPhone. It is not browser storage.":ENGINE==="idb"?"Stored in this app’s private database on your iPhone (inside the installed app). Works offline.":"Database unavailable."}<br>Deleting the app deletes its data. Use Google Sheets backup or Download full backup to keep a copy.<br>${S.data.length} works · ${Object.keys(F).length} flights · ${Object.keys(R).length} registrations</div></div>
  <div class="card"><b>📗 Google Sheets backup</b><div class="meta">${S.mt.cloud&&S.mt.sheetUrl?"On · last sync "+last:"Off (optional)"}${S.msg?"<br>"+esc(S.msg):""}<br>Photos stay on this iPhone.</div>
@@ -605,7 +620,8 @@ function set(){
  <h2>Appearance</h2><div class="card"><div class="seg">${["auto","light","dark"].map(t=>`<button class="chip ${(S.mt.theme||"auto")===t?"on":""}" style="${(S.mt.theme||"auto")===t?"background:var(--ac)":""}" onclick="setTheme('${t}')">${t[0].toUpperCase()+t.slice(1)}</button>`).join("")}</div></div>
  <h2>Shifts</h2><div class="card">${shifts().map(s=>`<div class="row sp" style="padding:6px 0"><div><b>${esc(s[1]||s[0])}</b> <span class="meta">${mm(s[2])}–${mm(s[3])} · ${durOf(s)/60}h</span></div><div class="row"><button class="btn del" style="width:auto;margin:0;padding:8px;color:var(--ac2)" onclick="editShift('${esc(s[0])}','')">Edit</button><button class="btn del" style="width:auto;margin:0;padding:8px" onclick="delShift('${esc(s[0])}')">Delete</button></div></div>`).join("")}${(CU.H||[]).length?`<button class="btn sec" onclick="CU.H=[];save();render()">Show ${(CU.H||[]).length} deleted shift(s) again</button>`:""}<button class="btn sec" onclick="S.addK='sh';render()">＋ Add new shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}</div>
  <h2>Reports</h2><div class="card"><div class="meta">Full report of any shift day: print it, save it as a file, or copy it as text.</div><button class="btn" onclick="repOpen()">🖨 Open report (yesterday)</button></div>
- <h2>Export and backup</h2><div class="card"><div class="g2" style="gap:8px"><button class="btn" style="margin:0" onclick="dl('works.csv',csv())">Download CSV (Google Sheets / Excel)</button><button class="btn sec" style="margin:0" onclick="dl('works-backup.json',JSON.stringify({d:S.data,c:CU}))">Download full backup</button></div><textarea class="big" id="out" readonly style="margin-top:10px;display:none"></textarea></div>
+ <h2>Export and backup</h2><div class="card"><div class="g2" style="gap:8px"><button class="btn" style="margin:0" onclick="doBackup('csv')">Download CSV (Google Sheets / Excel)</button><button class="btn sec" style="margin:0" onclick="doBackup('json')">Download full backup</button></div><textarea class="big" id="out" readonly style="margin-top:10px;display:none"></textarea>
+ <div class="meta" style="margin-top:12px">Last backup: ${ago(lastBackup())}. The full backup file restores everything. The CSV is for Excel or Google Sheets.</div><label>Backup reminder</label><div class="seg">${["off","daily","weekly"].map(t=>`<button class="chip ${(S.mt.rem||"weekly")===t?"on":""}" style="${(S.mt.rem||"weekly")===t?"background:var(--ac)":""}" onclick="setRem('${t}')">${t[0].toUpperCase()+t.slice(1)}</button>`).join("")}</div></div>
  <h2>Restore backup</h2><div class="card"><input type="file" accept=".json,application/json" onchange="restoreFile(this)"></div>
  <button class="btn sec" style="color:#d33" onclick="eraseLocal()">Erase works on this device</button>`;
 }
@@ -615,7 +631,7 @@ function restoreText(t){
   const j=JSON.parse(t);if(!Array.isArray(j.d))throw 0;
   const LM=new Map(S.data.map(e=>[e.id,e])),b=[];
   j.d.forEach(e=>{norm(e);const l=LM.get(e.id);if(!l){S.data.push(e);b.push(e)}else if(e.u>l.u){Object.assign(l,e);b.push(l)}});
-  if(j.c){["F","I","R","X","E","O"].forEach(k=>Object.assign(CU[k],j.c[k]||{}));(j.c.S||[]).forEach(s=>{if(!sdef(s[0]))CU.S.push(s)});Object.assign(F,CU.F);Object.assign(I,CU.I);Object.assign(R,CU.R);save()}
+  if(j.c){["F","I","R","X","E","O","W"].forEach(k=>Object.assign(CU[k],j.c[k]||{}));(j.c.S||[]).forEach(s=>{if(!sdef(s[0]))CU.S.push(s)});Object.assign(F,CU.F);Object.assign(I,CU.I);Object.assign(R,CU.R);save()}
   bulk(b);scheduleSync();toast("Restored "+b.length+" works ✓");render();
  }catch(e){toast("Invalid backup file")}
 }
@@ -625,7 +641,7 @@ async function eraseLocal(){
 }
 function editShift(id,sd){S.es={id,sd};S.addK="esh";render();setTimeout(()=>{const x=$("#e0");x&&x.scrollIntoView&&x.scrollIntoView({block:"center"})},60)}
 function saveEsh(){
- const e=S.es,a=$("#e1").value,b=$("#e2").value,name=($("#e0").value||"").trim();
+ const e=S.es,a=t24v("e1"),b=t24v("e2"),name=($("#e0").value||"").trim();
  if(!name){toast("Enter a shift name");return}
  if(!a||!b){toast("Set start and end");return}
  const tm=x=>+x.slice(0,2)*60+ +x.slice(3,5),sc=$("#e3")?$("#e3").value:"all",base=SH0.concat(CU.S||[]).find(s=>s[0]===e.id)||[e.id,e.id,0,60],cur=CU.E[e.id]||[base[2],base[3]];
@@ -636,15 +652,15 @@ function resetDay(){delete CU.O[S.es.id+"|"+S.es.sd];save();S.addK=null;render()
 /* ---- reports ---- */
 function repOpen(date,sh){S.rep={date:date||dkey(new Date(Date.now()-864e5)),sh:sh||""};S.view=null;sheet()}
 function repSet(k,v){S.rep[k]=v;if(k==="date")S.rep.sh="";repRender()}
-const jobs=e=>e.types.map(t=>t+(t==="LDL"&&e.ldl?" "+e.ldl:"")).join(", ");
+const jobs=e=>e.types.map(t=>{const d=DIRT.includes(t)?dirOf(e,t):"";return t+(d?" "+d:"")}).join(", ");
 const eqs=e=>Object.entries(e.refs||{}).filter(a=>a[1]).map(a=>(a[0]==="PUSHBACK"?"PB":a[0])+" "+a[1]).join(", ");
 function repData(){const r=S.rep;return S.data.filter(e=>e.sd===r.date&&(!r.sh||e.shift===r.sh)).sort((a,b)=>a.ts.localeCompare(b.ts))}
 function repBody(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(" · "),g={};
  rows.forEach(e=>{const k=e.shift||"No shift";(g[k]=g[k]||[]).push(e)});
- const hasTow=rows.some(isTow);
+ const hasTow=rows.some(isTow),hasMhl=rows.some(e=>e.mhl);
  let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh?shName(r.sh):"All shifts")}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
- Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(shName(sh))}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Job</th><th>Equipment</th>${hasTow?"<th>Towing</th>":""}<th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(e.flight||(isTow(e)?"TOWING":""))}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(bayOf(e))}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td>${hasTow?`<td>${esc(towSummary(e))}</td>`:""}<td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
+ Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(shName(sh))}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Times</th><th>Job</th><th>Equipment</th>${hasTow?"<th>Towing</th>":""}${hasMhl?"<th>MHL</th>":""}<th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(fltTxt(e)||(isTow(e)?"TOWING":""))}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(bayOf(e))}</td><td>${esc(timesTxt(e))}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td>${hasTow?`<td>${esc(towSummary(e))}</td>`:""}${hasMhl?`<td>${esc(mhlSummary(e))}</td>`:""}<td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
  if(!rows.length)h+='<div class="empty">No works on this day.</div>';
  h+='<div class="meta" style="margin-top:14px">Works Log · Jamshi Solutions</div>';
  return h;
@@ -668,7 +684,7 @@ function repFile(){
 function repText(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(", ");
  const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh?shName(r.sh):"All shifts"),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
- rows.forEach((e,i)=>L.push((i+1)+". "+e.ts.slice(11,16)+" "+[e.flight||(isTow(e)?"TOWING":""),e.reg,e.type,e.iata,bayTxt(e),jobs(e),eqs(e),towSummary(e),e.notes].filter(Boolean).join(" | ")));
+ rows.forEach((e,i)=>L.push((i+1)+". "+e.ts.slice(11,16)+" "+[fltTxt(e)||(isTow(e)?"TOWING":""),e.reg,e.type,e.iata,bayTxt(e),jobs(e),eqs(e),towSummary(e),mhlSummary(e),timesTxt(e),e.notes].filter(Boolean).join(" | ")));
  cp(L.join("\n"));
 }
 
@@ -686,7 +702,7 @@ function setT(k,v){if(!v){S.D.tw[k]="";render();return}S.D.tw[k]=(S.D.tw[k]||lt(
 function towToggle(){const t=S.D.tw;if(!t.st)t.st=lt(new Date());else if(!t.en)t.en=lt(new Date());render()}
 function towPanel(){
  const t=S.D.tw,D=S.D;
- const timeBox=k=>`<div class="row"><input type="time" value="${esc(hm(t[k]))}" onchange="setT('${k}',this.value)"><button class="chip" onclick="clrT('${k}')">Clear</button></div>`;
+ const timeBox=k=>`<div class="row">${t24("tw_"+k,hm(t[k]))}<button class="chip" onclick="clrT('${k}')">Clear</button></div>`;
  const one=(k,l)=>`<div class="tcard"><div class="tl">${l}</div>${t[k]?timeBox(k):`<button class="catch" onclick="catchT('${k}')">⏱ Catch time</button>`}</div>`;
  const dur=towDur(t);
  return `<label style="color:#2b6777">Towing</label>
@@ -702,7 +718,7 @@ const _dc={};
 function dtxt(sd){if(!sd)return"";if(!_dc[sd]){const d=new Date(sd+"T00:00:00");_dc[sd]=[d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}),d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"}),sd.split("-").reverse().join("/"),sd].join(" ")}return _dc[sd]}
 function hayOf(e){
  const t=e.tw||{};
- const raw=[e.flight,e.reg,e.type,e.role,e.bay,e.bayFrom,e.bayTo,bayOf(e),e.city,e.iata,e.notes,e.shift,shName(e.shift),dtxt(e.sd),(e.ts||"").replace("T"," "),e.dep,e.ldl==="ARR"?"arrival":e.ldl==="DEP"?"departure":"",(e.types||[]).join(" "),Object.entries(e.refs||{}).map(a=>a[0]+" "+a[1]).join(" "),isTow(e)?"towing tow":"",hm(t.rcv),hm(t.rep),hm(t.eng),hm(t.fol),hm(t.st),hm(t.en)].filter(Boolean).join(" ").toLowerCase();
+ const raw=[e.flight,e.flight2,e.reg,e.type,e.role,e.bay,e.bayFrom,e.bayTo,bayOf(e),e.city,e.iata,e.city2,e.iata2,e.notes,e.shift,shName(e.shift),dtxt(e.sd),(e.ts||"").replace("T"," "),e.dep,DIRT.map(x=>{const d=dirOf(e,x);return d==="ARR"?"arrival":d==="DEP"?"departure":d==="TURN"?"turnaround arrival departure":""}).join(" "),(e.types||[]).join(" "),Object.entries(e.refs||{}).map(a=>a[0]+" "+a[1]).join(" "),isTow(e)?"towing tow":"",hm(t.rcv),hm(t.rep),hm(t.eng),hm(t.fol),hm(t.st),hm(t.en),e.mhl?mhlSummary(e):"",timesTxt(e)].filter(Boolean).join(" ").toLowerCase();
  return raw+" "+raw.replace(/[^a-z0-9]/g,"");
 }
 
@@ -781,7 +797,7 @@ function ownerTools(){
 function loadCodes(){}
 
 /* ---- updates ---- */
-const BUILD="2026-11-15c";
+const BUILD="2026-11-15f";
 async function checkUpdate(manual){
  try{
   const t=await (await fetch("index.html?t="+Date.now(),{cache:"no-store"})).text(),m=t.match(new RegExp('const BUILD="'+'([^"]+)"'));
@@ -803,9 +819,85 @@ async function applyUpdate(){
  }catch(e){}
  location.replace(location.pathname+"?u="+Date.now());
 }
+
+/* ---- departure flight text, backup reminder ---- */
+function fltTxt(e){return e.flight2&&e.flight2!==e.flight?(e.flight||"?")+" → "+e.flight2:(e.flight||"")}
+function lastBackup(){return Math.max(S.mt.lbk||0,(S.mt.cloud&&S.mt.sheetUrl)?(S.mt.last||0):0)}
+function backupDue(){const r=S.mt.rem||"weekly";if(r==="off"||!S.data.length)return false;return Date.now()-lastBackup()>(r==="daily"?20*36e5:6.5*864e5)}
+function ago(t){if(!t)return"never";const d=Math.floor((Date.now()-t)/864e5);return d<1?"today":d===1?"yesterday":d+" days ago"}
+function backupBanner(){
+ if(!backupDue())return"";
+ return `<div class="card" style="border-color:#e8590c"><b>⚠ Backup due</b><div class="meta">Last backup: ${ago(lastBackup())}. Save a copy so your works are never lost.</div><div class="row" style="gap:8px;margin-top:8px"><button class="btn" style="flex:1;margin:0" onclick="doBackup('json')">Save backup</button><button class="btn sec" style="flex:1;margin:0" onclick="doBackup('csv')">Save CSV</button></div></div>`;
+}
+async function doBackup(kind){
+ const d=dkey(new Date());
+ const ok=kind==="csv"?await dl("works-"+d+".csv",csv()):await dl("works-backup-"+d+".json",JSON.stringify({d:S.data,c:CU}));
+ if(ok){S.mt.lbk=Date.now();saveMt();render();toast("Backup saved ✓")}
+}
+function setRem(v){S.mt.rem=v;saveMt();render()}
+
+/* ---- directions, 24h pickers, MHL, shift runs ---- */
+const DIRT=["LDL","MDL","MHL"];
+const T24H={};
+["rcv","rep","eng","fol","st","en"].forEach(k=>{T24H["tw_"+k]=v=>setT(k,v)});
+T24H.arr=v=>{S.D.arr=v};T24H.dep=v=>{S.D.dep=v};T24H.ts=v=>{S.D.ts=S.D.ts.slice(0,10)+"T"+(v||"00:00")};
+function t24(key,val,id){
+ const p=(val||"").split(":"),hh=p[0]||"",mi=p[1]||"";
+ const H=Array.from({length:24},(_,i)=>p2(i)),M=Array.from({length:60},(_,i)=>p2(i));
+ return `<div class="t24" data-k="${key}"${id?` id="${id}"`:""}><select class="th" onchange="t24c(this)"><option value="">--</option>${H.map(x=>`<option ${x===hh?"selected":""}>${x}</option>`).join("")}</select><b>:</b><select class="tm" onchange="t24c(this)"><option value="">--</option>${M.map(x=>`<option ${x===mi?"selected":""}>${x}</option>`).join("")}</select></div>`;
+}
+function t24c(el){
+ const w=el.parentNode,th=w.querySelector(".th"),tm=w.querySelector(".tm");
+ if(th.value&&!tm.value)tm.value="00";
+ if(!th.value&&tm.value)th.value="00";
+ const v=th.value&&tm.value?th.value+":"+tm.value:"",f=T24H[w.dataset.k];if(f)f(v);
+}
+function t24v(id){const w=document.getElementById(id);if(!w)return"";const h=w.querySelector(".th").value,m=w.querySelector(".tm").value;return h&&m?h+":"+m:""}
+function dirOf(o,t){return (o.dirs&&o.dirs[t])||(t==="LDL"&&o.ldl)||""}
+function dirsOn(D){return D.types.includes("TOWING")?[]:DIRT.filter(t=>D.types.includes(t))}
+function anyTurn(D){return dirsOn(D).some(t=>D.dirs[t]==="TURN")}
+function needArr(D){return dirsOn(D).some(t=>D.dirs[t]==="ARR"||D.dirs[t]==="TURN")}
+function needDep(D){const on=dirsOn(D);return !on.length||on.some(t=>D.dirs[t]==="DEP"||D.dirs[t]==="TURN")}
+function setDir(t,v){S.D.dirs[t]=v;render()}
+function timesTxt(e){return e.arr&&e.dep?e.arr+" → "+e.dep:e.arr?"Arr "+e.arr:e.dep?"Dep "+e.dep:""}
+function mhlSummary(e){const m=e.mhl;if(!m)return"";const p=[];if(m.rep)p.push("Rep "+hm(m.rep));if(m.st)p.push("Start "+hm(m.st));if(m.fin)p.push("Fin "+hm(m.fin));if(m.fp)p.push("1st pax "+hm(m.fp));if(m.pl)p.push("Pax loading "+(m.pl==="Y"?"Yes":"No"));return p.length?"MHL: "+p.join(" · "):""}
+function mhlTiles(e,tile){const m=e.mhl||{};return `<h2>MHL</h2><div class="tiles">${tile("Report time",hm(m.rep))}${tile("Start",hm(m.st))}${tile("Finished",hm(m.fin))}${tile("First passenger report",hm(m.fp))}${tile("Passenger loading",m.pl==="Y"?"Yes":m.pl==="N"?"No":"")}</div>`}
+["rep","st","fin","fp"].forEach(k=>{T24H["mh_"+k]=v=>setM(k,v)});
+function catchM(k){S.D.mhl[k]=lt(new Date());render()}
+function clrM(k){S.D.mhl[k]="";render()}
+function setM(k,v){if(!v){S.D.mhl[k]="";render();return}S.D.mhl[k]=(S.D.mhl[k]||lt(new Date())).slice(0,10)+"T"+v;render()}
+function setPL(v){S.D.mhl.pl=S.D.mhl.pl===v?"":v;render()}
+function mhlPanel(){
+ const m=S.D.mhl;
+ const one=(k,l)=>`<div class="tcard"><div class="tl">${l}</div>${m[k]?`<div class="row">${t24("mh_"+k,hm(m[k]))}<button class="chip" onclick="clrM('${k}')">Clear</button></div>`:`<button class="catch" onclick="catchM('${k}')">⏱ Catch time</button>`}</div>`;
+ const yn=(v,l)=>`<button class="chip ${m.pl===v?"on":""}" style="${m.pl===v?"background:"+(v==="Y"?"#1f9d55":"#d33"):""}" onclick="setPL('${v}')">${l}</button>`;
+ return `<label style="color:#8e5a2b">MHL</label><div class="tgrid">${one("rep","Report time")}${one("st","Start")}${one("fin","Finished")}${one("fp","First passenger report time")}</div><div class="tcard" style="margin-top:10px"><div class="tl">Passenger loading</div><div class="seg">${yn("Y","Yes")}${yn("N","No")}</div></div>`;
+}
+function runKey(id,sd){return id+"|"+sd}
+function runOf(id,sd){return (CU.W||{})[runKey(id,sd)]||null}
+function isRunning(id,sd){const r=runOf(id,sd);return !!(r&&r.st&&!r.en)}
+function dur(a,b){let m=Math.round((new Date(b)-new Date(a))/60000);if(m<0)m+=1440;return Math.floor(m/60)+"h "+p2(m%60)+"m"}
+function shiftStart(){const c=S.cur;CU.W=CU.W||{};CU.W[runKey(c.id,c.sd)]={st:lt(new Date()),en:""};save();render();toast("Shift started")}
+function shiftFinish(){const c=S.cur;if(!confirm("Finish this shift now?"))return;const r=runOf(c.id,c.sd);if(r){r.en=lt(new Date());save();render();toast("Shift finished")}}
+function shiftResume(){const r=runOf(S.cur.id,S.cur.sd);if(r){r.en="";save();render();toast("Shift resumed")}}
+function runPanel(){
+ const c=S.cur,r=runOf(c.id,c.sd)||{st:"",en:""},today=dkey(new Date());
+ return `<div class="panel"><label>Actual shift times (24h)</label><div class="two"><div><label>Start date</label><input type="date" id="r1d" value="${esc((r.st||"").slice(0,10)||c.sd)}"></div><div><label>Start time</label>${t24("r1",hm(r.st),"r1")}</div><div><label>End date</label><input type="date" id="r2d" value="${esc((r.en||"").slice(0,10)||today)}"></div><div><label>End time</label>${t24("r2",hm(r.en),"r2")}</div></div><div class="meta" style="margin-top:6px">Leave the end time empty while the shift is still running.</div><button class="btn" onclick="saveRun()">Save shift times</button><button class="btn sec" onclick="resetRun()">Reset (not started)</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+}
+function saveRun(){
+ const c=S.cur,d1=$("#r1d").value,t1=t24v("r1"),d2=$("#r2d").value,t2=t24v("r2");
+ if(!d1||!t1){toast("Set the start date and time");return}
+ const st=d1+"T"+t1,en=(d2&&t2)?d2+"T"+t2:"";
+ if(en&&en<st){toast("The end must be after the start");return}
+ CU.W=CU.W||{};CU.W[runKey(c.id,c.sd)]={st,en};save();S.addK=null;render();toast("Shift times saved ✓");
+}
+function resetRun(){const c=S.cur;if(CU.W)delete CU.W[runKey(c.id,c.sd)];save();S.addK=null;render()}
+function runningCards(){
+ return Object.entries(CU.W||{}).filter(([k,r])=>r&&r.st&&!r.en).map(([k])=>{const i=k.lastIndexOf("|"),id=k.slice(0,i),sd=k.slice(i+1);return `<button class="ban on" style="width:100%;border:0;text-align:left;font:inherit" onclick="start('${esc(id)}','${sd}')"><div class="row sp"><b>● Running shift</b><span>${nice(sd)}</span></div><div class="big2">${esc(shName(id))}</div><div style="font-weight:700;margin-top:6px">Tap to continue ▸</div></button>`}).join("");
+}
 function setTheme(t){S.mt.theme=t;const r=document.documentElement;if(r.setAttribute){t==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",t)}saveMt();render()}
 function about(){
- return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.2</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
+ return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.3</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
  <div class="cert"><div class="cin"><div class="cs">CERTIFICATE OF AUTHENTICITY</div><div class="cl"><span></span>✦<span></span></div>
  <div class="ct">This is to certify that</div><div class="cn">Works Log</div><div class="ct">is an original application designed and developed by</div><div class="cn" style="font-size:26px;color:var(--ac)">Jamshi Solutions</div>
  <div class="cmeta"><div><small>Certificate no.</small><b>JS-WL-2026-001</b></div><div><small>Issued</small><b>14 Nov 2026</b></div><div><small>Edition</small><b>Version 1.0</b></div></div>
