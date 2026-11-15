@@ -284,7 +284,7 @@ async function init(){
  if(dirty){await bulk(rows);await save();await saveMt()}
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
  await checkAccess();
- S.ready=true;try{S.persist=await navigator.storage.persisted()}catch(e){}render();
+ S.ready=true;try{S.persist=await navigator.storage.persisted()}catch(e){}render();setTimeout(checkUpdate,4000);
  setTimeout(()=>{const sp=$("#splash");sp.style.opacity=0;setTimeout(()=>sp.remove&&sp.remove(),500)},900);
  if(S.mt.cloud)setTimeout(()=>cloudSync(false),2500);
 }
@@ -349,12 +349,12 @@ function render(){
   $("#nav").innerHTML=[["shift","⏱️","Shift"],["home","📊","Dashboard"],["hist","🗂️","History"],["set","⚙️","Data"],["about","ℹ️","About"]].map(a=>`<button class="${S.tab===a[0]?"on":""}" onclick="go('${a[0]}')"><span>${a[1]}</span>${a[2]}</button>`).join("");
   $("#fab").innerHTML=["add","about","set"].includes(S.tab)?"":`<button onclick="newWork()" aria-label="Add work">＋</button>`;
   $("#app").innerHTML=({shift:shiftTab,home,add,hist,set,about})[S.tab]();
-  if(S.tab==="hist")list();
+  if(S.tab==="hist")histList();
   if(S.tab==="about")loadCodes();
  }catch(err){$("#app").innerHTML=`<div class="card"><b>Something went wrong</b><div class="meta">${esc(err.message)}</div></div>`}
 }
 setInterval(()=>{if(S.cur&&(S.tab==="shift"||S.tab==="home")&&!S.view)render()},60000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.ready&&S.mt.act&&Date.now()-(S.mt.act.chk||0)>6*36e5)checkAccess().then(render)});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.ready){checkUpdate();if(S.mt.act&&Date.now()-(S.mt.act.chk||0)>6*36e5)checkAccess().then(render)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(S.view||S.rep))closeSheet()});
 
 /* ---- shift gate ---- */
@@ -545,8 +545,8 @@ function sheet(){
 }
 
 /* ---- history grouped by day and shift ---- */
-function hist(){return `<h1>History</h1><input type="search" enterkeyhint="search" placeholder="Search anything: flight, reg, bay, date, note…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;list()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
-function list(){
+function hist(){return `<h1>History</h1><input type="search" enterkeyhint="search" placeholder="Search anything: flight, reg, bay, date, note…" value="${esc(S.q)}" oninput="S.q=this.value;S.dl=7;histList()"><div class="chips" style="margin:10px 0"><button class="chip ${S.f?"":"on"}" style="${S.f?"":"background:var(--ac)"}" onclick="S.f='';S.dl=7;render()">All</button>${TYPES.map(t=>`<button class="chip ${S.f===t[0]?"on":""}" style="${S.f===t[0]?"background:"+t[2]:""}" onclick="S.f='${t[0]}';S.dl=7;render()">${t[0]}</button>`).join("")}</div><div class="meta" id="cnt" style="margin:0 4px 8px"></div><div id="list"></div>`}
+function histList(){
  const q=S.q.toLowerCase().trim(),toks=q.split(/\s+/).filter(Boolean),a=activeInst(),flt=!!(toks.length||S.f);
  const pass=e=>!S.f||e.types.includes(S.f);
  let r;
@@ -568,7 +568,7 @@ function list(){
   return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
    const s=sdef(sh),live=a&&a.id===sh&&a.sd===sd;
    return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● ACTIVE</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
- if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;list()">Show more days</button>`;
+ if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;histList()">Show more days</button>`;
  $("#list").innerHTML=h||'<div class="empty">Nothing found</div>';
 }
 function edit(id){const e=S.data.find(x=>x.id===id);S.D=Object.assign(blank(),JSON.parse(JSON.stringify(e)),{fl:e.flight||"",ldl:e.ldl||"",refs:e.refs||{},photos:e.photos||[],tw:Object.assign({rcv:"",rep:"",eng:"",fol:"",st:"",en:""},e.tw||{}),bayFrom:e.bayFrom||"",bayTo:e.bayTo||""});go("add")}
@@ -779,15 +779,40 @@ function ownerTools(){
  return `<h2>Owner · access</h2><div class="card"><div class="meta">${S.srv?"Email codes and Google Authenticator are on. A new phone asks for a code, which arrives in your email, or you read them the current Google Authenticator code. To lock a phone, open your Google Sheet, go to the Devices tab, and change its Status to revoked.":"The access server is not set up yet. Until then the 12-character codes work. See ACCESS-SETUP.md to turn on email codes and Google Authenticator."}</div></div>`;
 }
 function loadCodes(){}
+
+/* ---- updates ---- */
+const BUILD="2026-11-15c";
+async function checkUpdate(manual){
+ try{
+  const t=await (await fetch("index.html?t="+Date.now(),{cache:"no-store"})).text(),m=t.match(new RegExp('const BUILD="'+'([^"]+)"'));
+  if(m&&m[1]!==BUILD){showUpd();if(manual)toast("A new version is ready");return}
+  if(manual)toast("You have the latest version");
+ }catch(e){if(manual)toast("Could not check. Connect to the internet.")}
+}
+function showUpd(){
+ if(document.getElementById("updbar"))return;
+ const d=document.createElement("div");d.id="updbar";
+ d.style.cssText="position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:98;background:#1f9d55;color:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:600;box-shadow:0 6px 20px #0004";
+ d.innerHTML='<span>New version available</span><button style="border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:700" onclick="applyUpdate()">Update</button>';
+ document.body.appendChild(d);
+}
+async function applyUpdate(){
+ try{
+  if(navigator.serviceWorker){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()))}
+  if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}
+ }catch(e){}
+ location.replace(location.pathname+"?u="+Date.now());
+}
 function setTheme(t){S.mt.theme=t;const r=document.documentElement;if(r.setAttribute){t==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",t)}saveMt();render()}
 function about(){
- return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.1</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
+ return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.2</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
  <div class="cert"><div class="cin"><div class="cs">CERTIFICATE OF AUTHENTICITY</div><div class="cl"><span></span>✦<span></span></div>
  <div class="ct">This is to certify that</div><div class="cn">Works Log</div><div class="ct">is an original application designed and developed by</div><div class="cn" style="font-size:26px;color:var(--ac)">Jamshi Solutions</div>
  <div class="cmeta"><div><small>Certificate no.</small><b>JS-WL-2026-001</b></div><div><small>Issued</small><b>14 Nov 2026</b></div><div><small>Edition</small><b>Version 1.0</b></div></div>
  <div class="seal">${logo(46)}</div></div></div>
  ${ownerTools()}<h2>Contact</h2><div class="card"><b>Jamshi Solutions</b><a class="btn" style="display:block;text-align:center;text-decoration:none" href="mailto:Jamshi285@gmail.com">✉ Jamshi285@gmail.com</a><button class="btn sec" onclick="cp('Jamshi285@gmail.com')">Copy email address</button></div>
  <h2>Storage</h2><div class="card meta">Your works are saved in the app’s own database on this iPhone and work fully offline.</div>
+ <h2>App version</h2><div class="card"><div class="meta">Build ${BUILD}</div><button class="btn" onclick="checkUpdate(true)">Check for updates</button><button class="btn sec" onclick="applyUpdate()">Force update now</button><div class="meta" style="margin-top:8px">Your saved works are not touched by updating.</div></div>
  <div class="meta" style="text-align:center;margin:16px 0">© ${new Date().getFullYear()} Jamshi Solutions. All rights reserved.</div>`;
 }
 init();
