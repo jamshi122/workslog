@@ -157,6 +157,8 @@ input,textarea,select,.sh,.rtab,#rbody{-webkit-user-select:text;user-select:text
 #updbtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));z-index:15}
 #updbtn button{width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-size:20px;box-shadow:0 2px 8px #0003;opacity:.9}
 #updbtn.new button{background:#1f9d55;color:#fff;border-color:#1f9d55;opacity:1}
+.otag{display:inline-block;background:#1f9d55;color:#fff;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800;margin:0 6px;vertical-align:middle}
+.bb.sel{background:#fff;color:#0a7a3c}
 </style></head><body>
 <div id="splash"></div>
 <div id="app"></div>
@@ -379,19 +381,21 @@ function gate(){
  <h1>Select your shift</h1>
  ${tip}${backupBanner()}${runningCards()}
  <label>Shift date</label><div class="chips" style="margin-bottom:8px">${chip(td,"Today")}${chip(yd,"Yesterday")}</div><input type="date" value="${esc(d0)}" onchange="S.gd=this.value;render()">
- <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<div class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[1]||s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span>${isRunning(s[0],d0)?'<div class="live">● Running</div>':""}<div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div><div class="row" style="margin-top:8px"><span class="chip sm" onclick="event.stopPropagation();editShift('${esc(s[0])}','${d0}')">Edit</span><span class="chip sm" style="color:#d33" onclick="event.stopPropagation();delShift('${esc(s[0])}')">Delete</span></div></div>`}).join("")}</div>
+ <h2>Choose shift</h2><div class="sgrid">${list.map(s=>{const n=cnt(s[0]);return `<div class="sbtn ${p===s[0]?"sel":""}" onclick="S.pick='${esc(s[0])}';render()"><b>${esc(s[1]||s[0])}</b><span>${mm(s[2])}–${mm(s[3])}</span>${isRunning(s[0],d0)?'<div class="live">● Running</div>':""}${otOf(s[0],d0)?`<div>${otTag(otOf(s[0],d0))}</div>`:""}<div class="meta">${n?n+" work"+(n===1?"":"s"):"empty"}</div><div class="row" style="margin-top:8px"><span class="chip sm" onclick="event.stopPropagation();editShift('${esc(s[0])}','${d0}')">Edit</span><span class="chip sm" style="color:#d33" onclick="event.stopPropagation();delShift('${esc(s[0])}')">Delete</span></div></div>`}).join("")}</div>
  <button class="btn sec" onclick="S.addK='sh';render()">＋ New shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}
  <div class="savebar" style="bottom:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))"><button class="btn" ${p?"":"disabled"} onclick="S.pick&&start(S.pick,'${d0}')">${p?"Open shift · "+esc(shName(p)):"Select a shift to continue"}</button></div>`;
 }
 function shiftTab(){
- const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],r=runOf(c.id,c.sd),running=isRunning(c.id,c.sd),done=!!(r&&r.st&&r.en);
+ const c=S.cur,s=sdef(c.id)||[c.id,c.id,0,1440],running=isRunning(c.id,c.sd),ot=otOf(c.id,c.sd);
  const list=S.data.filter(e=>e.shift===c.id&&e.sd===c.sd).sort((x,y)=>y.ts.localeCompare(x.ts));
  const tc=count(list,e=>e.types);
- const st=running?`● Running · started ${hm(r.st)} · ${dur(r.st,lt(new Date()))}`:done?`Finished ${hm(r.st)}–${hm(r.en)} · ${dur(r.st,r.en)}`:"Not started";
- const main=running?`<button class="bb" style="background:#d33" onclick="shiftFinish()">■ Finish shift</button>`:done?`<button class="bb" onclick="shiftResume()">↺ Resume shift</button>`:`<button class="bb" style="background:#1f9d55" onclick="shiftStart()">▶ Start shift</button>`;
- return `${backupBanner()}<div class="ban ${running?"on":"idle"}"><div class="row sp"><b>${st}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(shName(c.id))}</div><div>Planned ${mm(s[2])}–${mm(s[3])} · ${nice(c.sd)}</div>
-  <div class="row" style="flex-wrap:wrap">${main}<button class="bb" onclick="newWork()">＋ Add work</button><button class="bb" onclick="S.addK='run';render()">Shift times</button><button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift</button><button class="bb" onclick="delShift('${esc(c.id)}')">Delete shift</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
-  ${S.addK==="esh"?addPanel():""}${S.addK==="run"?runPanel():""}
+ const main=running?`<button class="bb" style="background:#d33" onclick="shiftFinish()">■ End shift</button>`:`<button class="bb" style="background:#1f9d55" onclick="shiftStart()">▶ Start shift</button>`;
+ const endTxt=ot?` · +${hrTxt(ot)}h OT → ends ${mm((s[3]+Math.round(ot*60))%1440)}`:"";
+ return `${backupBanner()}<div class="ban ${running?"on":"idle"}"><div class="row sp"><b>${running?"● Running":"Not running"}${otTag(ot)}</b><span>${list.length} work${list.length===1?"":"s"}</span></div><div class="big2">${esc(shName(c.id))}</div><div>Planned ${mm(s[2])}–${mm(s[3])}${endTxt} · ${nice(c.sd)}</div>
+  <div class="row" style="flex-wrap:wrap">${main}<button class="bb" onclick="newWork()">＋ Add work</button></div>
+  <div class="row" style="flex-wrap:wrap"><b style="margin-top:10px">Extend shift (OT):</b><button class="bb ${ot===1?"sel":""}" onclick="setOT(1)">+1 hr</button><button class="bb ${ot===2?"sel":""}" onclick="setOT(2)">+2 hr</button></div>
+  <div class="row" style="flex-wrap:wrap"><button class="bb" onclick="editShift('${esc(c.id)}','${c.sd}')">Edit shift</button><button class="bb" onclick="delShift('${esc(c.id)}')">Delete shift</button><button class="bb" onclick="repOpen('${c.sd}','${esc(c.id)}')">🖨 Report</button><button class="bb" onclick="S.cur=null;S.addK=null;render()">Change shift</button></div></div>
+  ${S.addK==="esh"?addPanel():""}
   ${S.mt.cloud&&S.msg?`<div class="meta" style="margin:0 4px 8px">☁ ${esc(S.msg)}</div>`:""}
   ${tc.length?`<div class="chips" style="margin-bottom:12px">${tc.map(a=>`<span class="tag" style="background:${COL[a[0]]||"#666"};font-size:13px;padding:5px 12px">${esc(a[0])} · ${a[1]}</span>`).join("")}</div>`:""}
   <h2>Works in this shift</h2>${list.length?`<div class="cg">${list.map(card).join("")}</div>`:'<div class="empty">No works yet.<br>Tap ＋ to add the first one.</div>'}`;
@@ -414,7 +418,7 @@ function home(){
  const top=fn=>count(d,fn).slice(0,5).map(a=>`<div class="row sp" style="padding:5px 0"><b>${esc(a[0])}</b><span class="meta">${a[1]}</span></div>`).join("")||'<div class="meta">No data yet</div>';
  return `<h1>Dashboard</h1>
  <div class="grid"><div class="stat hero"><b>${today}</b><span>Today</span></div><div class="stat"><b>${week}</b><span>Last 7 days</span></div><div class="stat"><b>${month}</b><span>This month</span></div><div class="stat"><b>${d.length}</b><span>All time</span></div></div>
- <div class="g2"><div><h2>Jobs by type</h2><div class="card">${TYPES.map(t=>`<div class="row" style="margin:7px 0"><div class="lbl" style="color:${t[2]}">${t[0]}</div><div class="bar"><i style="width:${(tc[t[0]]||0)/mx*100}%;background:${t[2]}"></i></div><div class="n">${tc[t[0]]||0}</div></div>`).join("")}</div></div>
+ ${otSection()}<div class="g2"><div><h2>Jobs by type</h2><div class="card">${TYPES.map(t=>`<div class="row" style="margin:7px 0"><div class="lbl" style="color:${t[2]}">${t[0]}</div><div class="bar"><i style="width:${(tc[t[0]]||0)/mx*100}%;background:${t[2]}"></i></div><div class="n">${tc[t[0]]||0}</div></div>`).join("")}</div></div>
  <div><h2>Works per shift day · 14 days</h2><div class="card"><div class="cols">${dc.map(n=>`<div style="height:${n/dm*100}%"></div>`).join("")}</div><div class="cols l">${days.map(x=>`<span>${x.getDate()}</span>`).join("")}</div></div></div></div>
  <div class="g2"><div><h2>Aircraft types</h2><div class="card">${top(e=>[e.type])}</div></div><div><h2>Destinations</h2><div class="card">${top(e=>[(e.city||e.iata||"").split(" - ")[0]])}</div></div>
  <div><h2>Registrations</h2><div class="card">${top(e=>[e.reg])}</div></div><div><h2>Bays</h2><div class="card">${top(e=>[e.bay])}</div></div></div>`;
@@ -585,9 +589,9 @@ function histList(){
  let h=keys.slice(0,flt?9999:S.dl).map((sd,i)=>{
   const g=days[sd],tot=Object.values(g).reduce((n,x)=>n+x.length,0);
   const order=Object.keys(g).sort((x,y)=>((g[y][0]||{ts:"z"}).ts).localeCompare((g[x][0]||{ts:"z"}).ts));
-  return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
+  return `<details class="day" ${flt||i<2?"open":""}><summary><b>${nice(sd)}${otTag(otDay(sd))}</b><span class="meta">${tot} work${tot===1?"":"s"}</span></summary><div style="text-align:right"><button class="chip" onclick="repOpen('${sd}')">🖨 Report</button></div>${order.map(sh=>{
    const s=sdef(sh),live=isRunning(sh,sd);
-   return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b> <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● RUNNING</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
+   return `<div class="gh ${live?"act":""}"><div><b>${esc(shName(sh))}</b>${otTag(otOf(sh,sd))} <span class="meta">${s?mm(s[2])+"–"+mm(s[3])+" · ":""}${g[sh].length}</span> ${live?'<span class="live">● RUNNING</span>':""}</div>${sh!=="No shift"?`<button class="chip" onclick="newWork('${esc(sh)}','${sd}')">＋ Add</button>`:""}</div>${g[sh].length?`<div class="cg">${g[sh].map(card).join("")}</div>`:'<div class="meta" style="margin:0 2px 10px">No works yet in this shift</div>'}`}).join("")}</details>`}).join("");
  if(!flt&&keys.length>S.dl)h+=`<button class="btn sec" onclick="S.dl+=7;histList()">Show more days</button>`;
  $("#list").innerHTML=h||'<div class="empty">Nothing found</div>';
 }
@@ -623,6 +627,7 @@ function set(){
  <label>Apps Script web app URL</label><input id="shurl" value="${esc(S.mt.sheetUrl||"")}" placeholder="https://script.google.com/macros/s/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false">
  <button class="btn" onclick="sheetSave()" ${S.syncing?"disabled":""}>${S.syncing?"Syncing…":"Save and sync now"}</button>${S.mt.cloud?`<button class="btn sec" onclick="cloudOff()">Turn off</button>`:""}</div></div>
  <h2>Appearance</h2><div class="card"><div class="seg">${["auto","light","dark"].map(t=>`<button class="chip ${(S.mt.theme||"auto")===t?"on":""}" style="${(S.mt.theme||"auto")===t?"background:var(--ac)":""}" onclick="setTheme('${t}')">${t[0].toUpperCase()+t.slice(1)}</button>`).join("")}</div></div>
+ <h2>Week starts on (for OT totals)</h2><div class="card"><div class="seg">${[[0,"Sunday"],[1,"Monday"]].map(a=>`<button class="chip ${(S.mt.wk0===1?1:0)===a[0]?"on":""}" style="${(S.mt.wk0===1?1:0)===a[0]?"background:var(--ac)":""}" onclick="setWk(${a[0]})">${a[1]}</button>`).join("")}</div></div>
  <h2>Shifts</h2><div class="card">${shifts().map(s=>`<div class="row sp" style="padding:6px 0"><div><b>${esc(s[1]||s[0])}</b> <span class="meta">${mm(s[2])}–${mm(s[3])} · ${durOf(s)/60}h</span></div><div class="row"><button class="btn del" style="width:auto;margin:0;padding:8px;color:var(--ac2)" onclick="editShift('${esc(s[0])}','')">Edit</button><button class="btn del" style="width:auto;margin:0;padding:8px" onclick="delShift('${esc(s[0])}')">Delete</button></div></div>`).join("")}${(CU.H||[]).length?`<button class="btn sec" onclick="CU.H=[];save();render()">Show ${(CU.H||[]).length} deleted shift(s) again</button>`:""}<button class="btn sec" onclick="S.addK='sh';render()">＋ Add new shift</button>${S.addK==="sh"||S.addK==="esh"?addPanel():""}</div>
  <h2>Reports</h2><div class="card"><div class="meta">Full report of any shift day: print it, save it as a file, or copy it as text.</div><button class="btn" onclick="repOpen()">🖨 Open report (yesterday)</button></div>
  <h2>Export and backup</h2><div class="card"><div class="g2" style="gap:8px"><button class="btn" style="margin:0" onclick="doBackup('csv')">Download CSV (Google Sheets / Excel)</button><button class="btn sec" style="margin:0" onclick="doBackup('json')">Download full backup</button></div><textarea class="big" id="out" readonly style="margin-top:10px;display:none"></textarea>
@@ -664,7 +669,7 @@ function repBody(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(" · "),g={};
  rows.forEach(e=>{const k=e.shift||"No shift";(g[k]=g[k]||[]).push(e)});
  const hasTow=rows.some(isTow),hasMhl=rows.some(e=>e.mhl);
- let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh?shName(r.sh):"All shifts")}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
+ let h=`<h2 class="rt">Works Report</h2><div><b>${nice(r.date)}</b> · ${esc(r.sh?shName(r.sh):"All shifts")}${(r.sh?otOf(r.sh,r.date):otDay(r.date))?` · <b style="color:#1f9d55">EOT-${hrTxt(r.sh?otOf(r.sh,r.date):otDay(r.date))}hr</b>`:""}</div><div>Total works: <b>${rows.length}</b>${tc?" · "+esc(tc):""}</div>`;
  Object.keys(g).forEach(sh=>{const s=sdef(sh);h+=`<h3>${esc(shName(sh))}${s?" ("+mm(s[2])+"–"+mm(s[3])+")":""} · ${g[sh].length} works</h3><div class="tw"><table class="rtab"><tr><th>#</th><th>Time</th><th>Flight</th><th>Reg</th><th>Type</th><th>Route</th><th>Bay</th><th>Times</th><th>Job</th><th>Equipment</th>${hasTow?"<th>Towing</th>":""}${hasMhl?"<th>MHL</th>":""}<th>Notes</th></tr>${g[sh].map((e,i)=>`<tr><td>${i+1}</td><td>${e.ts.slice(11,16)}</td><td>${esc(fltTxt(e)||(isTow(e)?"TOWING":""))}</td><td>${esc(e.reg)}</td><td>${esc(e.type)}</td><td>${esc(e.iata)}</td><td>${esc(bayOf(e))}</td><td>${esc(timesTxt(e))}</td><td>${esc(jobs(e))}</td><td>${esc(eqs(e))}</td>${hasTow?`<td>${esc(towSummary(e))}</td>`:""}${hasMhl?`<td>${esc(mhlSummary(e))}</td>`:""}<td>${esc(e.notes)}</td></tr>`).join("")}</table></div>`});
  if(!rows.length)h+='<div class="empty">No works on this day.</div>';
  h+='<div class="meta" style="margin-top:14px">Works Log · Jamshi Solutions</div>';
@@ -688,7 +693,7 @@ function repFile(){
 }
 function repText(){
  const r=S.rep,rows=repData(),tc=count(rows,e=>e.types).map(a=>a[0]+" "+a[1]).join(", ");
- const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh?shName(r.sh):"All shifts"),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
+ const L=["WORKS REPORT · "+nice(r.date)+" · "+(r.sh?shName(r.sh):"All shifts")+((r.sh?otOf(r.sh,r.date):otDay(r.date))?" · EOT-"+hrTxt(r.sh?otOf(r.sh,r.date):otDay(r.date))+"hr":""),"Total: "+rows.length+(tc?" ("+tc+")":""),""];
  rows.forEach((e,i)=>L.push((i+1)+". "+e.ts.slice(11,16)+" "+[fltTxt(e)||(isTow(e)?"TOWING":""),e.reg,e.type,e.iata,bayTxt(e),jobs(e),eqs(e),towSummary(e),mhlSummary(e),timesTxt(e),e.notes].filter(Boolean).join(" | ")));
  cp(L.join("\n"));
 }
@@ -802,7 +807,7 @@ function ownerTools(){
 function loadCodes(){}
 
 /* ---- updates ---- */
-const BUILD="2026-11-15g";
+const BUILD="2026-11-15h";
 let _upBusy=false;
 function newBadge(on){const b=document.getElementById("updbtn");if(b)b.classList.toggle("new",!!on)}
 function reloadApp(){location.replace(location.pathname+"?u="+Date.now())}
@@ -917,29 +922,37 @@ function mhlPanel(){
 }
 function runKey(id,sd){return id+"|"+sd}
 function runOf(id,sd){return (CU.W||{})[runKey(id,sd)]||null}
-function isRunning(id,sd){const r=runOf(id,sd);return !!(r&&r.st&&!r.en)}
-function dur(a,b){let m=Math.round((new Date(b)-new Date(a))/60000);if(m<0)m+=1440;return Math.floor(m/60)+"h "+p2(m%60)+"m"}
-function shiftStart(){const c=S.cur;CU.W=CU.W||{};CU.W[runKey(c.id,c.sd)]={st:lt(new Date()),en:""};save();render();toast("Shift started")}
-function shiftFinish(){const c=S.cur;if(!confirm("Finish this shift now?"))return;const r=runOf(c.id,c.sd);if(r){r.en=lt(new Date());save();render();toast("Shift finished")}}
-function shiftResume(){const r=runOf(S.cur.id,S.cur.sd);if(r){r.en="";save();render();toast("Shift resumed")}}
-function runPanel(){
- const c=S.cur,r=runOf(c.id,c.sd)||{st:"",en:""},today=dkey(new Date());
- return `<div class="panel"><label>Actual shift times (24h)</label><div class="two"><div><label>Start date</label><input type="date" id="r1d" value="${esc((r.st||"").slice(0,10)||c.sd)}"></div><div><label>Start time</label>${t24("r1",hm(r.st),"r1")}</div><div><label>End date</label><input type="date" id="r2d" value="${esc((r.en||"").slice(0,10)||today)}"></div><div><label>End time</label>${t24("r2",hm(r.en),"r2")}</div></div><div class="meta" style="margin-top:6px">Leave the end time empty while the shift is still running.</div><button class="btn" onclick="saveRun()">Save shift times</button><button class="btn sec" onclick="resetRun()">Reset (not started)</button><button class="btn sec" onclick="S.addK=null;render()">Cancel</button></div>`;
+function isRunning(id,sd){const r=runOf(id,sd);if(!r)return false;return r.run!==undefined?!!r.run:!!(r.st&&!r.en)}
+function otOf(id,sd){const r=runOf(id,sd);return r&&+r.ot>0?+r.ot:0}
+const hrTxt=x=>Number.isInteger(x)?String(x):x.toFixed(1);
+function otTag(x){return x>0?`<span class="otag">EOT-${hrTxt(x)}hr</span>`:""}
+function setRun(on){const c=S.cur;CU.W=CU.W||{};const k=runKey(c.id,c.sd),r=CU.W[k]||{};r.run=on;CU.W[k]=r;save();render()}
+function shiftStart(){setRun(true);toast("Shift started")}
+function shiftFinish(){setRun(false);toast("Shift ended")}
+function setOT(x){const c=S.cur;CU.W=CU.W||{};const k=runKey(c.id,c.sd),r=CU.W[k]||{run:false};r.ot=(+r.ot===x)?0:x;CU.W[k]=r;save();render();toast(r.ot?"OT "+hrTxt(r.ot)+" hr added":"OT removed")}
+function otEntries(){return Object.entries(CU.W||{}).filter(([k,r])=>r&&+r.ot>0).map(([k,r])=>{const i=k.lastIndexOf("|");return{id:k.slice(0,i),sd:k.slice(i+1),h:+r.ot}})}
+function otDay(sd){return otEntries().filter(e=>e.sd===sd).reduce((a,e)=>a+e.h,0)}
+function weekStart(sd){const x=new Date(sd+"T00:00:00"),w0=S.mt.wk0===1?1:0;x.setDate(x.getDate()-((x.getDay()-w0+7)%7));return dkey(x)}
+function otSection(){
+ const td=dkey(new Date()),ws=weekStart(td),all=otEntries();
+ const wk=all.filter(e=>weekStart(e.sd)===ws).reduce((a,e)=>a+e.h,0);
+ const mo=all.filter(e=>e.sd.slice(0,7)===td.slice(0,7)),mh=mo.reduce((a,e)=>a+e.h,0);
+ const weeks=[];for(let i=5;i>=0;i--){const d=new Date(ws+"T00:00:00");d.setDate(d.getDate()-7*i);const k=dkey(d);weeks.push({k,d,h:all.filter(e=>weekStart(e.sd)===k).reduce((a,e)=>a+e.h,0)})}
+ const mx=Math.max(1,...weeks.map(w=>w.h));
+ const dayList=mo.slice().sort((a,b)=>b.sd.localeCompare(a.sd)).map(e=>`<div class="row sp" style="padding:5px 0"><span>${otTag(e.h)}<b>${nice(e.sd)}</b></span><span class="meta">${esc(shName(e.id))}</span></div>`).join("")||'<div class="meta">No OT this month</div>';
+ return `<h2>Overtime (OT)</h2><div class="grid"><div class="stat"><b style="color:#1f9d55">${hrTxt(wk)} h</b><span>OT this week</span></div><div class="stat"><b style="color:#1f9d55">${hrTxt(mh)} h</b><span>OT this month</span></div><div class="stat"><b>${new Set(mo.map(e=>e.sd)).size}</b><span>OT days this month</span></div></div>
+ <div class="g2"><div class="card"><div class="tl">OT hours per week</div><div class="cols">${weeks.map(w=>`<div style="height:${w.h/mx*100}%;background:#1f9d55" title="${hrTxt(w.h)}h"></div>`).join("")}</div><div class="cols l">${weeks.map(w=>`<span>${w.d.getDate()}/${w.d.getMonth()+1}<br>${hrTxt(w.h)}h</span>`).join("")}</div></div>
+ <div class="card"><div class="tl">OT days this month</div>${dayList}<button class="btn sec" onclick="doOtCsv()">Download OT CSV</button></div></div>`;
 }
-function saveRun(){
- const c=S.cur,d1=$("#r1d").value,t1=t24v("r1"),d2=$("#r2d").value,t2=t24v("r2");
- if(!d1||!t1){toast("Set the start date and time");return}
- const st=d1+"T"+t1,en=(d2&&t2)?d2+"T"+t2:"";
- if(en&&en<st){toast("The end must be after the start");return}
- CU.W=CU.W||{};CU.W[runKey(c.id,c.sd)]={st,en};save();S.addK=null;render();toast("Shift times saved ✓");
-}
-function resetRun(){const c=S.cur;if(CU.W)delete CU.W[runKey(c.id,c.sd)];save();S.addK=null;render()}
+function otCsv(){const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';return [["DATE","SHIFT","OT_HOURS"].map(q).join(",")].concat(otEntries().sort((a,b)=>a.sd.localeCompare(b.sd)).map(e=>[e.sd,shName(e.id),e.h].map(q).join(","))).join("\n")}
+async function doOtCsv(){await dl("ot-"+dkey(new Date()).slice(0,7)+".csv",otCsv())}
+function setWk(v){S.mt.wk0=v;saveMt();render()}
 function runningCards(){
- return Object.entries(CU.W||{}).filter(([k,r])=>r&&r.st&&!r.en).map(([k])=>{const i=k.lastIndexOf("|"),id=k.slice(0,i),sd=k.slice(i+1);return `<button class="ban on" style="width:100%;border:0;text-align:left;font:inherit" onclick="start('${esc(id)}','${sd}')"><div class="row sp"><b>● Running shift</b><span>${nice(sd)}</span></div><div class="big2">${esc(shName(id))}</div><div style="font-weight:700;margin-top:6px">Tap to continue ▸</div></button>`}).join("");
+ return Object.keys(CU.W||{}).filter(k=>{const i=k.lastIndexOf("|");return isRunning(k.slice(0,i),k.slice(i+1))}).map(k=>{const i=k.lastIndexOf("|"),id=k.slice(0,i),sd=k.slice(i+1);return `<button class="ban on" style="width:100%;border:0;text-align:left;font:inherit" onclick="start('${esc(id)}','${sd}')"><div class="row sp"><b>● Running shift${otTag(otOf(id,sd))}</b><span>${nice(sd)}</span></div><div class="big2">${esc(shName(id))}</div><div style="font-weight:700;margin-top:6px">Tap to continue ▸</div></button>`}).join("");
 }
 function setTheme(t){S.mt.theme=t;const r=document.documentElement;if(r.setAttribute){t==="auto"?r.removeAttribute("data-theme"):r.setAttribute("data-theme",t)}saveMt();render()}
 function about(){
- return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.4</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
+ return `<div style="text-align:center;padding:10px 0">${logo(96)}<h1 style="margin:10px 0 0">Works Log</h1><div class="meta">by <b>Jamshi Solutions</b> · Version 1.5</div>${S.mt.act?`<div class="meta">Activated for ${esc(S.mt.act.name||"")}</div>`:""}</div>
  <div class="cert"><div class="cin"><div class="cs">CERTIFICATE OF AUTHENTICITY</div><div class="cl"><span></span>✦<span></span></div>
  <div class="ct">This is to certify that</div><div class="cn">Works Log</div><div class="ct">is an original application designed and developed by</div><div class="cn" style="font-size:26px;color:var(--ac)">Jamshi Solutions</div>
  <div class="cmeta"><div><small>Certificate no.</small><b>JS-WL-2026-001</b></div><div><small>Issued</small><b>14 Nov 2026</b></div><div><small>Edition</small><b>Version 1.0</b></div></div>
