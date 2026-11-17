@@ -52,3 +52,38 @@ function doPost(e) {
     lock.releaseLock();
   }
 }
+
+// ---------- Automatic CSV backup to Google Drive + email ----------
+// Run setupBackupTrigger() ONCE (daily) or setupWeeklyBackupTrigger() ONCE (every Sunday).
+var BACKUP_FOLDER = 'Works Log Backups';
+function csvCell_(v) {
+  var t = (v instanceof Date) ? Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm') : String(v == null ? '' : v);
+  return '"' + t.replace(/"/g, '""') + '"';
+}
+function makeCsvBackup() {
+  var rows = sh_().getDataRange().getValues();
+  var csv = rows.map(function (r) { return r.map(csvCell_).join(','); }).join('\n');
+  var name = 'WorksLog-backup-' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd') + '.csv';
+  var it = DriveApp.getFoldersByName(BACKUP_FOLDER);
+  var folder = it.hasNext() ? it.next() : DriveApp.createFolder(BACKUP_FOLDER);
+  var file = folder.createFile(name, csv, MimeType.CSV);
+  MailApp.sendEmail({
+    to: Session.getEffectiveUser().getEmail(),
+    subject: 'Works Log backup ' + name,
+    body: 'Your automatic Works Log backup is attached. A copy is also in Google Drive, folder "' + BACKUP_FOLDER + '".',
+    attachments: [file.getBlob()]
+  });
+}
+function clearBackupTriggers_() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'makeCsvBackup') ScriptApp.deleteTrigger(t);
+  });
+}
+function setupBackupTrigger() {
+  clearBackupTriggers_();
+  ScriptApp.newTrigger('makeCsvBackup').timeBased().everyDays(1).atHour(2).create();
+}
+function setupWeeklyBackupTrigger() {
+  clearBackupTriggers_();
+  ScriptApp.newTrigger('makeCsvBackup').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(2).create();
+}
