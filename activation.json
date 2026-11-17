@@ -1,1 +1,44 @@
-
+{
+ "v": 1,
+ "salt": "4vMw+iF8a4YQ/MeVBRb46w==",
+ "server": "https://script.google.com/macros/s/AKfycbz-vGQlUHmFsGxwvVwuiWuKO5EcpOKOra-g3WBB2mSUTJ_Sm0P70nt6hz2QCrsFcWla/exec",
+ "codes": [
+  {
+   "id": "owner",
+   "name": "Jamshi (owner)",
+   "h": "wGH8maBihzt+QMAZQNj+3YCS4s8LCu4OT5ELngMflwY=",
+   "exp": null,
+   "owner": true
+  },
+  {
+   "id": "c1",
+   "name": "Colleague 1",
+   "h": "U7v8KvS6/Z6Tbud8Xnbu2FzfHXCT2TW3/Bo2dzUJxSM=",
+   "exp": null
+  },
+  {
+   "id": "c2",
+   "name": "Colleague 2",
+   "h": "RpgPbxqduQB3+5yZR5UuPFNX+/7k+E4iSpuLcUSnIWE=",
+   "exp": null
+  },
+  {
+   "id": "c3",
+   "name": "Colleague 3",
+   "h": "OkX4Yly7SK2s4y4o1s6v7en3x2DTMQRazZz30Kht7bw=",
+   "exp": null
+  },
+  {
+   "id": "c4",
+   "name": "Colleague 4",
+   "h": "ISTIr1ZbhxuusCLdtNE/in7GMFcH3NlCzJ/j6Izfcko=",
+   "exp": null
+  },
+  {
+   "id": "c5",
+   "name": "Colleague 5",
+   "h": "23tEFlxpPDvKug/76qBWnLn/6DL9pkFEAD3yFTfGJc8=",
+   "exp": null
+  }
+ ]
+}
