@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  ANDROID_HOME: /usr/local/lib/android/sdk
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -26,8 +30,8 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Copy web files into www folder
         run: |
