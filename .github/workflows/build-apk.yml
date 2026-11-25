@@ -33,10 +33,11 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Copy web files into www folder
+      - name: Copy all web and config files into www folder
         run: |
           mkdir -p www
           cp index.html www/
+          [ -f activation.json ] && cp activation.json www/ || true
           [ -f manifest.webmanifest ] && cp manifest.webmanifest www/ || true
           [ -f sw.js ] && cp sw.js www/ || true
           cp *.png www/ 2>/dev/null || true
